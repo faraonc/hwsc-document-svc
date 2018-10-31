@@ -82,9 +82,9 @@ func (s Service) ListUserDocumentCollection(ctx context.Context, req *pb.Documen
 }
 
 // UpdateDocument completely updates a MongoDB document with a given DUID.
+// Returns the updated MongoDB document.
 //TODO implementation
 //TODO unit test
-//TODO readme
 func (s Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
 
 	return nil, nil
