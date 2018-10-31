@@ -59,6 +59,7 @@ func (s state) String() string {
 	return serviceStateMap[s]
 }
 
+// GetStatus gets the current status of the service.
 func (s Service) GetStatus(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
 
 	//TODO check if mongodb server is running
@@ -66,23 +67,32 @@ func (s Service) GetStatus(ctx context.Context, req *pb.DocumentRequest) (*pb.Do
 
 }
 
+// CreateDocument creates a Document in MongoDB.
 func (s Service) CreateDocument(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
 
 	return nil, nil
 }
 
-func (s Service) ListUserDocument(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
+// ListUserDocumentCollection gets all the MongoDB documents for a specific user with the given UUID.
+// Returns a collection of MongoDB documents.
+func (s Service) ListUserDocumentCollection(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
 
 	return nil, nil
 
 }
 
+// UpdateDocument completely updates a MongoDB document with a given DUID.
+//TODO implementation
+//TODO unit test
+//TODO readme
 func (s Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
 
 	return nil, nil
 
 }
 
+// DeleteDocument deletes a MongoDB document using UUID and DUID.
+// Returns the deleted MongoDB document.
 func (s Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
 
 	return nil, nil
