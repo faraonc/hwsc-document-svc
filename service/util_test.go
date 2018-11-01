@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func TestValidateFields(t *testing.T) {
+func TestValidateDocument(t *testing.T) {
 
 	cases := []struct {
 		input    *pb.Document
@@ -695,7 +695,7 @@ func TestValidateFields(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		err := ValidateFields(c.input)
+		err := ValidateDocument(c.input)
 		if c.isExpErr {
 			assert.EqualError(t, err, c.errorStr)
 			if err == nil {
