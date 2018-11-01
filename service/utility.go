@@ -399,7 +399,7 @@ func ValidateUpdateTimestamp(updateTimestamp int64, createTimestamp int64) error
 	}
 
 	if createTimestamp > updateTimestamp || updateTimestamp > time.Now().UTC().Unix() {
-		return errors.New("invalid Document UpdateTimeStamp")
+		return errors.New("invalid Document UpdateTimestamp")
 	}
 
 	return nil
