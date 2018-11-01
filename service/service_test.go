@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	pb "github.com/faraonc/hwsc-api-blocks/int/hwsc-document-svc/proto"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/context"
@@ -166,7 +167,7 @@ func TestUpdateDocument(t *testing.T) {
 			FirstName:    "Leesa",
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			Region:       "Venus",
+			Region:       "Neptune",
 			Ocean:        "Pacific Ocean",
 			SensorType:   "some sensor type",
 			SensorName:   "some sensor name",
@@ -236,6 +237,12 @@ func TestDeleteDocument(t *testing.T) {
 			Uuid: tempUUID,
 		}}, available,
 			"OK", false},
+		{&pb.DocumentRequest{Data: &pb.Document{
+			Duid: tempDUID,
+			Uuid: tempUUID,
+		}}, available,
+			fmt.Sprintf("rpc error: code = InvalidArgument desc = Document not found, duid: %s - uuid: %s", tempDUID, tempUUID),
+			true},
 	}
 
 	for _, c := range cases {

@@ -261,7 +261,10 @@
   analyzer-version = 1
   input-imports = [
     "github.com/faraonc/hwsc-api-blocks/int/hwsc-document-svc/proto",
+    "github.com/mongodb/mongo-go-driver/bson",
     "github.com/mongodb/mongo-go-driver/mongo",
+    "github.com/mongodb/mongo-go-driver/mongo/findopt",
+    "github.com/mongodb/mongo-go-driver/mongo/mongoopt",
     "github.com/segmentio/ksuid",
     "github.com/stretchr/testify/assert",
     "golang.org/x/net/context",
