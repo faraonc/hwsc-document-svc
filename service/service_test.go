@@ -7,6 +7,11 @@ import (
 	"testing"
 )
 
+var (
+	tempDUID string
+	tempUUID string
+)
+
 func TestGetStatus(t *testing.T) {
 	cases := []struct {
 		req         *pb.DocumentRequest
@@ -35,6 +40,8 @@ func TestCreateDocument(t *testing.T) {
 		{&pb.DocumentRequest{}, unavailable,
 			"rpc error: code = Unavailable desc = Service unavailable", true},
 		{nil, available,
+			"rpc error: code = InvalidArgument desc = Nil request", true},
+		{&pb.DocumentRequest{}, available,
 			"rpc error: code = InvalidArgument desc = Nil request data", true},
 		{&pb.DocumentRequest{Data: &pb.Document{
 			Uuid: "garbage",
@@ -79,6 +86,8 @@ func TestCreateDocument(t *testing.T) {
 		res, err := s.CreateDocument(context.TODO(), c.req)
 		if !c.isExpErr {
 			assert.Equal(t, c.expMsg, res.GetMessage())
+			tempDUID = res.Data.GetDuid()
+			tempUUID = res.Data.GetUuid()
 		} else {
 			assert.Equal(t, c.expMsg, err.Error())
 			assert.EqualError(t, err, c.expMsg)
@@ -97,6 +106,8 @@ func TestListUserDocumentCollection(t *testing.T) {
 		{&pb.DocumentRequest{}, unavailable,
 			"rpc error: code = Unavailable desc = Service unavailable", true},
 		{nil, available,
+			"rpc error: code = InvalidArgument desc = Nil request", true},
+		{&pb.DocumentRequest{}, available,
 			"rpc error: code = InvalidArgument desc = Nil request data", true},
 		{&pb.DocumentRequest{Data: &pb.Document{
 			Uuid: "garbage",
@@ -141,6 +152,8 @@ func TestUpdateDocument(t *testing.T) {
 		{&pb.DocumentRequest{}, unavailable,
 			"rpc error: code = Unavailable desc = Service unavailable", true},
 		{nil, available,
+			"rpc error: code = InvalidArgument desc = Nil request", true},
+		{&pb.DocumentRequest{}, available,
 			"rpc error: code = InvalidArgument desc = Nil request data", true},
 		{&pb.DocumentRequest{Data: &pb.Document{
 			Duid: "",
@@ -185,6 +198,53 @@ func TestUpdateDocument(t *testing.T) {
 		res, err := s.UpdateDocument(context.TODO(), c.req)
 		if !c.isExpErr {
 			assert.Equal(t, c.expMsg, res.GetMessage())
+		} else {
+			assert.Equal(t, c.expMsg, err.Error())
+			assert.EqualError(t, err, c.expMsg)
+		}
+
+	}
+}
+
+func TestDeleteDocument(t *testing.T) {
+	cases := []struct {
+		req         *pb.DocumentRequest
+		serverState state
+		expMsg      string
+		isExpErr    bool
+	}{
+		{&pb.DocumentRequest{}, unavailable,
+			"rpc error: code = Unavailable desc = Service unavailable", true},
+		{nil, available,
+			"rpc error: code = InvalidArgument desc = Nil request", true},
+		{&pb.DocumentRequest{}, available,
+			"rpc error: code = InvalidArgument desc = Nil request data", true},
+		{&pb.DocumentRequest{Data: &pb.Document{}}, available,
+			"rpc error: code = InvalidArgument desc = Missing DUID", true},
+		{&pb.DocumentRequest{Data: &pb.Document{
+			Duid: "1CMjlaqHYNJhnVvWiGus3EiOno8",
+		}}, available,
+			"rpc error: code = InvalidArgument desc = invalid Document uuid", true},
+		{&pb.DocumentRequest{Data: &pb.Document{
+			Duid: "xCMjlaqHYNJhnVvWiGxxxEiOno8",
+			Uuid: "1100XSNJG0MQJHBF4QX1EFD6Y3",
+		}}, available,
+			"rpc error: code = InvalidArgument desc = Document not found, duid: xCMjlaqHYNJhnVvWiGxxxEiOno8 - uuid: 1100XSNJG0MQJHBF4QX1EFD6Y3",
+			true},
+		{&pb.DocumentRequest{Data: &pb.Document{
+			Duid: tempDUID,
+			Uuid: tempUUID,
+		}}, available,
+			"OK", false},
+	}
+
+	for _, c := range cases {
+		serviceStateLocker.currentServiceState = c.serverState
+		s := Service{}
+		res, err := s.DeleteDocument(context.TODO(), c.req)
+		if !c.isExpErr {
+			assert.Equal(t, c.expMsg, res.GetMessage())
+			//assert.NotEmpty(t, res.FileMetadataCollection)
 		} else {
 			assert.Equal(t, c.expMsg, err.Error())
 			assert.EqualError(t, err, c.expMsg)

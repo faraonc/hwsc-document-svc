@@ -137,6 +137,11 @@ func (s Service) CreateDocument(ctx context.Context, req *pb.DocumentRequest) (*
 		return nil, status.Error(codes.Unavailable, "Service unavailable")
 	}
 
+	if req == nil {
+		log.Println("[ERROR] Nil request")
+		return nil, status.Error(codes.InvalidArgument, "Nil request")
+	}
+
 	doc := req.GetData()
 	if doc == nil {
 		log.Println("[ERROR] Nil request data")
@@ -210,6 +215,11 @@ func (s Service) ListUserDocumentCollection(ctx context.Context, req *pb.Documen
 
 	if ok := isStateAvailable(); !ok {
 		return nil, status.Error(codes.Unavailable, "Service unavailable")
+	}
+
+	if req == nil {
+		log.Println("[ERROR] Nil request")
+		return nil, status.Error(codes.InvalidArgument, "Nil request")
 	}
 
 	doc := req.GetData()
@@ -317,6 +327,11 @@ func (s Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (*
 		return nil, status.Error(codes.Unavailable, "Service unavailable")
 	}
 
+	if req == nil {
+		log.Println("[ERROR] Nil request")
+		return nil, status.Error(codes.InvalidArgument, "Nil request")
+	}
+
 	doc := req.GetData()
 	if doc == nil {
 		log.Println("[ERROR] Nil request data")
@@ -417,6 +432,11 @@ func (s Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (*
 		return nil, status.Error(codes.Unavailable, "Service unavailable")
 	}
 
+	if req == nil {
+		log.Println("[ERROR] Nil request")
+		return nil, status.Error(codes.InvalidArgument, "Nil request")
+	}
+
 	doc := req.GetData()
 	if doc == nil {
 		log.Println("[ERROR] Nil request data")
@@ -428,13 +448,11 @@ func (s Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (*
 		return nil, status.Error(codes.InvalidArgument, "Missing DUID")
 	}
 
-	// Validate document
-	if err := ValidateDocument(doc); err != nil {
+	// Validate UUID field
+	if err := ValidateUUID(doc.GetUuid()); err != nil {
 		log.Printf("[ERROR] %s\n", err.Error())
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
-
-	log.Printf("[INFO] Document contains:\n %s\n\n", doc)
 
 	// Get the specific lock if it already exists, else make the lock
 	lock, _ := serviceClientLocker.LoadOrStore(doc.GetDuid(), &sync.RWMutex{})
@@ -485,7 +503,6 @@ func (s Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (*
 			doc.GetDuid(), doc.GetUuid())
 	}
 
-
 	if err := client.Disconnect(context.TODO()); err != nil {
 		log.Printf("[ERROR] Success deleting document, duid: %v - uuid: %v with disconnection error\n\n", doc.GetDuid(), doc.GetUuid())
 		return &pb.DocumentResponse{
@@ -508,6 +525,7 @@ func (s Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (*
 
 // AddFileMetadata adds a new FileMetadata in a MongoDB document using a given url, UUID and DUID.
 // Returns the updated Document.
+// TODO
 func (s Service) AddFileMetadata(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
 
 	return nil, nil
@@ -516,6 +534,7 @@ func (s Service) AddFileMetadata(ctx context.Context, req *pb.DocumentRequest) (
 
 // DeleteFileMetadata deletes a FileMetadata in a MongoDB document using a given FUID, UUID and DUID.
 // Returns the updated Document.
+//TODO
 func (s Service) DeleteFileMetadata(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
 
 	return nil, nil
