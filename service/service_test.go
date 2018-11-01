@@ -124,7 +124,7 @@ func TestListUserDocumentCollection(t *testing.T) {
 		{&pb.DocumentRequest{Data: &pb.Document{
 			Uuid: "xxx0XSNJG0MQJHBF4QX1EFD6Y3",
 		}}, available,
-			"rpc error: code = Internal desc = No documments for uuid: xxx0XSNJG0MQJHBF4QX1EFD6Y3", true},
+			"rpc error: code = InvalidArgument desc = No document for uuid: xxx0XSNJG0MQJHBF4QX1EFD6Y3", true},
 	}
 
 	for _, c := range cases {

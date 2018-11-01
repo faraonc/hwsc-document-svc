@@ -99,7 +99,7 @@ func (s Service) GetStatus(ctx context.Context, req *pb.DocumentRequest) (*pb.Do
 	// Check MongoDB Server
 	client, err := mongo.NewClient(mongoServerDBReader)
 	if err != nil {
-		log.Printf("[ERROR] mongo.NewClient(mongoServerDBReader): %s\n", err.Error())
+		log.Printf("[ERROR] Creating MongoDB Client: %s\n", err.Error())
 		return &pb.DocumentResponse{
 			Status:  &pb.DocumentResponse_Code{Code: uint32(codes.Unavailable)},
 			Message: codes.Unavailable.String(),
@@ -107,7 +107,7 @@ func (s Service) GetStatus(ctx context.Context, req *pb.DocumentRequest) (*pb.Do
 	}
 
 	if err := client.Connect(context.TODO()); err != nil {
-		log.Printf("[ERROR] client.Connect(context.TODO()): %s\n", err.Error())
+		log.Printf("[ERROR] Connecting MongoDB Client: %s\n", err.Error())
 		return &pb.DocumentResponse{
 			Status:  &pb.DocumentResponse_Code{Code: uint32(codes.Unavailable)},
 			Message: codes.Unavailable.String(),
@@ -171,12 +171,12 @@ func (s Service) CreateDocument(ctx context.Context, req *pb.DocumentRequest) (*
 	log.Printf("[INFO] Connecting to mongodb://hwscmongodb duid: %s uuid: %s\n", doc.GetDuid(), doc.GetUuid())
 	client, err := mongo.NewClient(mongoServerDBWriter)
 	if err != nil {
-		log.Printf("[ERROR] mongo.NewClient(mongoServerDBWriter): %s\n", err.Error())
+		log.Printf("[ERROR] Creating MongoDB Client: %s\n", err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
 	if err := client.Connect(context.TODO()); err != nil {
-		log.Printf("[ERROR] client.Connect(context.TODO()): %s\n", err.Error())
+		log.Printf("[ERROR] Connecting MongoDB Client: %s\n", err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
@@ -185,12 +185,13 @@ func (s Service) CreateDocument(ctx context.Context, req *pb.DocumentRequest) (*
 	// Insert MongoDB document
 	res, err := collection.InsertOne(context.Background(), doc)
 	if err != nil {
-		log.Printf("[ERROR] collection.InsertOne(context.Background(), doc): %s\n", err.Error())
+		log.Printf("[ERROR] InsertOne: %s\n", err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
 	if err := client.Disconnect(context.TODO()); err != nil {
-		log.Printf("[ERROR] Inserted documment _id: %v, with disconnection error\n", res.InsertedID)
+		log.Printf("[ERROR] Inserted document _id: %v, with disconnection error: %s\n",
+			res.InsertedID, err.Error())
 		return &pb.DocumentResponse{
 			Status:  &pb.DocumentResponse_Code{Code: uint32(codes.Internal)},
 			Message: fmt.Sprintf("Inserted document with error: %s\n", codes.Internal.String()),
@@ -199,7 +200,8 @@ func (s Service) CreateDocument(ctx context.Context, req *pb.DocumentRequest) (*
 	}
 
 	// Log ID of the inserted MongoDB document
-	log.Printf("[INFO] Success inserting documment _id: %v\n\n", res.InsertedID)
+	log.Printf("[INFO] Success inserting document _id: %v\n", res.InsertedID)
+
 	return &pb.DocumentResponse{
 		Status:  &pb.DocumentResponse_Code{Code: uint32(codes.OK)},
 		Message: codes.OK.String(),
@@ -238,12 +240,12 @@ func (s Service) ListUserDocumentCollection(ctx context.Context, req *pb.Documen
 	log.Printf("[INFO] Connecting to mongodb://hwscmongodb uuid: %s\n", doc.GetUuid())
 	client, err := mongo.NewClient(mongoServerDBReader)
 	if err != nil {
-		log.Printf("[ERROR] mongo.NewClient(mongoServerDBReader): %s\n", err.Error())
+		log.Printf("[ERROR] Creating MongoDB Client: %s\n", err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
 	if err := client.Connect(context.TODO()); err != nil {
-		log.Printf("[ERROR] client.Connect(context.TODO()): %s\n", err.Error())
+		log.Printf("[ERROR] Connecting MongoDB Client: %s\n", err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
@@ -253,7 +255,7 @@ func (s Service) ListUserDocumentCollection(ctx context.Context, req *pb.Documen
 	filter := bson.NewDocument(bson.EC.String("uuid", doc.GetUuid()))
 	cur, err := collection.Find(context.Background(), filter)
 	if err != nil {
-		log.Printf("[ERROR] collection.Find(context.Background(), mongoQuery{\"uuid\": doc.GetUuid(),}): %s\n", err.Error())
+		log.Printf("[ERROR] Find: %s\n", err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
@@ -264,23 +266,23 @@ func (s Service) ListUserDocumentCollection(ctx context.Context, req *pb.Documen
 	documentCollection := make([]*pb.Document, 0)
 	for cur.Next(context.Background()) {
 		if err := cur.Err(); err != nil {
-			log.Printf("[ERROR] cur.Err(): %s\n", err.Error())
+			log.Printf("[ERROR] Cursor Err: %s\n", err.Error())
 			return nil, status.Error(codes.Internal, err.Error())
 		}
 
 		// Mutate and retrieve Document
 		document := &pb.Document{}
 		if err := cur.Decode(document); err != nil {
-			log.Printf("[ERROR] %s\n", err.Error())
+			log.Printf("[ERROR] Cursor Decode: %s\n", err.Error())
 			return nil, status.Error(codes.Internal, err.Error())
 		}
 
 		// Validate the retrieved Document from MongoDB
 		if err := ValidateDocument(document); err != nil {
-			log.Printf("[ERROR] Failed document validation, duid: %v - uuid: %v - %s\n",
+			log.Printf("[ERROR] Failed document validation, duid: %s - uuid: %s - %s\n",
 				doc.GetDuid(), doc.GetUuid(), err.Error())
 
-			return nil, status.Errorf(codes.Internal, "Failed document validations, duid: %v - uuid: %v - %s",
+			return nil, status.Errorf(codes.Internal, "Failed document validation, duid: %s - uuid: %s - %s",
 				doc.GetDuid(), doc.GetUuid(), err.Error())
 		}
 		documentCollection = append(documentCollection, document)
@@ -289,17 +291,18 @@ func (s Service) ListUserDocumentCollection(ctx context.Context, req *pb.Documen
 	}
 
 	if err := cur.Err(); err != nil {
-		log.Printf("[ERROR] cur.Err(): %s\n", err.Error())
+		log.Printf("[ERROR] Cursor Err: %s\n", err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
 	if len(documentCollection) == 0 {
-		log.Printf("[ERROR] No documments for uuid: %v\n\n", doc.GetUuid())
-		return nil, status.Errorf(codes.Internal, "No documments for uuid: %v", doc.GetUuid())
+		log.Printf("[ERROR] No document for uuid: %s\n", doc.GetUuid())
+		return nil, status.Errorf(codes.InvalidArgument, "No document for uuid: %s", doc.GetUuid())
 	}
 
 	if err := client.Disconnect(context.TODO()); err != nil {
-		log.Printf("[ERROR] Success listing documments, uuid: %v with disconnection error\n", doc.GetUuid())
+		log.Printf("[ERROR] Success listing documents, uuid: %s with disconnection error: %s\n",
+			doc.GetUuid(), err.Error())
 		return &pb.DocumentResponse{
 			Status:             &pb.DocumentResponse_Code{Code: uint32(codes.Internal)},
 			Message:            fmt.Sprintf("Listed user documents with disconnection error: %s\n", codes.Internal.String()),
@@ -308,7 +311,7 @@ func (s Service) ListUserDocumentCollection(ctx context.Context, req *pb.Documen
 	}
 
 	// Log ID of the uuid used for query
-	log.Printf("[INFO] Success listing documents, uuid: %v\n\n", doc.GetUuid())
+	log.Printf("[INFO] Success listing documents, uuid: %s\n", doc.GetUuid())
 
 	return &pb.DocumentResponse{
 		Status:             &pb.DocumentResponse_Code{Code: uint32(codes.OK)},
@@ -367,12 +370,12 @@ func (s Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (*
 		doc.GetDuid(), doc.GetUuid())
 	client, err := mongo.NewClient(mongoServerDBWriter)
 	if err != nil {
-		log.Printf("[ERROR] mongo.NewClient(mongoServerDBWriter): %s\n", err.Error())
+		log.Printf("[ERROR] Creating MongoDB Client: %s\n", err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
 	if err := client.Connect(context.TODO()); err != nil {
-		log.Printf("[ERROR] client.Connect(context.TODO()): %s\n", err.Error())
+		log.Printf("[ERROR] Connecting MongoDB Client: %s\n", err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
@@ -386,25 +389,26 @@ func (s Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (*
 
 	// Extract the updated MongoDB document
 	if result == nil {
-		log.Printf("[INFO] Document not found, duid: %v - uuid: %v\n\n",
+		log.Printf("[INFO] Document not found, duid: %s - uuid: %s\n",
 			doc.GetDuid(), doc.GetUuid())
 
 		return nil, status.Errorf(codes.InvalidArgument,
-			"Document not found, duid: %v - uuid: %v",
+			"Document not found, duid: %s - uuid: %s",
 			doc.GetDuid(), doc.GetUuid())
 	}
 
 	if err := result.Decode(&pb.Document{}); err != nil {
-		log.Printf("[ERROR] Document not found, duid: %v - uuid: %v\n\n",
-			doc.GetDuid(), doc.GetUuid())
+		log.Printf("[ERROR] Document not found, duid: %s - uuid: %s - err: %s\n",
+			doc.GetDuid(), doc.GetUuid(), err.Error())
 
 		return nil, status.Errorf(codes.InvalidArgument,
-			"Document not found, duid: %v - uuid: %v",
+			"Document not found, duid: %s - uuid: %s",
 			doc.GetDuid(), doc.GetUuid())
 	}
 
 	if err := client.Disconnect(context.TODO()); err != nil {
-		log.Printf("[ERROR] Success updating document, duid: %v - uuid: %v with disconnection error\n\n", doc.GetDuid(), doc.GetUuid())
+		log.Printf("[ERROR] Success updating document, duid: %s - uuid: %s with disconnection error: %s\n",
+			doc.GetDuid(), doc.GetUuid(), err.Error())
 		return &pb.DocumentResponse{
 			Status:  &pb.DocumentResponse_Code{Code: uint32(codes.Internal)},
 			Message: fmt.Sprintf("Updated document with disconnection error: %s\n", codes.Internal.String()),
@@ -413,7 +417,8 @@ func (s Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (*
 	}
 
 	// Log duid and uuid used for query
-	log.Printf("[INFO] Success updating document, duid: %v - uuid: %v\n\n", doc.GetDuid(), doc.GetUuid())
+	log.Printf("[INFO] Success updating document, duid: %s - uuid: %s\n",
+		doc.GetDuid(), doc.GetUuid())
 
 	return &pb.DocumentResponse{
 		Status:  &pb.DocumentResponse_Code{Code: uint32(codes.OK)},
@@ -467,12 +472,12 @@ func (s Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (*
 		doc.GetDuid(), doc.GetUuid())
 	client, err := mongo.NewClient(mongoServerDBWriter)
 	if err != nil {
-		log.Printf("[ERROR] mongo.NewClient(mongoServerDBWriter): %s\n", err.Error())
+		log.Printf("[ERROR] Creating MongoDB Client: %s\n", err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
 	if err := client.Connect(context.TODO()); err != nil {
-		log.Printf("[ERROR] client.Connect(context.TODO()): %s\n", err.Error())
+		log.Printf("[ERROR] Connecting MongoDB Client: %s\n", err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
@@ -486,25 +491,26 @@ func (s Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (*
 
 	// Extract the updated MongoDB document
 	if result == nil {
-		log.Printf("[INFO] Document not found, duid: %v - uuid: %v\n\n",
+		log.Printf("[INFO] Document not found, duid: %s - uuid: %s\n",
 			doc.GetDuid(), doc.GetUuid())
 
 		return nil, status.Errorf(codes.InvalidArgument,
-			"Document not found, duid: %v - uuid: %v",
+			"Document not found, duid: %s - uuid: %s",
 			doc.GetDuid(), doc.GetUuid())
 	}
 
 	if err := result.Decode(&pb.Document{}); err != nil {
-		log.Printf("[ERROR] Document not found, duid: %v - uuid: %v\n\n",
-			doc.GetDuid(), doc.GetUuid())
+		log.Printf("[ERROR] Document not found, duid: %s - uuid: %s - err: %s\n",
+			doc.GetDuid(), doc.GetUuid(), err.Error())
 
 		return nil, status.Errorf(codes.InvalidArgument,
-			"Document not found, duid: %v - uuid: %v",
+			"Document not found, duid: %s - uuid: %s",
 			doc.GetDuid(), doc.GetUuid())
 	}
 
 	if err := client.Disconnect(context.TODO()); err != nil {
-		log.Printf("[ERROR] Success deleting document, duid: %v - uuid: %v with disconnection error\n\n", doc.GetDuid(), doc.GetUuid())
+		log.Printf("[ERROR] Success deleting document, duid: %v - uuid: %v with disconnection error\n\n",
+			doc.GetDuid(), doc.GetUuid())
 		return &pb.DocumentResponse{
 			Status:  &pb.DocumentResponse_Code{Code: uint32(codes.Internal)},
 			Message: fmt.Sprintf("Deleted document with disconnection error: %s\n", codes.Internal.String()),
@@ -513,7 +519,8 @@ func (s Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (*
 	}
 
 	// Log duid and uuid used for query
-	log.Printf("[INFO] Success deleting document, duid: %v - uuid: %v\n\n", doc.GetDuid(), doc.GetUuid())
+	log.Printf("[INFO] Success deleting document, duid: %s - uuid: %s\n",
+		doc.GetDuid(), doc.GetUuid())
 
 	return &pb.DocumentResponse{
 		Status:  &pb.DocumentResponse_Code{Code: uint32(codes.OK)},
