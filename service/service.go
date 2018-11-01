@@ -5,6 +5,8 @@ import (
 	pb "github.com/faraonc/hwsc-api-blocks/int/hwsc-document-svc/proto"
 	"github.com/mongodb/mongo-go-driver/bson"
 	"github.com/mongodb/mongo-go-driver/mongo"
+	"github.com/mongodb/mongo-go-driver/mongo/findopt"
+	"github.com/mongodb/mongo-go-driver/mongo/mongoopt"
 	"github.com/segmentio/ksuid"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc/codes"
@@ -385,7 +387,9 @@ func (s Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (*
 		bson.EC.String("duid", doc.GetDuid()),
 		bson.EC.String("uuid", doc.GetUuid()),
 	)
-	result := collection.FindOneAndReplace(context.Background(), filter, doc)
+	option := findopt.ReplaceOneBundle{}
+	result := collection.FindOneAndReplace(context.Background(), filter, doc,
+		option.ReturnDocument(mongoopt.After))
 
 	// Extract the updated MongoDB document
 	if result == nil {
@@ -397,7 +401,8 @@ func (s Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (*
 			doc.GetDuid(), doc.GetUuid())
 	}
 
-	if err := result.Decode(&pb.Document{}); err != nil {
+	document := &pb.Document{}
+	if err := result.Decode(document); err != nil {
 		log.Printf("[ERROR] Document not found, duid: %s - uuid: %s - err: %s\n",
 			doc.GetDuid(), doc.GetUuid(), err.Error())
 
@@ -406,13 +411,15 @@ func (s Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (*
 			doc.GetDuid(), doc.GetUuid())
 	}
 
+	log.Printf("[DEBUG] Updated document: \n%s\n\n", document)
+
 	if err := client.Disconnect(context.TODO()); err != nil {
 		log.Printf("[ERROR] Success updating document, duid: %s - uuid: %s with disconnection error: %s\n",
 			doc.GetDuid(), doc.GetUuid(), err.Error())
 		return &pb.DocumentResponse{
 			Status:  &pb.DocumentResponse_Code{Code: uint32(codes.Internal)},
 			Message: fmt.Sprintf("Updated document with disconnection error: %s\n", codes.Internal.String()),
-			Data:    doc,
+			Data:    document,
 		}, nil
 	}
 
@@ -423,7 +430,7 @@ func (s Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (*
 	return &pb.DocumentResponse{
 		Status:  &pb.DocumentResponse_Code{Code: uint32(codes.OK)},
 		Message: codes.OK.String(),
-		Data:    doc,
+		Data:    document,
 	}, nil
 
 }
@@ -499,7 +506,8 @@ func (s Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (*
 			doc.GetDuid(), doc.GetUuid())
 	}
 
-	if err := result.Decode(&pb.Document{}); err != nil {
+	document := &pb.Document{}
+	if err := result.Decode(document); err != nil {
 		log.Printf("[ERROR] Document not found, duid: %s - uuid: %s - err: %s\n",
 			doc.GetDuid(), doc.GetUuid(), err.Error())
 
@@ -508,13 +516,15 @@ func (s Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (*
 			doc.GetDuid(), doc.GetUuid())
 	}
 
+	log.Printf("[DEBUG] Deleted document: \n%s\n\n", document)
+
 	if err := client.Disconnect(context.TODO()); err != nil {
 		log.Printf("[ERROR] Success deleting document, duid: %v - uuid: %v with disconnection error\n\n",
 			doc.GetDuid(), doc.GetUuid())
 		return &pb.DocumentResponse{
 			Status:  &pb.DocumentResponse_Code{Code: uint32(codes.Internal)},
 			Message: fmt.Sprintf("Deleted document with disconnection error: %s\n", codes.Internal.String()),
-			Data:    doc,
+			Data:    document,
 		}, nil
 	}
 
@@ -525,7 +535,7 @@ func (s Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (*
 	return &pb.DocumentResponse{
 		Status:  &pb.DocumentResponse_Code{Code: uint32(codes.OK)},
 		Message: codes.OK.String(),
-		Data:    doc,
+		Data:    document,
 	}, nil
 
 }
