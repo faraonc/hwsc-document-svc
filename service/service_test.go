@@ -166,7 +166,7 @@ func TestUpdateDocument(t *testing.T) {
 			FirstName:    "Lisa",
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			Region:       "San Diego, WA",
+			Region:       "Pluto",
 			Ocean:        "Pacific Ocean",
 			SensorType:   "some sensor type",
 			SensorName:   "some sensor name",
