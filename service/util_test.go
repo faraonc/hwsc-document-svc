@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func TestValidateFields(t *testing.T) {
+func TestValidateDocument(t *testing.T) {
 
 	cases := []struct {
 		input    *pb.Document
@@ -692,10 +692,41 @@ func TestValidateFields(t *testing.T) {
 			UpdateTimestamp: 0,
 		},
 			true, "invalid Document CreateTimestamp"},
+		{&pb.Document{
+			Duid:         "0ujsszwN8NRY24YaXiTIE2VWDTS",
+			Uuid:         "0000XSNJG0MQJHBF4QX1EFD6Y3",
+			LastName:     "Kim",
+			FirstName:    "Lisa",
+			CallTypeName: "some call type name",
+			GroundType:   "some ground type",
+			Region:       "some region",
+			Ocean:        "Pacific Ocean",
+			SensorType:   "some sensor type",
+			SensorName:   "some sensor name",
+			SampleRate:   100,
+			Latitude:     89.123,
+			Longitude:    -100.123,
+			ImageUrl: map[string]string{
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
+			AudioUrl: map[string]string{
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
+			VideoUrl: map[string]string{
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+			FileUrl: map[string]string{
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+			RecordTimestamp: 1514764800,
+			CreateTimestamp: 1539831496,
+			UpdateTimestamp: 1539831495,
+		},
+			true, "invalid Document UpdateTimestamp"},
 	}
 
 	for _, c := range cases {
-		err := ValidateFields(c.input)
+		err := ValidateDocument(c.input)
 		if c.isExpErr {
 			assert.EqualError(t, err, c.errorStr)
 			if err == nil {
@@ -1294,8 +1325,8 @@ func TestValidateUpdateTimestamp(t *testing.T) {
 		errorStr             string
 	}{
 		{0, 1514764800, false, ""},
-		{1514764800, 1539831496, true, "invalid Document UpdateTimeStamp"},
-		{time.Now().UTC().Unix() + 100, 1539831496, true, "invalid Document UpdateTimeStamp"},
+		{1514764800, 1539831496, true, "invalid Document UpdateTimestamp"},
+		{time.Now().UTC().Unix() + 100, 1539831496, true, "invalid Document UpdateTimestamp"},
 	}
 
 	for _, c := range cases {

@@ -11,11 +11,19 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:55be03fe4485ca006c7bd64c06d7ca8a6e3197922bd27f9369188b1ed51aef18"
+  digest = "1:bba217c0b6cd853046a4e7c39dff601a49cab0fa1f5ac8982bf60faed5b4582c"
   name = "github.com/faraonc/hwsc-api-blocks"
   packages = ["int/hwsc-document-svc/proto"]
   pruneopts = "UT"
-  revision = "a881f4e3edf835e5ff0930dbbea9eabcbe60911d"
+  revision = "6a69d98bac691d42b40b2ce3cb6193a2588e8935"
+
+[[projects]]
+  digest = "1:586ea76dbd0374d6fb649a91d70d652b7fe0ccffb8910a77468e7702e7901f3d"
+  name = "github.com/go-stack/stack"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "2fee6af1a9795aafbe0253a0cfbdf668e1fb8a9a"
+  version = "v1.8.0"
 
 [[projects]]
   digest = "1:4c0989ca0bcd10799064318923b9bc2db6b4d6338dd75f3f2d86c3511aaaf5cf"
@@ -32,6 +40,77 @@
   version = "v1.2.0"
 
 [[projects]]
+  branch = "master"
+  digest = "1:4a0c6bb4805508a6287675fac876be2ac1182539ca8a32468d8128882e9d5009"
+  name = "github.com/golang/snappy"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "2e65f85255dbc3072edf28d6b5b8efc472979f5a"
+
+[[projects]]
+  digest = "1:e3492bfc9acbe6e04b51fe36220f9aea8c919885632f0de55685db80c0029844"
+  name = "github.com/mongodb/mongo-go-driver"
+  packages = [
+    "bson",
+    "bson/bsoncodec",
+    "bson/bsoncore",
+    "bson/bsonrw",
+    "bson/bsontype",
+    "bson/decimal",
+    "bson/elements",
+    "bson/objectid",
+    "bson/parser",
+    "bson/parser/ast",
+    "core/address",
+    "core/auth",
+    "core/auth/internal/gssapi",
+    "core/command",
+    "core/compressor",
+    "core/connection",
+    "core/connstring",
+    "core/description",
+    "core/dispatch",
+    "core/event",
+    "core/option",
+    "core/readconcern",
+    "core/readpref",
+    "core/result",
+    "core/session",
+    "core/tag",
+    "core/topology",
+    "core/uuid",
+    "core/version",
+    "core/wiremessage",
+    "core/writeconcern",
+    "internal",
+    "mongo",
+    "mongo/aggregateopt",
+    "mongo/bulkwriteopt",
+    "mongo/changestreamopt",
+    "mongo/clientopt",
+    "mongo/collectionopt",
+    "mongo/countopt",
+    "mongo/dbopt",
+    "mongo/deleteopt",
+    "mongo/distinctopt",
+    "mongo/dropcollopt",
+    "mongo/findopt",
+    "mongo/indexopt",
+    "mongo/insertopt",
+    "mongo/listcollectionopt",
+    "mongo/listdbopt",
+    "mongo/mongoopt",
+    "mongo/replaceopt",
+    "mongo/runcmdopt",
+    "mongo/sessionopt",
+    "mongo/transactionopt",
+    "mongo/updateopt",
+  ]
+  pruneopts = "UT"
+  revision = "8db96a607cde2fea156d9a72c26aa09271592591"
+  version = "v0.0.17"
+
+[[projects]]
   digest = "1:0028cb19b2e4c3112225cd871870f2d9cf49b9b4276531f03438a88e94be86fe"
   name = "github.com/pmezard/go-difflib"
   packages = ["difflib"]
@@ -40,12 +119,44 @@
   version = "v1.0.0"
 
 [[projects]]
+  digest = "1:c2a594011eed07da14918c519a5b1d08e4bafb2497037f6a426dc310428df4d3"
+  name = "github.com/segmentio/ksuid"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "ffd9a8aaaf8f40792e055371eba06542348e991e"
+  version = "v1.0.2"
+
+[[projects]]
   digest = "1:18752d0b95816a1b777505a97f71c7467a8445b8ffb55631a7bf779f6ba4fa83"
   name = "github.com/stretchr/testify"
   packages = ["assert"]
   pruneopts = "UT"
   revision = "f35b8ab0b5a2cef36673838d662e249dd9c94686"
   version = "v1.2.2"
+
+[[projects]]
+  branch = "master"
+  digest = "1:40fdfd6ab85ca32b6935853bbba35935dcb1d796c8135efd85947566c76e662e"
+  name = "github.com/xdg/scram"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "7eeb5667e42c09cb51bf7b7c28aea8c56767da90"
+
+[[projects]]
+  digest = "1:577b99fc55ee19cbf1ffd072808c91ced78cd732bd9d0517bec9b90e532069cb"
+  name = "github.com/xdg/stringprep"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "bd625b8dc1e3b0f57412280ccbcc317f0c69d8db"
+  version = "v1.0.0"
+
+[[projects]]
+  branch = "master"
+  digest = "1:f92f6956e4059f6a3efc14924d2dd58ba90da25cc57fe07ae3779ef2f5e0c5f2"
+  name = "golang.org/x/crypto"
+  packages = ["pbkdf2"]
+  pruneopts = "UT"
+  revision = "4d3f4d9ffa16a13f451c3b2999e9c49e9750bf06"
 
 [[projects]]
   branch = "master"
@@ -62,6 +173,14 @@
   ]
   pruneopts = "UT"
   revision = "c44066c5c816ec500d459a2a324a753f78531ae0"
+
+[[projects]]
+  branch = "master"
+  digest = "1:e0140c0c868c6e0f01c0380865194592c011fe521d6e12d78bfd33e756fe018a"
+  name = "golang.org/x/sync"
+  packages = ["semaphore"]
+  pruneopts = "UT"
+  revision = "1d60e4601c6fd243af51cc01ddf169918a5407ca"
 
 [[projects]]
   branch = "master"
@@ -142,9 +261,16 @@
   analyzer-version = 1
   input-imports = [
     "github.com/faraonc/hwsc-api-blocks/int/hwsc-document-svc/proto",
+    "github.com/mongodb/mongo-go-driver/bson",
+    "github.com/mongodb/mongo-go-driver/mongo",
+    "github.com/mongodb/mongo-go-driver/mongo/findopt",
+    "github.com/mongodb/mongo-go-driver/mongo/mongoopt",
+    "github.com/segmentio/ksuid",
     "github.com/stretchr/testify/assert",
     "golang.org/x/net/context",
     "google.golang.org/grpc",
+    "google.golang.org/grpc/codes",
+    "google.golang.org/grpc/status",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -52,9 +52,9 @@ var (
 	}
 )
 
-// ValidateFields validates the Document.
+// ValidateDocument validates the Document.
 // Returns an error if field fails validation.
-func ValidateFields(meta *pb.Document) error {
+func ValidateDocument(meta *pb.Document) error {
 	if err := ValidateDUID(meta.GetDuid()); err != nil {
 		return err
 	}
@@ -399,7 +399,7 @@ func ValidateUpdateTimestamp(updateTimestamp int64, createTimestamp int64) error
 	}
 
 	if createTimestamp > updateTimestamp || updateTimestamp > time.Now().UTC().Unix() {
-		return errors.New("invalid Document UpdateTimeStamp")
+		return errors.New("invalid Document UpdateTimestamp")
 	}
 
 	return nil

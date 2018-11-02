@@ -8,16 +8,23 @@ The proto file and compiled proto buffers are located in [hwsc-api-blocks](https
 ### GetStatus
 - Gets the current status of the service.
 ### CreateDocument
-- Creates a Document in MongoDB.
+- Creates a document in MongoDB.
+- Returns the Document.
 ### ListUserDocumentCollection
-- Gets all the MongoDB documents for a specific user with the given UUID.
-- Returns a collection of MongoDB documents.
+- Retrieves all the MongoDB documents for a specific user with the given UUID.
+- Returns a collection of Documents.
 ### UpdateDocument
-- Updates a MongoDB document using DUID.
-- Returns the updated MongoDB document.
+- (completely) Updates a MongoDB document using DUID.
+- Returns the updated Document.
 ### DeleteDocument
 - Deletes a MongoDB document using UUID and DUID.
-- Returns the deleted MongoDB document.
+- Returns the deleted Document.
+### AddFileMetadata
+- Adds a new FileMetadata in a MongoDB document using a given url, UUID and DUID.
+- Returns the updated Document.
+### DeleteFileMetadata
+- Deletes a FileMetadata in a MongoDB document using a given FUID, UUID and DUID.
+- Returns the updated Document.
 ## Prerequisites
 - GoLang version [go 1.11.1](https://golang.org/dl/)
 - GoLang Dependency Management [dep](https://github.com/golang/dep)
