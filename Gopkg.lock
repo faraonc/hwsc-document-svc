@@ -11,11 +11,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:cee8bd0aaba16a12c658ea9f2b390f9807b0fa2947ecda1b654e54b8d0cb9ecc"
+  digest = "1:ef5cd2f9e25cc945fc599f5ef783b2da1cc2d5f0b158b80f5347bab4b96f7487"
   name = "github.com/faraonc/hwsc-api-blocks"
   packages = ["int/hwsc-document-svc/proto"]
   pruneopts = "UT"
-  revision = "34310a8b2725ab8c63ae7973b70851b857ce399c"
+  revision = "0549fe554ee18ce5dfee5cc50b3af7cbca9cc757"
 
 [[projects]]
   digest = "1:586ea76dbd0374d6fb649a91d70d652b7fe0ccffb8910a77468e7702e7901f3d"

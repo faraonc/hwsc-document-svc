@@ -17,6 +17,8 @@ const (
 	maxCallTypeNameLength = 64
 	maxGroundTypeLength   = 64
 	maxCityLength         = 64
+	maxStateLength        = 32
+	maxProvinceLength     = 48
 	maxCountryLength      = 64
 	maxSensorTypeLength   = 64
 	maxSensorNameLength   = 64
@@ -72,8 +74,8 @@ func ValidateDocument(meta *pb.Document) error {
 	if err := ValidateGroundType(meta.GetGroundType()); err != nil {
 		return err
 	}
-	if err := ValidateStudySite(meta.GetStudySite().GetCity(),
-		meta.GetStudySite().GetCountry()); err != nil {
+	if err := ValidateStudySite(meta.GetStudySite().GetCity(), meta.GetStudySite().GetState(), //TODO unit test
+		meta.GetStudySite().GetProvince(), meta.GetStudySite().GetCountry()); err != nil {
 		return err
 	}
 	if err := ValidateOcean(meta.GetOcean()); err != nil {
@@ -199,9 +201,15 @@ func ValidateGroundType(groundType string) error {
 }
 
 // ValidateStudySite validates study site.
-// Returns an error if city or country fails validation
-func ValidateStudySite(city string, country string) error {
+// Returns an error if city, state, province, or country fails validation
+func ValidateStudySite(city string, state string, province string, country string) error {
 	if err := ValidateCity(city); err != nil {
+		return err
+	}
+	if err := ValidateState(state); err != nil {
+		return err
+	}
+	if err := ValidateProvince(province); err != nil {
 		return err
 	}
 	if err := ValidateCountry(country); err != nil {
@@ -216,6 +224,24 @@ func ValidateStudySite(city string, country string) error {
 func ValidateCity(city string) error {
 	if strings.TrimSpace(city) == "" || len(city) > maxCityLength {
 		return errors.New("invalid Document City")
+	}
+	return nil
+}
+
+// ValidateState validates state study site.
+// Returns an error if state exceeds 32 chars. //TODO unit test
+func ValidateState(state string) error {
+	if len(state) > maxStateLength {
+		return errors.New("invalid Document State")
+	}
+	return nil
+}
+
+// ValidateProvince validates province study site.
+// Returns an error if province exceeds 48 chars. //TODO unit test
+func ValidateProvince(province string) error {
+	if len(province) > maxProvinceLength {
+		return errors.New("invalid Document Province")
 	}
 	return nil
 }
