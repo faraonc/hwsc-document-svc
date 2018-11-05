@@ -35,3 +35,6 @@
 [[constraint]]
   branch = "master"
   name = "github.com/faraonc/hwsc-api-blocks"
+[[constraint]]
+  name = "github.com/google/uuid"
+  version = "1.0.0"

@@ -15,712 +15,887 @@ func TestValidateDocument(t *testing.T) {
 		errorStr string
 	}{
 		{&pb.Document{
-			Duid:         "0ujsszwN8NRY24YaXiTIE2VWDTS",
-			Uuid:         "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			LastName:     "Kim",
-			FirstName:    "Lisa",
+			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
+			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
+			PublisherName: &pb.Publisher{
+				LastName:  "Kim",
+				FirstName: "Lisa",
+			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			Region:       "some region",
+			StudySite: &pb.StudySite{
+				City:    "Seattle",
+				Country: "USA",
+			},
 			Ocean:        "Pacific Ocean",
 			SensorType:   "some sensor type",
 			SensorName:   "some sensor name",
-			SampleRate:   100,
+			SamplingRate: 100,
 			Latitude:     89.123,
 			Longitude:    -100.123,
-			ImageUrl: map[string]string{
+			ImageUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
-			AudioUrl: map[string]string{
+			AudioUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
-			VideoUrl: map[string]string{
+			VideoUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
-			FileUrl: map[string]string{
+			FileUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
 			RecordTimestamp: 1514764800,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 0,
+			IsPublic:        true,
 		},
 			false, ""},
 		{&pb.Document{
-			Duid:         "0ujsszwN8NRY24YaXiTIE2VWDTS",
-			Uuid:         "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			LastName:     "Kim",
-			FirstName:    "Lisa",
+			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
+			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
+			PublisherName: &pb.Publisher{
+				LastName:  "Kim",
+				FirstName: "Lisa",
+			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			Region:       "some region",
+			StudySite: &pb.StudySite{
+				City:    "Seattle",
+				Country: "USA",
+			},
 			Ocean:        "Pacific Ocean",
 			SensorType:   "some sensor type",
 			SensorName:   "some sensor name",
-			SampleRate:   100,
+			SamplingRate: 100,
 			Latitude:     89.123,
 			Longitude:    -100.123,
-			ImageUrl:     map[string]string{},
-			AudioUrl:     map[string]string{},
-			VideoUrl: map[string]string{
+			ImageUrlsMap: map[string]string{},
+			AudioUrlsMap: map[string]string{},
+			VideoUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
-			FileUrl: map[string]string{
+			FileUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
 			RecordTimestamp: 1514764800,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 0,
+			IsPublic:        true,
 		},
 			true, "requires at least 1 valid Document ImageURL or AudioURL"},
 		{&pb.Document{
-			Duid:         "0ujsszwN8NRY24YaXiTIE2VWDTS",
-			Uuid:         "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			LastName:     "Kim",
-			FirstName:    "Lisa",
+			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
+			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
+			PublisherName: &pb.Publisher{
+				LastName:  "Kim",
+				FirstName: "Lisa",
+			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			Region:       "some region",
+			StudySite: &pb.StudySite{
+				City:    "Seattle",
+				Country: "USA",
+			},
 			Ocean:        "Pacific Ocean",
 			SensorType:   "some sensor type",
 			SensorName:   "some sensor name",
-			SampleRate:   100,
+			SamplingRate: 100,
 			Latitude:     89.123,
 			Longitude:    -100.123,
-			ImageUrl: map[string]string{
+			ImageUrlsMap: map[string]string{
 				"4ff303392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df":  "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
-			AudioUrl: map[string]string{
+			AudioUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
-			VideoUrl: map[string]string{
+			VideoUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
-			FileUrl: map[string]string{
+			FileUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
 			RecordTimestamp: 1514764800,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 0,
+			IsPublic:        true,
 		},
 			true, "invalid Document fuid"},
 		{&pb.Document{
-			Duid:         "0ujssszwN8NRY24YaXiTIE2VWDTS",
-			Uuid:         "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			LastName:     "Kim",
-			FirstName:    "Lisa",
+			Duid: "0ujssszwN8NRY24YaXiTIE2VWDTS",
+			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
+			PublisherName: &pb.Publisher{
+				LastName:  "Kim",
+				FirstName: "Lisa",
+			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			Region:       "some region",
+			StudySite: &pb.StudySite{
+				City:    "Seattle",
+				Country: "USA",
+			},
 			Ocean:        "Pacific Ocean",
 			SensorType:   "some sensor type",
 			SensorName:   "some sensor name",
-			SampleRate:   100,
+			SamplingRate: 100,
 			Latitude:     89.123,
 			Longitude:    -100.123,
-			ImageUrl: map[string]string{
+			ImageUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
-			AudioUrl: map[string]string{
+			AudioUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
-			VideoUrl: map[string]string{
+			VideoUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
-			FileUrl: map[string]string{
+			FileUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
 			RecordTimestamp: 1514764800,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 0,
+			IsPublic:        true,
 		},
 			true, "invalid Document duid"},
 		{&pb.Document{
-			Duid:         "0ujsszwN8NRY24YaXiTIE2VWDTS",
-			Uuid:         "000s0XSNJG0MQJHBF4QX1EFD6Y3",
-			LastName:     "Kim",
-			FirstName:    "Lisa",
+			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
+			Uuid: "000s0XSNJG0MQJHBF4QX1EFD6Y3",
+			PublisherName: &pb.Publisher{
+				LastName:  "Kim",
+				FirstName: "Lisa",
+			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			Region:       "some region",
+			StudySite: &pb.StudySite{
+				City:    "Seattle",
+				Country: "USA",
+			},
 			Ocean:        "Pacific Ocean",
 			SensorType:   "some sensor type",
 			SensorName:   "some sensor name",
-			SampleRate:   100,
+			SamplingRate: 100,
 			Latitude:     89.123,
 			Longitude:    -100.123,
-			ImageUrl: map[string]string{
+			ImageUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
-			AudioUrl: map[string]string{
+			AudioUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
-			VideoUrl: map[string]string{
+			VideoUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
-			FileUrl: map[string]string{
+			FileUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
 			RecordTimestamp: 1514764800,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 0,
+			IsPublic:        true,
 		},
 			true, "invalid Document uuid"},
 		{&pb.Document{
-			Duid:         "0ujsszwN8NRY24YaXiTIE2VWDTS",
-			Uuid:         "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			LastName:     "",
-			FirstName:    "Lisa",
+			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
+			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
+			PublisherName: &pb.Publisher{
+				LastName:  "",
+				FirstName: "Lisa",
+			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			Region:       "some region",
+			StudySite: &pb.StudySite{
+				City:    "Seattle",
+				Country: "USA",
+			},
 			Ocean:        "Pacific Ocean",
 			SensorType:   "some sensor type",
 			SensorName:   "some sensor name",
-			SampleRate:   100,
+			SamplingRate: 100,
 			Latitude:     89.123,
 			Longitude:    -100.123,
-			ImageUrl: map[string]string{
+			ImageUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
-			AudioUrl: map[string]string{
+			AudioUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
-			VideoUrl: map[string]string{
+			VideoUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
-			FileUrl: map[string]string{
+			FileUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
 			RecordTimestamp: 1514764800,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 0,
+			IsPublic:        true,
 		},
 			true, "invalid Document LastName"},
 		{&pb.Document{
-			Duid:         "0ujsszwN8NRY24YaXiTIE2VWDTS",
-			Uuid:         "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			LastName:     "Kim",
-			FirstName:    "",
+			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
+			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
+			PublisherName: &pb.Publisher{
+				LastName:  "Kim",
+				FirstName: "",
+			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			Region:       "some region",
+			StudySite: &pb.StudySite{
+				City:    "Seattle",
+				Country: "USA",
+			},
 			Ocean:        "Pacific Ocean",
 			SensorType:   "some sensor type",
 			SensorName:   "some sensor name",
-			SampleRate:   100,
+			SamplingRate: 100,
 			Latitude:     89.123,
 			Longitude:    -100.123,
-			ImageUrl: map[string]string{
+			ImageUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
-			AudioUrl: map[string]string{
+			AudioUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
-			VideoUrl: map[string]string{
+			VideoUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
-			FileUrl: map[string]string{
+			FileUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
 			RecordTimestamp: 1514764800,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 0,
+			IsPublic:        true,
 		},
 			true, "invalid Document FirstName"},
 		{&pb.Document{
-			Duid:         "0ujsszwN8NRY24YaXiTIE2VWDTS",
-			Uuid:         "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			LastName:     "Kim",
-			FirstName:    "Lisa",
+			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
+			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
+			PublisherName: &pb.Publisher{
+				LastName:  "Kim",
+				FirstName: "Lisa",
+			},
 			CallTypeName: "",
 			GroundType:   "some ground type",
-			Region:       "some region",
+			StudySite: &pb.StudySite{
+				City:    "Seattle",
+				Country: "USA",
+			},
 			Ocean:        "Pacific Ocean",
 			SensorType:   "some sensor type",
 			SensorName:   "some sensor name",
-			SampleRate:   100,
+			SamplingRate: 100,
 			Latitude:     89.123,
 			Longitude:    -100.123,
-			ImageUrl: map[string]string{
+			ImageUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
-			AudioUrl: map[string]string{
+			AudioUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
-			VideoUrl: map[string]string{
+			VideoUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
-			FileUrl: map[string]string{
+			FileUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
 			RecordTimestamp: 1514764800,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 0,
+			IsPublic:        true,
 		},
 			true, "invalid Document CallTypeName"},
 		{&pb.Document{
-			Duid:         "0ujsszwN8NRY24YaXiTIE2VWDTS",
-			Uuid:         "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			LastName:     "Kim",
-			FirstName:    "Lisa",
+			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
+			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
+			PublisherName: &pb.Publisher{
+				LastName:  "Kim",
+				FirstName: "Lisa",
+			},
 			CallTypeName: "some call type name",
 			GroundType:   "",
-			Region:       "some region",
+			StudySite: &pb.StudySite{
+				City:    "Seattle",
+				Country: "USA",
+			},
 			Ocean:        "Pacific Ocean",
 			SensorType:   "some sensor type",
 			SensorName:   "some sensor name",
-			SampleRate:   100,
+			SamplingRate: 100,
 			Latitude:     89.123,
 			Longitude:    -100.123,
-			ImageUrl: map[string]string{
+			ImageUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
-			AudioUrl: map[string]string{
+			AudioUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
-			VideoUrl: map[string]string{
+			VideoUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
-			FileUrl: map[string]string{
+			FileUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
 			RecordTimestamp: 1514764800,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 0,
+			IsPublic:        true,
 		},
 			true, "invalid Document GroundType"},
 		{&pb.Document{
-			Duid:         "0ujsszwN8NRY24YaXiTIE2VWDTS",
-			Uuid:         "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			LastName:     "Kim",
-			FirstName:    "Lisa",
+			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
+			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
+			PublisherName: &pb.Publisher{
+				LastName:  "Kim",
+				FirstName: "Lisa",
+			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			Region:       "",
+			StudySite: &pb.StudySite{
+				City:    "",
+				Country: "USA",
+			},
 			Ocean:        "Pacific Ocean",
 			SensorType:   "some sensor type",
 			SensorName:   "some sensor name",
-			SampleRate:   100,
+			SamplingRate: 100,
 			Latitude:     89.123,
 			Longitude:    -100.123,
-			ImageUrl: map[string]string{
+			ImageUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
-			AudioUrl: map[string]string{
+			AudioUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
-			VideoUrl: map[string]string{
+			VideoUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
-			FileUrl: map[string]string{
+			FileUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
 			RecordTimestamp: 1514764800,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 0,
+			IsPublic:        true,
 		},
-			true, "invalid Document Region"},
+			true, "invalid Document City"},
 		{&pb.Document{
-			Duid:         "0ujsszwN8NRY24YaXiTIE2VWDTS",
-			Uuid:         "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			LastName:     "Kim",
-			FirstName:    "Lisa",
+			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
+			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
+			PublisherName: &pb.Publisher{
+				LastName:  "Kim",
+				FirstName: "Lisa",
+			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			Region:       "some region",
+			StudySite: &pb.StudySite{
+				City:    "Seattle",
+				Country: "",
+			},
+			Ocean:        "Pacific Ocean",
+			SensorType:   "some sensor type",
+			SensorName:   "some sensor name",
+			SamplingRate: 100,
+			Latitude:     89.123,
+			Longitude:    -100.123,
+			ImageUrlsMap: map[string]string{
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
+			AudioUrlsMap: map[string]string{
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
+			VideoUrlsMap: map[string]string{
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+			FileUrlsMap: map[string]string{
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+			RecordTimestamp: 1514764800,
+			CreateTimestamp: 1539831496,
+			UpdateTimestamp: 0,
+			IsPublic:        true,
+		},
+			true, "invalid Document Country"},
+		{&pb.Document{
+			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
+			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
+			PublisherName: &pb.Publisher{
+				LastName:  "Kim",
+				FirstName: "Lisa",
+			},
+			CallTypeName: "some call type name",
+			GroundType:   "some ground type",
+			StudySite: &pb.StudySite{
+				City:    "Seattle",
+				Country: "USA",
+			},
 			Ocean:        "",
 			SensorType:   "some sensor type",
 			SensorName:   "some sensor name",
-			SampleRate:   100,
+			SamplingRate: 100,
 			Latitude:     89.123,
 			Longitude:    -100.123,
-			ImageUrl: map[string]string{
+			ImageUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
-			AudioUrl: map[string]string{
+			AudioUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
-			VideoUrl: map[string]string{
+			VideoUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
-			FileUrl: map[string]string{
+			FileUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
 			RecordTimestamp: 1514764800,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 0,
+			IsPublic:        true,
 		},
 			true, "invalid Document Ocean"},
 		{&pb.Document{
-			Duid:         "0ujsszwN8NRY24YaXiTIE2VWDTS",
-			Uuid:         "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			LastName:     "Kim",
-			FirstName:    "Lisa",
+			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
+			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
+			PublisherName: &pb.Publisher{
+				LastName:  "Kim",
+				FirstName: "Lisa",
+			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			Region:       "some region",
+			StudySite: &pb.StudySite{
+				City:    "Seattle",
+				Country: "USA",
+			},
 			Ocean:        "Pacific Ocean",
 			SensorType:   "",
 			SensorName:   "some sensor name",
-			SampleRate:   100,
+			SamplingRate: 100,
 			Latitude:     89.123,
 			Longitude:    -100.123,
-			ImageUrl: map[string]string{
+			ImageUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
-			AudioUrl: map[string]string{
+			AudioUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
-			VideoUrl: map[string]string{
+			VideoUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
-			FileUrl: map[string]string{
+			FileUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
 			RecordTimestamp: 1514764800,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 0,
+			IsPublic:        true,
 		},
 			true, "invalid Document SensorType"},
 		{&pb.Document{
-			Duid:         "0ujsszwN8NRY24YaXiTIE2VWDTS",
-			Uuid:         "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			LastName:     "Kim",
-			FirstName:    "Lisa",
+			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
+			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
+			PublisherName: &pb.Publisher{
+				LastName:  "Kim",
+				FirstName: "Lisa",
+			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			Region:       "some region",
+			StudySite: &pb.StudySite{
+				City:    "Seattle",
+				Country: "USA",
+			},
 			Ocean:        "Pacific Ocean",
 			SensorType:   "some sensor type",
 			SensorName:   "",
-			SampleRate:   100,
+			SamplingRate: 100,
 			Latitude:     89.123,
 			Longitude:    -100.123,
-			ImageUrl: map[string]string{
+			ImageUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
-			AudioUrl: map[string]string{
+			AudioUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
-			VideoUrl: map[string]string{
+			VideoUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
-			FileUrl: map[string]string{
+			FileUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
 			RecordTimestamp: 1514764800,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 0,
+			IsPublic:        true,
 		},
 			true, "invalid Document SensorName"},
 		{&pb.Document{
-			Duid:         "0ujsszwN8NRY24YaXiTIE2VWDTS",
-			Uuid:         "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			LastName:     "Kim",
-			FirstName:    "Lisa",
+			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
+			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
+			PublisherName: &pb.Publisher{
+				LastName:  "Kim",
+				FirstName: "Lisa",
+			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			Region:       "some region",
+			StudySite: &pb.StudySite{
+				City:    "Seattle",
+				Country: "USA",
+			},
 			Ocean:        "Pacific Ocean",
 			SensorType:   "some sensor type",
 			SensorName:   "some sensor name",
-			SampleRate:   maxSampleRate + 1,
+			SamplingRate: maxSamplingRate + 1,
 			Latitude:     89.123,
 			Longitude:    -100.123,
-			ImageUrl: map[string]string{
+			ImageUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
-			AudioUrl: map[string]string{
+			AudioUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
-			VideoUrl: map[string]string{
+			VideoUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
-			FileUrl: map[string]string{
+			FileUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
 			RecordTimestamp: 1514764800,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 0,
+			IsPublic:        true,
 		},
-			true, "invalid Document SampleRate"},
+			true, "invalid Document SamplingRate"},
 		{&pb.Document{
-			Duid:         "0ujsszwN8NRY24YaXiTIE2VWDTS",
-			Uuid:         "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			LastName:     "Kim",
-			FirstName:    "Lisa",
+			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
+			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
+			PublisherName: &pb.Publisher{
+				LastName:  "Kim",
+				FirstName: "Lisa",
+			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			Region:       "some region",
+			StudySite: &pb.StudySite{
+				City:    "Seattle",
+				Country: "USA",
+			},
 			Ocean:        "Pacific Ocean",
 			SensorType:   "some sensor type",
 			SensorName:   "some sensor name",
-			SampleRate:   100,
+			SamplingRate: 100,
 			Latitude:     99.123,
 			Longitude:    -100.123,
-			ImageUrl: map[string]string{
+			ImageUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
-			AudioUrl: map[string]string{
+			AudioUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
-			VideoUrl: map[string]string{
+			VideoUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
-			FileUrl: map[string]string{
+			FileUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
 			RecordTimestamp: 1514764800,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 0,
+			IsPublic:        true,
 		},
 			true, "invalid Document Latitude"},
 		{&pb.Document{
-			Duid:         "0ujsszwN8NRY24YaXiTIE2VWDTS",
-			Uuid:         "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			LastName:     "Kim",
-			FirstName:    "Lisa",
+			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
+			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
+			PublisherName: &pb.Publisher{
+				LastName:  "Kim",
+				FirstName: "Lisa",
+			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			Region:       "some region",
+			StudySite: &pb.StudySite{
+				City:    "Seattle",
+				Country: "USA",
+			},
 			Ocean:        "Pacific Ocean",
 			SensorType:   "some sensor type",
 			SensorName:   "some sensor name",
-			SampleRate:   100,
+			SamplingRate: 100,
 			Latitude:     89.123,
 			Longitude:    -180.123,
-			ImageUrl: map[string]string{
+			ImageUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
-			AudioUrl: map[string]string{
+			AudioUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
-			VideoUrl: map[string]string{
+			VideoUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
-			FileUrl: map[string]string{
+			FileUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
 			RecordTimestamp: 1514764800,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 0,
+			IsPublic:        true,
 		},
 			true, "invalid Document Longitude"},
 		{&pb.Document{
-			Duid:         "0ujsszwN8NRY24YaXiTIE2VWDTS",
-			Uuid:         "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			LastName:     "Kim",
-			FirstName:    "Lisa",
+			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
+			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
+			PublisherName: &pb.Publisher{
+				LastName:  "Kim",
+				FirstName: "Lisa",
+			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			Region:       "some region",
+			StudySite: &pb.StudySite{
+				City:    "Seattle",
+				Country: "USA",
+			},
 			Ocean:        "Pacific Ocean",
 			SensorType:   "some sensor type",
 			SensorName:   "some sensor name",
-			SampleRate:   100,
+			SamplingRate: 100,
 			Latitude:     89.123,
 			Longitude:    -100.123,
-			ImageUrl: map[string]string{
+			ImageUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
-			AudioUrl: map[string]string{
+			AudioUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
-			VideoUrl: map[string]string{
+			VideoUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
-			FileUrl: map[string]string{
+			FileUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
 			RecordTimestamp: 1514764800,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 0,
+			IsPublic:        true,
 		},
 			true, "invalid Document ImageURL"},
 		{&pb.Document{
-			Duid:         "0ujsszwN8NRY24YaXiTIE2VWDTS",
-			Uuid:         "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			LastName:     "Kim",
-			FirstName:    "Lisa",
+			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
+			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
+			PublisherName: &pb.Publisher{
+				LastName:  "Kim",
+				FirstName: "Lisa",
+			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			Region:       "some region",
+			StudySite: &pb.StudySite{
+				City:    "Seattle",
+				Country: "USA",
+			},
 			Ocean:        "Pacific Ocean",
 			SensorType:   "some sensor type",
 			SensorName:   "some sensor name",
-			SampleRate:   100,
+			SamplingRate: 100,
 			Latitude:     89.123,
 			Longitude:    -100.123,
-			ImageUrl: map[string]string{
+			ImageUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
-			AudioUrl: map[string]string{
+			AudioUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
-			VideoUrl: map[string]string{
+			VideoUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
-			FileUrl: map[string]string{
+			FileUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
 			RecordTimestamp: 1514764800,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 0,
+			IsPublic:        true,
 		},
 			true, "invalid Document AudioURL"},
 		{&pb.Document{
-			Duid:         "0ujsszwN8NRY24YaXiTIE2VWDTS",
-			Uuid:         "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			LastName:     "Kim",
-			FirstName:    "Lisa",
+			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
+			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
+			PublisherName: &pb.Publisher{
+				LastName:  "Kim",
+				FirstName: "Lisa",
+			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			Region:       "some region",
+			StudySite: &pb.StudySite{
+				City:    "Seattle",
+				Country: "USA",
+			},
 			Ocean:        "Pacific Ocean",
 			SensorType:   "some sensor type",
 			SensorName:   "some sensor name",
-			SampleRate:   100,
+			SamplingRate: 100,
 			Latitude:     89.123,
 			Longitude:    -100.123,
-			ImageUrl: map[string]string{
+			ImageUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
-			AudioUrl: map[string]string{
+			AudioUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
-			VideoUrl: map[string]string{
+			VideoUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
-			FileUrl: map[string]string{
+			FileUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
 			RecordTimestamp: 1514764800,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 0,
+			IsPublic:        true,
 		},
 			true, "invalid Document VideoURL"},
 		{&pb.Document{
-			Duid:         "0ujsszwN8NRY24YaXiTIE2VWDTS",
-			Uuid:         "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			LastName:     "Kim",
-			FirstName:    "Lisa",
+			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
+			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
+			PublisherName: &pb.Publisher{
+				LastName:  "Kim",
+				FirstName: "Lisa",
+			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			Region:       "some region",
+			StudySite: &pb.StudySite{
+				City:    "Seattle",
+				Country: "USA",
+			},
 			Ocean:        "Pacific Ocean",
 			SensorType:   "some sensor type",
 			SensorName:   "some sensor name",
-			SampleRate:   100,
+			SamplingRate: 100,
 			Latitude:     89.123,
 			Longitude:    -100.123,
-			ImageUrl: map[string]string{
+			ImageUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
-			AudioUrl: map[string]string{
+			AudioUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
-			VideoUrl: map[string]string{
+			VideoUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
-			FileUrl: map[string]string{
+			FileUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
 			RecordTimestamp: 1514764800,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 0,
+			IsPublic:        true,
 		},
 			true, "invalid Document FileURL"},
 		{&pb.Document{
-			Duid:         "0ujsszwN8NRY24YaXiTIE2VWDTS",
-			Uuid:         "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			LastName:     "Kim",
-			FirstName:    "Lisa",
+			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
+			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
+			PublisherName: &pb.Publisher{
+				LastName:  "Kim",
+				FirstName: "Lisa",
+			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			Region:       "some region",
+			StudySite: &pb.StudySite{
+				City:    "Seattle",
+				Country: "USA",
+			},
 			Ocean:        "Pacific Ocean",
 			SensorType:   "some sensor type",
 			SensorName:   "some sensor name",
-			SampleRate:   100,
+			SamplingRate: 100,
 			Latitude:     89.123,
 			Longitude:    -100.123,
-			ImageUrl: map[string]string{
+			ImageUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
-			AudioUrl: map[string]string{
+			AudioUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
-			VideoUrl: map[string]string{
+			VideoUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
-			FileUrl: map[string]string{
+			FileUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
 			RecordTimestamp: 0,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 0,
+			IsPublic:        true,
 		},
 			true, "invalid Document RecordTimestamp"},
 		{&pb.Document{
-			Duid:         "0ujsszwN8NRY24YaXiTIE2VWDTS",
-			Uuid:         "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			LastName:     "Kim",
-			FirstName:    "Lisa",
+			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
+			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
+			PublisherName: &pb.Publisher{
+				LastName:  "Kim",
+				FirstName: "Lisa",
+			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			Region:       "some region",
+			StudySite: &pb.StudySite{
+				City:    "Seattle",
+				Country: "USA",
+			},
 			Ocean:        "Pacific Ocean",
 			SensorType:   "some sensor type",
 			SensorName:   "some sensor name",
-			SampleRate:   100,
+			SamplingRate: 100,
 			Latitude:     89.123,
 			Longitude:    -100.123,
-			ImageUrl: map[string]string{
+			ImageUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
-			AudioUrl: map[string]string{
+			AudioUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
-			VideoUrl: map[string]string{
+			VideoUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
-			FileUrl: map[string]string{
+			FileUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
 			RecordTimestamp: 1539831497,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 0,
+			IsPublic:        true,
 		},
 			true, "invalid Document CreateTimestamp"},
 		{&pb.Document{
-			Duid:         "0ujsszwN8NRY24YaXiTIE2VWDTS",
-			Uuid:         "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			LastName:     "Kim",
-			FirstName:    "Lisa",
+			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
+			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
+			PublisherName: &pb.Publisher{
+				LastName:  "Kim",
+				FirstName: "Lisa",
+			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			Region:       "some region",
+			StudySite: &pb.StudySite{
+				City:    "Seattle",
+				Country: "USA",
+			},
 			Ocean:        "Pacific Ocean",
 			SensorType:   "some sensor type",
 			SensorName:   "some sensor name",
-			SampleRate:   100,
+			SamplingRate: 100,
 			Latitude:     89.123,
 			Longitude:    -100.123,
-			ImageUrl: map[string]string{
+			ImageUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
-			AudioUrl: map[string]string{
+			AudioUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
-			VideoUrl: map[string]string{
+			VideoUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
-			FileUrl: map[string]string{
+			FileUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
 			RecordTimestamp: 1514764800,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 1539831495,
+			IsPublic:        true,
 		},
 			true, "invalid Document UpdateTimestamp"},
 	}
@@ -827,6 +1002,31 @@ func TestValidateFUID(t *testing.T) {
 
 }
 
+func TestValidatePublisher(t *testing.T) {
+	cases := []struct {
+		lastName  string
+		firstName string
+		isExpErr  bool
+		errorStr  string
+	}{
+		{"Kim", "Lisa", false, ""},
+		{"", "Lisa", true, "invalid Document LastName"},
+		{"Kim", "123456789123456789012345678901234", true, "invalid Document FirstName"},
+		{"       ", "Leesa", true, "invalid Document LastName"},
+	}
+
+	for _, c := range cases {
+		err := ValidatePublisher(c.lastName, c.firstName)
+		if c.isExpErr {
+			assert.EqualError(t, err, c.errorStr)
+		} else {
+			assert.Nil(t, err)
+		}
+
+	}
+
+}
+
 func TestValidateLastName(t *testing.T) {
 	cases := []struct {
 		input    string
@@ -923,20 +1123,70 @@ func TestValidateGroundType(t *testing.T) {
 
 }
 
-func TestValidateRegion(t *testing.T) {
+func TestValidateStudySite(t *testing.T) {
+	cases := []struct {
+		city     string
+		country  string
+		isExpErr bool
+		errorStr string
+	}{
+		{"Tijuana", "Mexico", false, ""},
+		{"", "Mexico", true, "invalid Document City"},
+		{"Tijuana", "", true, "invalid Document Country"},
+		{"San Diego", "12345678912345678901234567890123412345678912345678901234567890123", true, "invalid Document Country"},
+		{"       ", "Mexico", true, "invalid Document City"},
+	}
+
+	for _, c := range cases {
+		err := ValidateStudySite(c.city, c.country)
+		if c.isExpErr {
+			assert.EqualError(t, err, c.errorStr)
+		} else {
+			assert.Nil(t, err)
+		}
+
+	}
+
+}
+
+func TestValidateCity(t *testing.T) {
+	cases := []struct {
+		input    string
+		isExpErr bool
+		errorStr string
+	}{
+		{"Mexico City", false, ""},
+		{"", true, "invalid Document City"},
+		{"12345678912345678901234567890123412345678912345678901234567890123", true, "invalid Document City"},
+		{"       ", true, "invalid Document City"},
+	}
+
+	for _, c := range cases {
+		err := ValidateCity(c.input)
+		if c.isExpErr {
+			assert.EqualError(t, err, c.errorStr)
+		} else {
+			assert.Nil(t, err)
+		}
+
+	}
+
+}
+
+func TestValidateCountry(t *testing.T) {
 	cases := []struct {
 		input    string
 		isExpErr bool
 		errorStr string
 	}{
 		{"Mexico", false, ""},
-		{"", true, "invalid Document Region"},
-		{"12345678912345678901234567890123412345678912345678901234567890123", true, "invalid Document Region"},
-		{"       ", true, "invalid Document Region"},
+		{"", true, "invalid Document Country"},
+		{"12345678912345678901234567890123412345678912345678901234567890123", true, "invalid Document Country"},
+		{"       ", true, "invalid Document Country"},
 	}
 
 	for _, c := range cases {
-		err := ValidateRegion(c.input)
+		err := ValidateCountry(c.input)
 		if c.isExpErr {
 			assert.EqualError(t, err, c.errorStr)
 		} else {
@@ -969,7 +1219,7 @@ func TestValidateOcean(t *testing.T) {
 		{"Atlantic ocean     ", false, ""},
 
 		{"Atlantic ocean    hello ", true, "invalid Document Ocean"},
-
+		{"Atlantic oceans", true, "invalid Document Ocean"},
 		{"", true, "invalid Document Ocean"},
 		{"      ", true, "invalid Document Ocean"},
 		{"idonotexist", true, "invalid Document Ocean"},
@@ -1034,7 +1284,7 @@ func TestValidateSensorName(t *testing.T) {
 	}
 }
 
-func TestValidateSampleRate(t *testing.T) {
+func TestValidateSamplingRate(t *testing.T) {
 	cases := []struct {
 		input    uint32
 		isExpErr bool
@@ -1042,12 +1292,12 @@ func TestValidateSampleRate(t *testing.T) {
 	}{
 		{0, false, ""},
 		{1000, false, ""},
-		{maxSampleRate, false, ""},
-		{maxSampleRate + 1, true, "invalid Document SampleRate"},
+		{maxSamplingRate, false, ""},
+		{maxSamplingRate + 1, true, "invalid Document SamplingRate"},
 	}
 
 	for _, c := range cases {
-		err := ValidateSampleRate(c.input)
+		err := ValidateSamplingRate(c.input)
 		if c.isExpErr {
 			assert.EqualError(t, err, c.errorStr)
 		} else {
@@ -1325,6 +1575,7 @@ func TestValidateUpdateTimestamp(t *testing.T) {
 		errorStr             string
 	}{
 		{0, 1514764800, false, ""},
+		{1514764801, 1514764800, false, ""},
 		{1514764800, 1539831496, true, "invalid Document UpdateTimestamp"},
 		{time.Now().UTC().Unix() + 100, 1539831496, true, "invalid Document UpdateTimestamp"},
 	}

@@ -11,11 +11,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:bba217c0b6cd853046a4e7c39dff601a49cab0fa1f5ac8982bf60faed5b4582c"
+  digest = "1:cee8bd0aaba16a12c658ea9f2b390f9807b0fa2947ecda1b654e54b8d0cb9ecc"
   name = "github.com/faraonc/hwsc-api-blocks"
   packages = ["int/hwsc-document-svc/proto"]
   pruneopts = "UT"
-  revision = "a4bfda9dc0d48f6ec2bc278bb4fa2a6bc050e29c"
+  revision = "34310a8b2725ab8c63ae7973b70851b857ce399c"
 
 [[projects]]
   digest = "1:586ea76dbd0374d6fb649a91d70d652b7fe0ccffb8910a77468e7702e7901f3d"
@@ -46,6 +46,14 @@
   packages = ["."]
   pruneopts = "UT"
   revision = "2e65f85255dbc3072edf28d6b5b8efc472979f5a"
+
+[[projects]]
+  digest = "1:3a26588bc48b96825977c1b3df964f8fd842cd6860cc26370588d3563433cf11"
+  name = "github.com/google/uuid"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "d460ce9f8df2e77fb1ba55ca87fafed96c607494"
+  version = "v1.0.0"
 
 [[projects]]
   digest = "1:e3492bfc9acbe6e04b51fe36220f9aea8c919885632f0de55685db80c0029844"
@@ -261,6 +269,7 @@
   analyzer-version = 1
   input-imports = [
     "github.com/faraonc/hwsc-api-blocks/int/hwsc-document-svc/proto",
+    "github.com/google/uuid",
     "github.com/mongodb/mongo-go-driver/bson",
     "github.com/mongodb/mongo-go-driver/mongo",
     "github.com/mongodb/mongo-go-driver/mongo/findopt",
