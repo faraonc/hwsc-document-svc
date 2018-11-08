@@ -160,33 +160,44 @@ func (s Service) CreateDocument(ctx context.Context, req *pb.DocumentRequest) (*
 	lock.(*sync.RWMutex).Lock()
 	// Unlock before the function exits
 	defer lock.(*sync.RWMutex).Unlock()
-
+	// TODO unit test nil lists
+	// Extract image URLS
 	if doc.GetImageUrlsMap() == nil {
 		doc.ImageUrlsMap = make(map[string]string)
 	}
-	for _, url := range req.GetImageUrls() {
-		doc.ImageUrlsMap[uuid.New().String()] = url
+	if req.GetImageUrls() != nil {
+		for _, url := range req.GetImageUrls() {
+			doc.ImageUrlsMap[uuid.New().String()] = url
+		}
 	}
 
+	// Extract audio URLS
 	if doc.GetAudioUrlsMap() == nil {
 		doc.AudioUrlsMap = make(map[string]string)
 	}
-	for _, url := range req.GetAudioUrls() {
-		doc.AudioUrlsMap[uuid.New().String()] = url
+	if req.GetAudioUrls() != nil {
+		for _, url := range req.GetAudioUrls() {
+			doc.AudioUrlsMap[uuid.New().String()] = url
+		}
 	}
 
+	// Extract video URLS
 	if doc.GetVideoUrlsMap() == nil {
 		doc.VideoUrlsMap = make(map[string]string)
 	}
-	for _, url := range req.GetVideoUrls() {
-		doc.VideoUrlsMap[uuid.New().String()] = url
+	if req.GetVideoUrls() != nil {
+		for _, url := range req.GetVideoUrls() {
+			doc.VideoUrlsMap[uuid.New().String()] = url
+		}
 	}
-
+	// Extract file URLS
 	if doc.GetFileUrlsMap() == nil {
 		doc.FileUrlsMap = make(map[string]string)
 	}
-	for _, url := range req.GetFileUrls() {
-		doc.FileUrlsMap[uuid.New().String()] = url
+	if req.GetFileUrls() != nil {
+		for _, url := range req.GetFileUrls() {
+			doc.FileUrlsMap[uuid.New().String()] = url
+		}
 	}
 
 	doc.CreateTimestamp = time.Now().UTC().Unix()

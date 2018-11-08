@@ -1126,19 +1126,25 @@ func TestValidateGroundType(t *testing.T) {
 func TestValidateStudySite(t *testing.T) {
 	cases := []struct {
 		city     string
+		state    string
+		province string
 		country  string
 		isExpErr bool
 		errorStr string
 	}{
-		{"Tijuana", "Mexico", false, ""},
-		{"", "Mexico", true, "invalid Document City"},
-		{"Tijuana", "", true, "invalid Document Country"},
-		{"San Diego", "12345678912345678901234567890123412345678912345678901234567890123", true, "invalid Document Country"},
-		{"       ", "Mexico", true, "invalid Document City"},
+		{"Tijuana", "Baja California", "", "Mexico", false, ""},
+		{"Copenhagen", "", "", "Denmark", false, ""},
+		{"Batangas City", "", "Batangas", "Philippines", false, ""},
+		{"Batangas City", "", "12345678912345678901234567890123412345678912345678901234567890123", "Philippines", true, "invalid Document Province"},
+		{"Tijuana", "12345678912345678901234567890123412345678912345678901234567890123", "", "Mexico", true, "invalid Document State"},
+		{"", "Baja California", "", "Mexico", true, "invalid Document City"},
+		{"Tijuana", "Baja California", "", "", true, "invalid Document Country"},
+		{"San Diego", "CA", "", "12345678912345678901234567890123412345678912345678901234567890123", true, "invalid Document Country"},
+		{"       ", "Baja California", "", "Mexico", true, "invalid Document City"},
 	}
 
 	for _, c := range cases {
-		err := ValidateStudySite(c.city, c.country)
+		err := ValidateStudySite(c.city, c.state, c.province, c.country)
 		if c.isExpErr {
 			assert.EqualError(t, err, c.errorStr)
 		} else {
@@ -1163,6 +1169,52 @@ func TestValidateCity(t *testing.T) {
 
 	for _, c := range cases {
 		err := ValidateCity(c.input)
+		if c.isExpErr {
+			assert.EqualError(t, err, c.errorStr)
+		} else {
+			assert.Nil(t, err)
+		}
+
+	}
+
+}
+
+func TestValidateState(t *testing.T) {
+	cases := []struct {
+		input    string
+		isExpErr bool
+		errorStr string
+	}{
+		{"California", false, ""},
+		{"", false, ""},
+		{"12345678912345678901234567890123412345678912345678901234567890123", true, "invalid Document State"},
+	}
+
+	for _, c := range cases {
+		err := ValidateState(c.input)
+		if c.isExpErr {
+			assert.EqualError(t, err, c.errorStr)
+		} else {
+			assert.Nil(t, err)
+		}
+
+	}
+
+}
+
+func TestValidateProvince(t *testing.T) {
+	cases := []struct {
+		input    string
+		isExpErr bool
+		errorStr string
+	}{
+		{"Batangas City", false, ""},
+		{"", false, ""},
+		{"12345678912345678901234567890123412345678912345678901234567890123", true, "invalid Document Province"},
+	}
+
+	for _, c := range cases {
+		err := ValidateProvince(c.input)
 		if c.isExpErr {
 			assert.EqualError(t, err, c.errorStr)
 		} else {
