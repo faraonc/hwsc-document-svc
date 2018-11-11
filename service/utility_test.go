@@ -1680,9 +1680,9 @@ func TestValidateCreateTimestamp(t *testing.T) {
 		{0, 1514764800, false, ""},
 		{1539831496, 1514764800, false, ""},
 		{1514764800, 1539831496, true,
-		errInvalidDocumentCreateTimestamp.Error()},
+			errInvalidDocumentCreateTimestamp.Error()},
 		{time.Now().UTC().Unix() + 100, 1539831496, true,
-		errInvalidDocumentCreateTimestamp.Error()},
+			errInvalidDocumentCreateTimestamp.Error()},
 	}
 
 	for _, c := range cases {
@@ -1707,9 +1707,9 @@ func TestValidateUpdateTimestamp(t *testing.T) {
 		{0, 1514764800, false, ""},
 		{1514764801, 1514764800, false, ""},
 		{1514764800, 1539831496, true,
-		errInvalidUpdateTimestamp.Error()},
+			errInvalidUpdateTimestamp.Error()},
 		{time.Now().UTC().Unix() + 100, 1539831496, true,
-		errInvalidUpdateTimestamp.Error()},
+			errInvalidUpdateTimestamp.Error()},
 	}
 
 	for _, c := range cases {
