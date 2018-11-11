@@ -83,7 +83,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
-			true, "requires at least 1 valid Document ImageURL or AudioURL"},
+			true, errAtLeastOneImageAudioURL.Error()},
 		{&pb.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
@@ -120,7 +120,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
-			true, "invalid Document fuid"},
+			true, errInvalidDocumentFUID.Error()},
 		{&pb.Document{
 			Duid: "0ujssszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
@@ -157,7 +157,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
-			true, "invalid Document duid"},
+			true, errInvalidDocumentDUID.Error()},
 		{&pb.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "000s0XSNJG0MQJHBF4QX1EFD6Y3",
@@ -194,7 +194,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
-			true, "invalid Document uuid"},
+			true, errInvalidDocumentUUID.Error()},
 		{&pb.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
@@ -231,7 +231,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
-			true, "invalid Document LastName"},
+			true, errInvalidDocumentLastName.Error()},
 		{&pb.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
@@ -268,7 +268,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
-			true, "invalid Document FirstName"},
+			true, errInvalidDocumentFirstName.Error()},
 		{&pb.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
@@ -305,7 +305,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
-			true, "invalid Document CallTypeName"},
+			true, errInvalidDocumentCallTypeName.Error()},
 		{&pb.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
@@ -342,7 +342,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
-			true, "invalid Document GroundType"},
+			true, errInvalidDocumentGroundType.Error()},
 		{&pb.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
@@ -379,7 +379,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
-			true, "invalid Document City"},
+			true, errInvalidDocumentCity.Error()},
 		{&pb.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
@@ -417,7 +417,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
-			true, "invalid Document State"},
+			true, errInvalidDocumentState.Error()},
 		{&pb.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
@@ -455,7 +455,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
-			true, "invalid Document Province"},
+			true, errInvalidDocumentProvince.Error()},
 		{&pb.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
@@ -492,7 +492,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
-			true, "invalid Document Country"},
+			true, errInvalidDocumentCountry.Error()},
 		{&pb.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
@@ -529,7 +529,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
-			true, "invalid Document Ocean"},
+			true, errInvalidDocumentOcean.Error()},
 		{&pb.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
@@ -566,7 +566,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
-			true, "invalid Document SensorType"},
+			true, errInvalidDocumentSensorType.Error()},
 		{&pb.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
@@ -603,7 +603,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
-			true, "invalid Document SensorName"},
+			true, errInvalidDocumentSensorName.Error()},
 		{&pb.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
@@ -640,7 +640,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
-			true, "invalid Document SamplingRate"},
+			true, errInvalidDocumentSamplingRate.Error()},
 		{&pb.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
@@ -677,7 +677,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
-			true, "invalid Document Latitude"},
+			true, errInvalidDocumentLatitude.Error()},
 		{&pb.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
@@ -714,7 +714,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
-			true, "invalid Document Longitude"},
+			true, errInvalidDocumentLongitude.Error()},
 		{&pb.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
@@ -751,7 +751,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
-			true, "invalid Document ImageURL"},
+			true, errInvalidDocumentImageURL.Error()},
 		{&pb.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
@@ -788,44 +788,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
-			true, "invalid Document AudioURL"},
-		{&pb.Document{
-			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
-			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			PublisherName: &pb.Publisher{
-				LastName:  "Kim",
-				FirstName: "Lisa",
-			},
-			CallTypeName: "some call type name",
-			GroundType:   "some ground type",
-			StudySite: &pb.StudySite{
-				City:    "Seattle",
-				Country: "USA",
-			},
-			Ocean:        "Pacific Ocean",
-			SensorType:   "some sensor type",
-			SensorName:   "some sensor name",
-			SamplingRate: 100,
-			Latitude:     89.123,
-			Longitude:    -100.123,
-			ImageUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/images/Rotating_earth_(large).gif"},
-			AudioUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3"},
-			VideoUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
-			FileUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
-			RecordTimestamp: 1514764800,
-			CreateTimestamp: 1539831496,
-			UpdateTimestamp: 0,
-			IsPublic:        true,
-		},
-			true, "invalid Document VideoURL"},
+			true, errInvalidDocumentAudioURL.Error()},
 		{&pb.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
@@ -852,6 +815,43 @@ func TestValidateDocument(t *testing.T) {
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3"},
 			VideoUrlsMap: map[string]string{
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
+			FileUrlsMap: map[string]string{
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
+			RecordTimestamp: 1514764800,
+			CreateTimestamp: 1539831496,
+			UpdateTimestamp: 0,
+			IsPublic:        true,
+		},
+			true, errInvalidDocumentVideoURL.Error()},
+		{&pb.Document{
+			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
+			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
+			PublisherName: &pb.Publisher{
+				LastName:  "Kim",
+				FirstName: "Lisa",
+			},
+			CallTypeName: "some call type name",
+			GroundType:   "some ground type",
+			StudySite: &pb.StudySite{
+				City:    "Seattle",
+				Country: "USA",
+			},
+			Ocean:        "Pacific Ocean",
+			SensorType:   "some sensor type",
+			SensorName:   "some sensor name",
+			SamplingRate: 100,
+			Latitude:     89.123,
+			Longitude:    -100.123,
+			ImageUrlsMap: map[string]string{
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/images/Rotating_earth_(large).gif"},
+			AudioUrlsMap: map[string]string{
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3"},
+			VideoUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			FileUrlsMap: map[string]string{
@@ -862,7 +862,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
-			true, "invalid Document FileURL"},
+			true, errInvalidDocumentFileURL.Error()},
 		{&pb.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
@@ -899,7 +899,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
-			true, "invalid Document RecordTimestamp"},
+			true, errInvalidDocumentRecordTimestamp.Error()},
 		{&pb.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
@@ -936,7 +936,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
-			true, "invalid Document CreateTimestamp"},
+			true, errInvalidDocumentCreateTimestamp.Error()},
 		{&pb.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
@@ -973,7 +973,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 1539831495,
 			IsPublic:        true,
 		},
-			true, "invalid Document UpdateTimestamp"},
+			true, errInvalidUpdateTimestamp.Error()},
 	}
 
 	for _, c := range cases {
@@ -1001,11 +1001,11 @@ func TestValidateDUID(t *testing.T) {
 		errorStr string
 	}{
 		{"0ujsszwN8NRY24YaXiTIE2VWDTS", false, ""},
-		{"0ujsszwN8NRY24YaXiTIE2VWDTSD", true, "invalid Document duid"},
-		{"0ujsszwN8NRY24YaXiTIE2VWDT", true, "invalid Document duid"},
+		{"0ujsszwN8NRY24YaXiTIE2VWDTSD", true, errInvalidDocumentDUID.Error()},
+		{"0ujsszwN8NRY24YaXiTIE2VWDT", true, errInvalidDocumentDUID.Error()},
 		{"", false, ""},
-		{"   0ujsszwN8NRY24YaXiTIE2VWDTS", true, "invalid Document duid"},
-		{"0ujsszwN8NRY24YaXiTIE2VWDTS    ", true, "invalid Document duid"},
+		{"   0ujsszwN8NRY24YaXiTIE2VWDTS", true, errInvalidDocumentDUID.Error()},
+		{"0ujsszwN8NRY24YaXiTIE2VWDTS    ", true, errInvalidDocumentDUID.Error()},
 	}
 
 	for _, c := range cases {
@@ -1026,11 +1026,11 @@ func TestValidateUUID(t *testing.T) {
 		errorStr string
 	}{
 		{"0000XSNJG0MQJHBF4QX1EFD6Y3", false, ""},
-		{"0000XSNJG0MQJHBF4QX1EFD6Y33", true, "invalid Document uuid"},
-		{"0000XSNJG0MQJHBF4QX1EFD6Y", true, "invalid Document uuid"},
-		{"", true, "invalid Document uuid"},
-		{"   0000XSNJG0MQJHBF4QX1EFD6Y3", true, "invalid Document uuid"},
-		{"0000XSNJG0MQJHBF4QX1EFD6Y3    ", true, "invalid Document uuid"},
+		{"0000XSNJG0MQJHBF4QX1EFD6Y33", true, errInvalidDocumentUUID.Error()},
+		{"0000XSNJG0MQJHBF4QX1EFD6Y", true, errInvalidDocumentUUID.Error()},
+		{"", true, errInvalidDocumentUUID.Error()},
+		{"   0000XSNJG0MQJHBF4QX1EFD6Y3", true, errInvalidDocumentUUID.Error()},
+		{"0000XSNJG0MQJHBF4QX1EFD6Y3    ", true, errInvalidDocumentUUID.Error()},
 	}
 
 	for _, c := range cases {
@@ -1051,19 +1051,19 @@ func TestValidateFUID(t *testing.T) {
 		errorStr string
 	}{
 		{"4ff30392-8ec8-45a4-ba94-5e22c4a686de", false, ""},
-		{"4fg30392-8ec8-45a4-ba94-5e22c4a686de", true, "invalid Document fuid"},
-		{"a4ff30392-8ec8-45a4-ba94-5e22c4a686de", true, "invalid Document fuid"},
-		{"4ff30392-a8ec8-45a4-ba94-5e22c4a686de", true, "invalid Document fuid"},
-		{"4ff30392-8ec8-a45a4-ba94-5e22c4a686de", true, "invalid Document fuid"},
-		{"4ff30392-8ec8-45a4-aba94-5e22c4a686de", true, "invalid Document fuid"},
-		{"4ff30392-8ec8-45a4-ba94-a5e22c4a686de", true, "invalid Document fuid"},
-		{"", true, "invalid Document fuid"},
-		{"   4ff30392-8ec8-45a4-ba94-5e22c4a686de", true, "invalid Document fuid"},
-		{"4ff30392-8ec8-45a4-ba94-5e22c4a686de    ", true, "invalid Document fuid"},
-		{"4ff303928ec8-45a4-ba94-5e22c4a686de", true, "invalid Document fuid"},
-		{"4ff30392-8ec845a4-ba94-5e22c4a686de", true, "invalid Document fuid"},
-		{"4ff30392-8ec8-45a4ba94-5e22c4a686de", true, "invalid Document fuid"},
-		{"4ff30392-8ec8-45a4-ba945e22c4a686de", true, "invalid Document fuid"},
+		{"4fg30392-8ec8-45a4-ba94-5e22c4a686de", true, errInvalidDocumentFUID.Error()},
+		{"a4ff30392-8ec8-45a4-ba94-5e22c4a686de", true, errInvalidDocumentFUID.Error()},
+		{"4ff30392-a8ec8-45a4-ba94-5e22c4a686de", true, errInvalidDocumentFUID.Error()},
+		{"4ff30392-8ec8-a45a4-ba94-5e22c4a686de", true, errInvalidDocumentFUID.Error()},
+		{"4ff30392-8ec8-45a4-aba94-5e22c4a686de", true, errInvalidDocumentFUID.Error()},
+		{"4ff30392-8ec8-45a4-ba94-a5e22c4a686de", true, errInvalidDocumentFUID.Error()},
+		{"", true, errInvalidDocumentFUID.Error()},
+		{"   4ff30392-8ec8-45a4-ba94-5e22c4a686de", true, errInvalidDocumentFUID.Error()},
+		{"4ff30392-8ec8-45a4-ba94-5e22c4a686de    ", true, errInvalidDocumentFUID.Error()},
+		{"4ff303928ec8-45a4-ba94-5e22c4a686de", true, errInvalidDocumentFUID.Error()},
+		{"4ff30392-8ec845a4-ba94-5e22c4a686de", true, errInvalidDocumentFUID.Error()},
+		{"4ff30392-8ec8-45a4ba94-5e22c4a686de", true, errInvalidDocumentFUID.Error()},
+		{"4ff30392-8ec8-45a4-ba945e22c4a686de", true, errInvalidDocumentFUID.Error()},
 	}
 
 	for _, c := range cases {
@@ -1086,9 +1086,9 @@ func TestValidatePublisher(t *testing.T) {
 		errorStr  string
 	}{
 		{"Kim", "Lisa", false, ""},
-		{"", "Lisa", true, "invalid Document LastName"},
-		{"Kim", "123456789123456789012345678901234", true, "invalid Document FirstName"},
-		{"       ", "Leesa", true, "invalid Document LastName"},
+		{"", "Lisa", true, errInvalidDocumentLastName.Error()},
+		{"Kim", "123456789123456789012345678901234", true, errInvalidDocumentFirstName.Error()},
+		{"       ", "Leesa", true, errInvalidDocumentLastName.Error()},
 	}
 
 	for _, c := range cases {
@@ -1110,9 +1110,9 @@ func TestValidateLastName(t *testing.T) {
 		errorStr string
 	}{
 		{"Kim", false, ""},
-		{"", true, "invalid Document LastName"},
-		{"123456789123456789012345678901234", true, "invalid Document LastName"},
-		{"       ", true, "invalid Document LastName"},
+		{"", true, errInvalidDocumentLastName.Error()},
+		{"123456789123456789012345678901234", true, errInvalidDocumentLastName.Error()},
+		{"       ", true, errInvalidDocumentLastName.Error()},
 	}
 
 	for _, c := range cases {
@@ -1134,9 +1134,9 @@ func TestValidateFirstName(t *testing.T) {
 		errorStr string
 	}{
 		{"Lisa", false, ""},
-		{"", true, "invalid Document FirstName"},
-		{"123456789123456789012345678901234", true, "invalid Document FirstName"},
-		{"       ", true, "invalid Document FirstName"},
+		{"", true, errInvalidDocumentFirstName.Error()},
+		{"123456789123456789012345678901234", true, errInvalidDocumentFirstName.Error()},
+		{"       ", true, errInvalidDocumentFirstName.Error()},
 	}
 
 	for _, c := range cases {
@@ -1158,9 +1158,9 @@ func TestValidateCallTypeName(t *testing.T) {
 		errorStr string
 	}{
 		{"Gunshot", false, ""},
-		{"", true, "invalid Document CallTypeName"},
-		{"12345678912345678901234567890123412345678912345678901234567890123", true, "invalid Document CallTypeName"},
-		{"       ", true, "invalid Document CallTypeName"},
+		{"", true, errInvalidDocumentCallTypeName.Error()},
+		{"12345678912345678901234567890123412345678912345678901234567890123", true, errInvalidDocumentCallTypeName.Error()},
+		{"       ", true, errInvalidDocumentCallTypeName.Error()},
 	}
 
 	for _, c := range cases {
@@ -1182,9 +1182,9 @@ func TestValidateGroundType(t *testing.T) {
 		errorStr string
 	}{
 		{"Gunshot", false, ""},
-		{"", true, "invalid Document GroundType"},
-		{"12345678912345678901234567890123412345678912345678901234567890123", true, "invalid Document GroundType"},
-		{"       ", true, "invalid Document GroundType"},
+		{"", true, errInvalidDocumentGroundType.Error()},
+		{"12345678912345678901234567890123412345678912345678901234567890123", true, errInvalidDocumentGroundType.Error()},
+		{"       ", true, errInvalidDocumentGroundType.Error()},
 	}
 
 	for _, c := range cases {
@@ -1211,12 +1211,12 @@ func TestValidateStudySite(t *testing.T) {
 		{"Tijuana", "Baja California", "", "Mexico", false, ""},
 		{"Copenhagen", "", "", "Denmark", false, ""},
 		{"Batangas City", "", "Batangas", "Philippines", false, ""},
-		{"Batangas City", "", "12345678912345678901234567890123412345678912345678901234567890123", "Philippines", true, "invalid Document Province"},
-		{"Tijuana", "12345678912345678901234567890123412345678912345678901234567890123", "", "Mexico", true, "invalid Document State"},
-		{"", "Baja California", "", "Mexico", true, "invalid Document City"},
-		{"Tijuana", "Baja California", "", "", true, "invalid Document Country"},
-		{"San Diego", "CA", "", "12345678912345678901234567890123412345678912345678901234567890123", true, "invalid Document Country"},
-		{"       ", "Baja California", "", "Mexico", true, "invalid Document City"},
+		{"Batangas City", "", "12345678912345678901234567890123412345678912345678901234567890123", "Philippines", true, errInvalidDocumentProvince.Error()},
+		{"Tijuana", "12345678912345678901234567890123412345678912345678901234567890123", "", "Mexico", true, errInvalidDocumentState.Error()},
+		{"", "Baja California", "", "Mexico", true, errInvalidDocumentCity.Error()},
+		{"Tijuana", "Baja California", "", "", true, errInvalidDocumentCountry.Error()},
+		{"San Diego", "CA", "", "12345678912345678901234567890123412345678912345678901234567890123", true, errInvalidDocumentCountry.Error()},
+		{"       ", "Baja California", "", "Mexico", true, errInvalidDocumentCity.Error()},
 	}
 
 	for _, c := range cases {
@@ -1238,9 +1238,9 @@ func TestValidateCity(t *testing.T) {
 		errorStr string
 	}{
 		{"Mexico City", false, ""},
-		{"", true, "invalid Document City"},
-		{"12345678912345678901234567890123412345678912345678901234567890123", true, "invalid Document City"},
-		{"       ", true, "invalid Document City"},
+		{"", true, errInvalidDocumentCity.Error()},
+		{"12345678912345678901234567890123412345678912345678901234567890123", true, errInvalidDocumentCity.Error()},
+		{"       ", true, errInvalidDocumentCity.Error()},
 	}
 
 	for _, c := range cases {
@@ -1263,7 +1263,7 @@ func TestValidateState(t *testing.T) {
 	}{
 		{"California", false, ""},
 		{"", false, ""},
-		{"12345678912345678901234567890123412345678912345678901234567890123", true, "invalid Document State"},
+		{"12345678912345678901234567890123412345678912345678901234567890123", true, errInvalidDocumentState.Error()},
 	}
 
 	for _, c := range cases {
@@ -1286,7 +1286,7 @@ func TestValidateProvince(t *testing.T) {
 	}{
 		{"Batangas City", false, ""},
 		{"", false, ""},
-		{"12345678912345678901234567890123412345678912345678901234567890123", true, "invalid Document Province"},
+		{"12345678912345678901234567890123412345678912345678901234567890123", true, errInvalidDocumentProvince.Error()},
 	}
 
 	for _, c := range cases {
@@ -1308,9 +1308,9 @@ func TestValidateCountry(t *testing.T) {
 		errorStr string
 	}{
 		{"Mexico", false, ""},
-		{"", true, "invalid Document Country"},
-		{"12345678912345678901234567890123412345678912345678901234567890123", true, "invalid Document Country"},
-		{"       ", true, "invalid Document Country"},
+		{"", true, errInvalidDocumentCountry.Error()},
+		{"12345678912345678901234567890123412345678912345678901234567890123", true, errInvalidDocumentCountry.Error()},
+		{"       ", true, errInvalidDocumentCountry.Error()},
 	}
 
 	for _, c := range cases {
@@ -1346,12 +1346,12 @@ func TestValidateOcean(t *testing.T) {
 		{"      Pacific Ocean", false, ""},
 		{"Atlantic ocean     ", false, ""},
 
-		{"Atlantic ocean    hello ", true, "invalid Document Ocean"},
-		{"Atlantic oceans", true, "invalid Document Ocean"},
-		{"", true, "invalid Document Ocean"},
-		{"      ", true, "invalid Document Ocean"},
-		{"idonotexist", true, "invalid Document Ocean"},
-		{"Indian 1 Ocean", true, "invalid Document Ocean"},
+		{"Atlantic ocean    hello ", true, errInvalidDocumentOcean.Error()},
+		{"Atlantic oceans", true, errInvalidDocumentOcean.Error()},
+		{"", true, errInvalidDocumentOcean.Error()},
+		{"      ", true, errInvalidDocumentOcean.Error()},
+		{"idonotexist", true, errInvalidDocumentOcean.Error()},
+		{"Indian 1 Ocean", true, errInvalidDocumentOcean.Error()},
 	}
 
 	for _, c := range cases {
@@ -1373,9 +1373,9 @@ func TestValidateSensorType(t *testing.T) {
 		errorStr string
 	}{
 		{"Bprobe", false, ""},
-		{"", true, "invalid Document SensorType"},
-		{"12345678912345678901234567890123412345678912345678901234567890123", true, "invalid Document SensorType"},
-		{"       ", true, "invalid Document SensorType"},
+		{"", true, errInvalidDocumentSensorType.Error()},
+		{"12345678912345678901234567890123412345678912345678901234567890123", true, errInvalidDocumentSensorType.Error()},
+		{"       ", true, errInvalidDocumentSensorType.Error()},
 	}
 
 	for _, c := range cases {
@@ -1396,9 +1396,9 @@ func TestValidateSensorName(t *testing.T) {
 		errorStr string
 	}{
 		{"Tag", false, ""},
-		{"", true, "invalid Document SensorName"},
-		{"12345678912345678901234567890123412345678912345678901234567890123", true, "invalid Document SensorName"},
-		{"       ", true, "invalid Document SensorName"},
+		{"", true, errInvalidDocumentSensorName.Error()},
+		{"12345678912345678901234567890123412345678912345678901234567890123", true, errInvalidDocumentSensorName.Error()},
+		{"       ", true, errInvalidDocumentSensorName.Error()},
 	}
 
 	for _, c := range cases {
@@ -1421,7 +1421,7 @@ func TestValidateSamplingRate(t *testing.T) {
 		{0, false, ""},
 		{1000, false, ""},
 		{maxSamplingRate, false, ""},
-		{maxSamplingRate + 1, true, "invalid Document SamplingRate"},
+		{maxSamplingRate + 1, true, errInvalidDocumentSamplingRate.Error()},
 	}
 
 	for _, c := range cases {
@@ -1441,12 +1441,12 @@ func TestValidateLatitude(t *testing.T) {
 		isExpErr bool
 		errorStr string
 	}{
-		{minLatitude - 1, true, "invalid Document Latitude"},
+		{minLatitude - 1, true, errInvalidDocumentLatitude.Error()},
 		{minLatitude, false, ""},
 		{0, false, ""},
 		{45, false, ""},
 		{maxLatitude, false, ""},
-		{maxLatitude + 1, true, "invalid Document Latitude"},
+		{maxLatitude + 1, true, errInvalidDocumentLatitude.Error()},
 	}
 
 	for _, c := range cases {
@@ -1466,12 +1466,12 @@ func TestValidateLongitude(t *testing.T) {
 		isExpErr bool
 		errorStr string
 	}{
-		{minLongitude - 1, true, "invalid Document Longitude"},
+		{minLongitude - 1, true, errInvalidDocumentLongitude.Error()},
 		{minLongitude, false, ""},
 		{0, false, ""},
 		{150, false, ""},
 		{maxLongitude, false, ""},
-		{maxLongitude + 1, true, "invalid Document Longitude"},
+		{maxLongitude + 1, true, errInvalidDocumentLongitude.Error()},
 	}
 
 	for _, c := range cases {
@@ -1498,15 +1498,15 @@ func TestValidateImageURLs(t *testing.T) {
 		}, false, ""},
 		{map[string]string{
 			"4ff30392-8ec8-45a4-ba9a4-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/images/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.jpg",
-		}, true, "invalid Document fuid"},
+		}, true, errInvalidDocumentFUID.Error()},
 		{nil,
-			true, "nil Document ImageURLs",
+			true, errInvalidDocumentImageURLs.Error(),
 		},
 		{map[string]string{
 			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "",
 			"4ff30392-8ec8-45a4-ba94-5e22c4a686d1": "https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png",
 			"4ff30392-8ec8-45a4-ba94-5e22c4a686d2": "https://hwscdevstorage.blob.core.windows.net/images/Rotating_earth_(large).gif",
-		}, true, "invalid Document ImageURL"},
+		}, true, errInvalidDocumentImageURL.Error()},
 		{map[string]string{
 			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "hwscdevstorage.blob.core.windows.net/images/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.jpg",
 		}, true, "invalid Document ImageURL: hwscdevstorage.blob.core.windows.net/images/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.jpg"},
@@ -1538,16 +1538,16 @@ func TestValidateAudioURLs(t *testing.T) {
 		}, false, ""},
 		{map[string]string{
 			"4ff30392-8ec8-45a4-ba9a4-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3",
-		}, true, "invalid Document fuid",
+		}, true, errInvalidDocumentFUID.Error(),
 		},
 		{nil,
-			true, "nil Document AudioURLs",
+			true, errInvalidDocumentAudioURLs.Error(),
 		},
 		{map[string]string{
 			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "",
 			"4ff30392-8ec8-45a4-ba94-5e22c4a686d1": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
 			"4ff30392-8ec8-45a4-ba94-5e22c4a686d2": "https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3",
-		}, true, "invalid Document AudioURL"},
+		}, true, errInvalidDocumentAudioURL.Error()},
 		{map[string]string{
 			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3",
 		}, true, "invalid Document AudioURL: hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3"},
@@ -1579,16 +1579,16 @@ func TestValidateVideoURLs(t *testing.T) {
 		}, false, ""},
 		{map[string]string{
 			"4ff30392-8ec8-45a4-ba9a4-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4",
-		}, true, "invalid Document fuid",
+		}, true, errInvalidDocumentFUID.Error(),
 		},
 		{nil,
-			true, "nil Document VideoURLs",
+			true, errInvalidDocumentVideoURLs.Error(),
 		},
 		{map[string]string{
 			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "",
 			"4ff30392-8ec8-45a4-ba94-5e22c4a686d1": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
 			"4ff30392-8ec8-45a4-ba94-5e22c4a686d2": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4",
-		}, true, "invalid Document VideoURL"},
+		}, true, errInvalidDocumentVideoURL.Error()},
 		{map[string]string{
 			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
 		}, true, "invalid Document VideoURL: hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv"},
@@ -1620,16 +1620,16 @@ func TestValidateFileURLs(t *testing.T) {
 		}, false, ""},
 		{map[string]string{
 			"4ff30392-8ec8-45a4-ba9a4-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4",
-		}, true, "invalid Document fuid",
+		}, true, errInvalidDocumentFUID.Error(),
 		},
 		{nil,
-			true, "nil Document FileURLs",
+			true, errInvalidDocumentFileURLs.Error(),
 		},
 		{map[string]string{
 			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "",
 			"4ff30392-8ec8-45a4-ba94-5e22c4a686d1": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
 			"4ff30392-8ec8-45a4-ba94-5e22c4a686d2": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4",
-		}, true, "invalid Document FileURL"},
+		}, true, errInvalidDocumentFileURL.Error()},
 		{map[string]string{
 			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
 		}, true, "invalid Document FileURL: hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv"},
@@ -1654,8 +1654,8 @@ func TestValidateRecordTimestamp(t *testing.T) {
 	}{
 		{1514764800, false, ""},
 		{minTimestamp, false, ""},
-		{minTimestamp - 1, true, "invalid Document RecordTimestamp"},
-		{time.Now().UTC().Unix() + 100, true, "invalid Document RecordTimestamp"},
+		{minTimestamp - 1, true, errInvalidDocumentRecordTimestamp.Error()},
+		{time.Now().UTC().Unix() + 100, true, errInvalidDocumentRecordTimestamp.Error()},
 	}
 
 	for _, c := range cases {
@@ -1679,8 +1679,10 @@ func TestValidateCreateTimestamp(t *testing.T) {
 	}{
 		{0, 1514764800, false, ""},
 		{1539831496, 1514764800, false, ""},
-		{1514764800, 1539831496, true, "invalid Document CreateTimestamp"},
-		{time.Now().UTC().Unix() + 100, 1539831496, true, "invalid Document CreateTimestamp"},
+		{1514764800, 1539831496, true,
+			errInvalidDocumentCreateTimestamp.Error()},
+		{time.Now().UTC().Unix() + 100, 1539831496, true,
+			errInvalidDocumentCreateTimestamp.Error()},
 	}
 
 	for _, c := range cases {
@@ -1704,8 +1706,10 @@ func TestValidateUpdateTimestamp(t *testing.T) {
 	}{
 		{0, 1514764800, false, ""},
 		{1514764801, 1514764800, false, ""},
-		{1514764800, 1539831496, true, "invalid Document UpdateTimestamp"},
-		{time.Now().UTC().Unix() + 100, 1539831496, true, "invalid Document UpdateTimestamp"},
+		{1514764800, 1539831496, true,
+			errInvalidUpdateTimestamp.Error()},
+		{time.Now().UTC().Unix() + 100, 1539831496, true,
+			errInvalidUpdateTimestamp.Error()},
 	}
 
 	for _, c := range cases {

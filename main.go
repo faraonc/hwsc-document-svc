@@ -23,7 +23,7 @@ func main() {
 
 	// Implement services in /service/service.go
 	// Register service with gRPC server
-	pb.RegisterDocumentServiceServer(s, svc.Service{})
+	pb.RegisterDocumentServiceServer(s, &svc.Service{})
 	log.Println("[INFO] hwsc-document-svc at localhost:50051...")
 
 	// Start gRPC server

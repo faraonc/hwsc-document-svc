@@ -67,15 +67,16 @@ func TestCreateDocument(t *testing.T) {
 		isExpErr    bool
 	}{
 		{&pb.DocumentRequest{}, unavailable,
-			"rpc error: code = Unavailable desc = Service unavailable", true},
+			errServiceUnavailable.Error(), true},
 		{nil, available,
-			"rpc error: code = InvalidArgument desc = Nil request", true},
+			errNilRequest.Error(), true},
 		{&pb.DocumentRequest{}, available,
-			"rpc error: code = InvalidArgument desc = Nil request data", true},
+			errNilRequestData.Error(), true},
 		{&pb.DocumentRequest{Data: &pb.Document{
 			Uuid: "garbage",
 		}}, available,
-			"rpc error: code = InvalidArgument desc = invalid Document uuid", true},
+			fmt.Sprintf("rpc error: code = InvalidArgument desc = %s", errInvalidDocumentUUID.Error()),
+			true},
 		{&pb.DocumentRequest{
 			Data: &pb.Document{
 				Duid: "",
@@ -149,15 +150,16 @@ func TestListUserDocumentCollection(t *testing.T) {
 		isExpErr    bool
 	}{
 		{&pb.DocumentRequest{}, unavailable, 0,
-			"rpc error: code = Unavailable desc = Service unavailable", true},
+			errServiceUnavailable.Error(), true},
 		{nil, available, 0,
-			"rpc error: code = InvalidArgument desc = Nil request", true},
+			errNilRequest.Error(), true},
 		{&pb.DocumentRequest{}, available, 0,
-			"rpc error: code = InvalidArgument desc = Nil request data", true},
+			errNilRequestData.Error(), true},
 		{&pb.DocumentRequest{Data: &pb.Document{
 			Uuid: "garbage",
 		}}, available, 0,
-			"rpc error: code = InvalidArgument desc = invalid Document uuid", true},
+			fmt.Sprintf("rpc error: code = InvalidArgument desc = %s", errInvalidDocumentUUID.Error()),
+			true},
 		{&pb.DocumentRequest{Data: &pb.Document{
 			Uuid: "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
 		}}, available, 7,
@@ -169,7 +171,8 @@ func TestListUserDocumentCollection(t *testing.T) {
 		{&pb.DocumentRequest{Data: &pb.Document{
 			Uuid: "4ee30333-8ec8-45a4-ba94-5e22c4a686de",
 		}}, available, 0,
-			"rpc error: code = InvalidArgument desc = invalid Document uuid", true},
+			fmt.Sprintf("rpc error: code = InvalidArgument desc = %s", errInvalidDocumentUUID.Error()),
+			true},
 		{&pb.DocumentRequest{Data: &pb.Document{
 			Uuid: "xxx0XSNJG0MQJHBF4QX1EFD6Y3",
 		}}, available, 0,
@@ -200,15 +203,15 @@ func TestUpdateDocument(t *testing.T) {
 		isExpErr    bool
 	}{
 		{&pb.DocumentRequest{}, unavailable,
-			"rpc error: code = Unavailable desc = Service unavailable", true},
+			errServiceUnavailable.Error(), true},
 		{nil, available,
-			"rpc error: code = InvalidArgument desc = Nil request", true},
+			errNilRequest.Error(), true},
 		{&pb.DocumentRequest{}, available,
-			"rpc error: code = InvalidArgument desc = Nil request data", true},
+			errNilRequestData.Error(), true},
 		{&pb.DocumentRequest{Data: &pb.Document{
 			Duid: "",
 		}}, available,
-			"rpc error: code = InvalidArgument desc = Missing DUID", true},
+			errMissingDUID.Error(), true},
 		{&pb.DocumentRequest{
 			Data: &pb.Document{
 				Duid: tempDUID,
@@ -288,7 +291,8 @@ func TestUpdateDocument(t *testing.T) {
 			VideoUrls: []string{"https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv"},
 			FileUrls:  []string{"https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv"},
 		}, available,
-			fmt.Sprintf("rpc error: code = InvalidArgument desc = Document not found, duid: %s - uuid: %s", imaginaryDUID, imaginaryUUID),
+			fmt.Sprintf("rpc error: code = InvalidArgument desc = Document not found, duid: %s - uuid: %s",
+				imaginaryDUID, imaginaryUUID),
 			true},
 	}
 
@@ -314,34 +318,36 @@ func TestDeleteDocument(t *testing.T) {
 		isExpErr    bool
 	}{
 		{&pb.DocumentRequest{}, unavailable,
-			"rpc error: code = Unavailable desc = Service unavailable", true},
+			errServiceUnavailable.Error(), true},
 		{nil, available,
-			"rpc error: code = InvalidArgument desc = Nil request", true},
+			errNilRequest.Error(), true},
 		{&pb.DocumentRequest{}, available,
-			"rpc error: code = InvalidArgument desc = Nil request data", true},
+			errNilRequestData.Error(), true},
 		{&pb.DocumentRequest{Data: &pb.Document{}}, available,
-			"rpc error: code = InvalidArgument desc = Missing DUID", true},
+			errMissingDUID.Error(), true},
 		{&pb.DocumentRequest{Data: &pb.Document{
 			Duid: "1CMjlaqHYNJhnVvWiGus3EiOno8",
 		}}, available,
-			"rpc error: code = InvalidArgument desc = invalid Document uuid", true},
+			fmt.Sprintf("rpc error: code = InvalidArgument desc = %s", errInvalidDocumentUUID.Error()),
+			true},
 		{&pb.DocumentRequest{Data: &pb.Document{
 			Duid: imaginaryDUID,
 			Uuid: imaginaryUUID,
 		}}, available,
-			fmt.Sprintf("rpc error: code = InvalidArgument desc = Document not found, duid: %s - uuid: %s", imaginaryDUID, imaginaryUUID),
+			fmt.Sprintf("rpc error: code = InvalidArgument desc = Document not found, duid: %s - uuid: %s",
+				imaginaryDUID, imaginaryUUID),
 			true},
 		{&pb.DocumentRequest{Data: &pb.Document{
 			Duid: imaginaryUUID,
 			Uuid: imaginaryUUID,
 		}}, available,
-			"rpc error: code = InvalidArgument desc = invalid Document duid",
+			fmt.Sprintf("rpc error: code = InvalidArgument desc = %s", errInvalidDocumentDUID.Error()),
 			true},
 		{&pb.DocumentRequest{Data: &pb.Document{
 			Duid: imaginaryDUID,
 			Uuid: "",
 		}}, available,
-			"rpc error: code = InvalidArgument desc = invalid Document uuid",
+			fmt.Sprintf("rpc error: code = InvalidArgument desc = %s", errInvalidDocumentUUID.Error()),
 			true},
 		{&pb.DocumentRequest{Data: &pb.Document{
 			Duid: tempDUID,
@@ -352,7 +358,8 @@ func TestDeleteDocument(t *testing.T) {
 			Duid: tempDUID,
 			Uuid: tempUUID,
 		}}, available,
-			fmt.Sprintf("rpc error: code = InvalidArgument desc = Document not found, duid: %s - uuid: %s", tempDUID, tempUUID),
+			fmt.Sprintf("rpc error: code = InvalidArgument desc = Document not found, duid: %s - uuid: %s",
+				tempDUID, tempUUID),
 			true},
 	}
 
