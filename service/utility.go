@@ -1,7 +1,6 @@
 package service
 
 import (
-	"errors"
 	"fmt"
 	pb "github.com/faraonc/hwsc-api-blocks/int/hwsc-document-svc/proto"
 	"log"
@@ -118,7 +117,7 @@ func ValidateDocument(meta *pb.Document) error {
 		return err
 	}
 	if len(meta.GetImageUrlsMap()) == 0 && len(meta.GetAudioUrlsMap()) == 0 {
-		return errors.New("requires at least 1 valid Document ImageURL or AudioURL")
+		return errAtLeastOneImageAudioURL
 	}
 
 	return nil
@@ -128,7 +127,7 @@ func ValidateDocument(meta *pb.Document) error {
 // Returns an error if duid fails regex validation, and it is not an empty string.
 func ValidateDUID(duid string) error {
 	if !duidRegex.MatchString(duid) && duid != "" {
-		return errors.New("invalid Document duid")
+		return errInvalidDocumentDUID
 	}
 	return nil
 }
@@ -137,7 +136,7 @@ func ValidateDUID(duid string) error {
 // Returns an error if uuid fails regex validation.
 func ValidateUUID(uuid string) error {
 	if !uuidRegex.MatchString(uuid) {
-		return errors.New("invalid Document uuid")
+		return errInvalidDocumentUUID
 	}
 	return nil
 }
@@ -146,7 +145,7 @@ func ValidateUUID(uuid string) error {
 // Returns an error if fuid fails regex validation.
 func ValidateFUID(fuid string) error {
 	if !fuidRegex.MatchString(fuid) {
-		return errors.New("invalid Document fuid")
+		return errInvalidDocumentFUID
 	}
 	return nil
 }
@@ -168,7 +167,7 @@ func ValidatePublisher(lastName string, firstName string) error {
 // Returns an error if last name is an empty string or exceeds 32 chars.
 func ValidateLastName(lastName string) error {
 	if strings.TrimSpace(lastName) == "" || len(lastName) > maxLastNameLength {
-		return errors.New("invalid Document LastName")
+		return errInvalidDocumentLastName
 	}
 	return nil
 }
@@ -177,7 +176,7 @@ func ValidateLastName(lastName string) error {
 // Returns an error if first name is an empty string or exceeds 32 chars.
 func ValidateFirstName(firstName string) error {
 	if strings.TrimSpace(firstName) == "" || len(firstName) > maxFirstNameLength {
-		return errors.New("invalid Document FirstName")
+		return errInvalidDocumentFirstName
 	}
 	return nil
 }
@@ -186,7 +185,7 @@ func ValidateFirstName(firstName string) error {
 // Returns an error if call type name is an empty string or exceeds 64 chars.
 func ValidateCallTypeName(callTypeName string) error {
 	if strings.TrimSpace(callTypeName) == "" || len(callTypeName) > maxCallTypeNameLength {
-		return errors.New("invalid Document CallTypeName")
+		return errInvalidDocumentCallTypeName
 	}
 	return nil
 }
@@ -195,7 +194,7 @@ func ValidateCallTypeName(callTypeName string) error {
 // Returns an error if ground type is an empty string or exceeds 64 chars.
 func ValidateGroundType(groundType string) error {
 	if strings.TrimSpace(groundType) == "" || len(groundType) > maxGroundTypeLength {
-		return errors.New("invalid Document GroundType")
+		return errInvalidDocumentGroundType
 	}
 	return nil
 }
@@ -223,7 +222,7 @@ func ValidateStudySite(city string, state string, province string, country strin
 // Returns an error if city is an empty string or exceeds 64 chars.
 func ValidateCity(city string) error {
 	if strings.TrimSpace(city) == "" || len(city) > maxCityLength {
-		return errors.New("invalid Document City")
+		return errInvalidDocumentCity
 	}
 	return nil
 }
@@ -232,7 +231,7 @@ func ValidateCity(city string) error {
 // Returns an error if state exceeds 32 chars.
 func ValidateState(state string) error {
 	if len(state) > maxStateLength {
-		return errors.New("invalid Document State")
+		return errInvalidDocumentState
 	}
 	return nil
 }
@@ -241,7 +240,7 @@ func ValidateState(state string) error {
 // Returns an error if province exceeds 48 chars.
 func ValidateProvince(province string) error {
 	if len(province) > maxProvinceLength {
-		return errors.New("invalid Document Province")
+		return errInvalidDocumentProvince
 	}
 	return nil
 }
@@ -250,7 +249,7 @@ func ValidateProvince(province string) error {
 // Returns an error if country is an empty string or exceeds 64 chars.
 func ValidateCountry(country string) error {
 	if strings.TrimSpace(country) == "" || len(country) > maxCountryLength {
-		return errors.New("invalid Document Country")
+		return errInvalidDocumentCountry
 	}
 	return nil
 }
@@ -259,7 +258,7 @@ func ValidateCountry(country string) error {
 // Returns an error if ocean is an empty string or exceeds 64 chars.
 func ValidateOcean(ocean string) error {
 	if strings.TrimSpace(ocean) == "" {
-		return errors.New("invalid Document Ocean")
+		return errInvalidDocumentOcean
 	}
 
 	w := strings.Fields(ocean)
@@ -267,18 +266,18 @@ func ValidateOcean(ocean string) error {
 	case 1:
 		{
 			if !oceanMap[strings.ToLower(w[0])] {
-				return errors.New("invalid Document Ocean")
+				return errInvalidDocumentOcean
 			}
 		}
 	case 2:
 		{
 			if !strings.EqualFold(strings.ToLower(w[1]), "ocean") || !oceanMap[strings.ToLower(w[0])] {
-				return errors.New("invalid Document Ocean")
+				return errInvalidDocumentOcean
 			}
 		}
 	default:
 		{
-			return errors.New("invalid Document Ocean")
+			return errInvalidDocumentOcean
 		}
 
 	}
@@ -290,7 +289,7 @@ func ValidateOcean(ocean string) error {
 // Returns an error if sensor type is an empty string or exceeds 64 chars.
 func ValidateSensorType(sensorType string) error {
 	if strings.TrimSpace(sensorType) == "" || len(sensorType) > maxSensorTypeLength {
-		return errors.New("invalid Document SensorType")
+		return errInvalidDocumentSensorType
 	}
 	return nil
 }
@@ -299,7 +298,7 @@ func ValidateSensorType(sensorType string) error {
 // Returns an error if sensor name is an empty string or exceeds 64 chars.
 func ValidateSensorName(sensorName string) error {
 	if strings.TrimSpace(sensorName) == "" || len(sensorName) > maxSensorNameLength {
-		return errors.New("invalid Document SensorName")
+		return errInvalidDocumentSensorName
 	}
 	return nil
 }
@@ -308,7 +307,7 @@ func ValidateSensorName(sensorName string) error {
 // Returns an error if sampling rate exceeds max sampling rate of 4000000000 KHz.
 func ValidateSamplingRate(samplingRate uint32) error {
 	if samplingRate > maxSamplingRate {
-		return errors.New("invalid Document SamplingRate")
+		return errInvalidDocumentSamplingRate
 	}
 	return nil
 }
@@ -317,7 +316,7 @@ func ValidateSamplingRate(samplingRate uint32) error {
 // Returns an error if latitude is not within [-90,90].
 func ValidateLatitude(latitude float32) error {
 	if latitude > maxLatitude || latitude < minLatitude {
-		return errors.New("invalid Document Latitude")
+		return errInvalidDocumentLatitude
 	}
 	return nil
 }
@@ -326,7 +325,7 @@ func ValidateLatitude(latitude float32) error {
 // Returns an error if a longitude is not within [-180,180].
 func ValidateLongitude(longitude float32) error {
 	if longitude > maxLongitude || longitude < minLongitude {
-		return errors.New("invalid Document Longitude")
+		return errInvalidDocumentLongitude
 	}
 	return nil
 }
@@ -335,16 +334,16 @@ func ValidateLongitude(longitude float32) error {
 // Returns an error if a url is an empty string, unsupported format, or unreachable.
 func ValidateImageURLs(imageURLs map[string]string) error {
 	if imageURLs == nil {
-		return errors.New("nil Document ImageURLs")
+		return errInvalidDocumentImageURLs
 	}
 
 	for k, v := range imageURLs {
 		if !fuidRegex.MatchString(k) {
-			return errors.New("invalid Document fuid")
+			return errInvalidDocumentFUID
 		}
 
 		if strings.TrimSpace(v) == "" {
-			return errors.New("invalid Document ImageURL")
+			return errInvalidDocumentImageURL
 		}
 		if !imageRegex.MatchString(strings.ToLower(v)) {
 			return fmt.Errorf("invalid Document image type ImageURL: %s", v)
@@ -360,16 +359,16 @@ func ValidateImageURLs(imageURLs map[string]string) error {
 // Returns an error if a url is an empty string, unsupported format, or unreachable.
 func ValidateAudioURLs(audioURLs map[string]string) error {
 	if audioURLs == nil {
-		return errors.New("nil Document AudioURLs")
+		return errInvalidDocumentAudioURLs
 	}
 
 	for k, v := range audioURLs {
 		if !fuidRegex.MatchString(k) {
-			return errors.New("invalid Document fuid")
+			return errInvalidDocumentFUID
 		}
 
 		if strings.TrimSpace(v) == "" {
-			return errors.New("invalid Document AudioURL")
+			return errInvalidDocumentAudioURL
 		}
 		if !audioRegex.MatchString(strings.ToLower(v)) {
 			return fmt.Errorf("invalid Document audio type AudioURL: %s", v)
@@ -385,16 +384,16 @@ func ValidateAudioURLs(audioURLs map[string]string) error {
 // Returns an error if a url is an empty string, unsupported format, or unreachable.
 func ValidateVideoURLs(videoURLs map[string]string) error {
 	if videoURLs == nil {
-		return errors.New("nil Document VideoURLs")
+		return errInvalidDocumentVideoURLs
 	}
 
 	for k, v := range videoURLs {
 		if !fuidRegex.MatchString(k) {
-			return errors.New("invalid Document fuid")
+			return errInvalidDocumentFUID
 		}
 
 		if strings.TrimSpace(v) == "" {
-			return errors.New("invalid Document VideoURL")
+			return errInvalidDocumentVideoURL
 		}
 		if !videoRegex.MatchString(strings.ToLower(v)) {
 			return fmt.Errorf("invalid Document video type VideoURL: %s", v)
@@ -410,16 +409,16 @@ func ValidateVideoURLs(videoURLs map[string]string) error {
 // Returns an error if a url is an empty string, or unreachable.
 func ValidateFileURLs(fileURLs map[string]string) error {
 	if fileURLs == nil {
-		return errors.New("nil Document FileURLs")
+		return errInvalidDocumentFileURLs
 	}
 
 	for k, v := range fileURLs {
 		if !fuidRegex.MatchString(k) {
-			return errors.New("invalid Document fuid")
+			return errInvalidDocumentFUID
 		}
 
 		if strings.TrimSpace(v) == "" {
-			return errors.New("invalid Document FileURL")
+			return errInvalidDocumentFileURL
 		}
 		if _, err := url.ParseRequestURI(v); err != nil {
 			return fmt.Errorf("invalid Document FileURL: %s", v)
@@ -432,7 +431,7 @@ func ValidateFileURLs(fileURLs map[string]string) error {
 // Returns an error if timestamp is set before Jan 1, 1990 or now.
 func ValidateRecordTimestamp(timestamp int64) error {
 	if timestamp < minTimestamp || timestamp > time.Now().UTC().Unix() {
-		return errors.New("invalid Document RecordTimestamp")
+		return errInvalidDocumentRecordTimestamp
 	}
 
 	return nil
@@ -446,7 +445,7 @@ func ValidateCreateTimestamp(createTimestamp int64, recordTimeStamp int64) error
 	}
 
 	if createTimestamp < recordTimeStamp || createTimestamp > time.Now().UTC().Unix() {
-		return errors.New("invalid Document CreateTimestamp")
+		return errInvalidDocumentCreateTimestamp
 	}
 
 	return nil
@@ -460,7 +459,7 @@ func ValidateUpdateTimestamp(updateTimestamp int64, createTimestamp int64) error
 	}
 
 	if createTimestamp > updateTimestamp || updateTimestamp > time.Now().UTC().Unix() {
-		return errors.New("invalid Document UpdateTimestamp")
+		return errInvalidUpdateTimestamp
 	}
 
 	return nil

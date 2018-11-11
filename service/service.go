@@ -138,18 +138,18 @@ func (s Service) CreateDocument(ctx context.Context, req *pb.DocumentRequest) (*
 	log.Println("[INFO] Requesting CreateDocument service")
 
 	if ok := isStateAvailable(); !ok {
-		return nil, status.Error(codes.Unavailable, "Service unavailable")
+		return nil, errServiceUnavailable
 	}
 
 	if req == nil {
 		log.Println("[ERROR] Nil request")
-		return nil, status.Error(codes.InvalidArgument, "Nil request")
+		return nil, errNilRequest
 	}
 
 	doc := req.GetData()
 	if doc == nil {
 		log.Println("[ERROR] Nil request data")
-		return nil, status.Error(codes.InvalidArgument, "Nil request data")
+		return nil, errNilRequestData
 	}
 
 	doc.Duid = duidGenerator.NewDUID()
@@ -256,18 +256,18 @@ func (s Service) ListUserDocumentCollection(ctx context.Context, req *pb.Documen
 	log.Println("[INFO] Requesting ListUserDocumentCollection service")
 
 	if ok := isStateAvailable(); !ok {
-		return nil, status.Error(codes.Unavailable, "Service unavailable")
+		return nil, errServiceUnavailable
 	}
 
 	if req == nil {
 		log.Println("[ERROR] Nil request")
-		return nil, status.Error(codes.InvalidArgument, "Nil request")
+		return nil, errNilRequest
 	}
 
 	doc := req.GetData()
 	if doc == nil {
 		log.Println("[ERROR] Nil request data")
-		return nil, status.Error(codes.InvalidArgument, "Nil request data")
+		return nil, errNilRequestData
 	}
 
 	if err := ValidateUUID(doc.GetUuid()); err != nil {
@@ -364,23 +364,23 @@ func (s Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (*
 	log.Println("[INFO] Requesting UpdateDocument service")
 
 	if ok := isStateAvailable(); !ok {
-		return nil, status.Error(codes.Unavailable, "Service unavailable")
+		return nil, errServiceUnavailable
 	}
 
 	if req == nil {
 		log.Println("[ERROR] Nil request")
-		return nil, status.Error(codes.InvalidArgument, "Nil request")
+		return nil, errNilRequest
 	}
 
 	doc := req.GetData()
 	if doc == nil {
 		log.Println("[ERROR] Nil request data")
-		return nil, status.Error(codes.InvalidArgument, "Nil request data")
+		return nil, errNilRequestData
 	}
 
 	if doc.GetDuid() == "" {
 		log.Printf("[ERROR] Missing DUID")
-		return nil, status.Error(codes.InvalidArgument, "Missing DUID")
+		return nil, errMissingDUID
 	}
 
 	// Get the specific lock if it already exists, else make the lock
@@ -524,23 +524,23 @@ func (s Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (*
 	log.Println("[INFO] Requesting DeleteDocument service")
 
 	if ok := isStateAvailable(); !ok {
-		return nil, status.Error(codes.Unavailable, "Service unavailable")
+		return nil, errServiceUnavailable
 	}
 
 	if req == nil {
 		log.Println("[ERROR] Nil request")
-		return nil, status.Error(codes.InvalidArgument, "Nil request")
+		return nil, errNilRequest
 	}
 
 	doc := req.GetData()
 	if doc == nil {
 		log.Println("[ERROR] Nil request data")
-		return nil, status.Error(codes.InvalidArgument, "Nil request data")
+		return nil, errNilRequestData
 	}
 
 	if doc.GetDuid() == "" {
 		log.Printf("[ERROR] Missing DUID")
-		return nil, status.Error(codes.InvalidArgument, "Missing DUID")
+		return nil, errMissingDUID
 	}
 
 	if err := ValidateDUID(doc.GetDuid()); err != nil {
@@ -665,8 +665,22 @@ func (s Service) ListDistinctFieldValues(ctx context.Context, req *pb.DocumentRe
 
 // QueryDocument queries the MongoDB server with the given query parameters.
 // Returns a collection of Documents.
-//TODO
 func (s Service) QueryDocument(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
+	log.Println("[INFO] Requesting QueryDocument service")
+	if ok := isStateAvailable(); !ok {
+		return nil, errServiceUnavailable
+	}
+
+	if req == nil {
+		log.Println("[ERROR] Nil request")
+		return nil, errNilRequest
+	}
+
+	doc := req.GetData()
+	if doc == nil {
+		log.Println("[ERROR] Nil request data")
+		return nil, errNilRequestData
+	}
 
 	return nil, nil
 
