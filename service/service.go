@@ -190,6 +190,7 @@ func (s Service) CreateDocument(ctx context.Context, req *pb.DocumentRequest) (*
 			doc.VideoUrlsMap[uuid.New().String()] = url
 		}
 	}
+
 	// Extract file URLS
 	if doc.GetFileUrlsMap() == nil {
 		doc.FileUrlsMap = make(map[string]string)
@@ -418,6 +419,7 @@ func (s Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (*
 			doc.VideoUrlsMap[uuid.New().String()] = url
 		}
 	}
+
 	// Extract file URLS
 	if doc.GetFileUrlsMap() == nil {
 		doc.FileUrlsMap = make(map[string]string)
