@@ -2,6 +2,8 @@ package service
 
 import (
 	pb "github.com/faraonc/hwsc-api-blocks/int/hwsc-document-svc/proto"
+	"github.com/faraonc/hwsc-document-svc/conf"
+	"github.com/google/uuid"
 	"github.com/mongodb/mongo-go-driver/bson"
 	"github.com/mongodb/mongo-go-driver/mongo"
 	"github.com/mongodb/mongo-go-driver/mongo/findopt"
@@ -33,14 +35,6 @@ type duidLocker struct {
 type Service struct{}
 
 const (
-	//TODO New MongoDB Server
-	mongoServerDBWriter = "mongodb://hwscmongodb:89PoXCVmIJyg8lSpQ6aF2iaoQk4dDOYav4ZVHkibV6dIZaKF0I2gft8GgKcCOAtXkxIucq9ZBpxYTO9k8QVnTw" +
-		"==@hwscmongodb.documents.azure.com:10255/?ssl=true&replicaSet=globaldb"
-	mongoServerDBReader = "mongodb://hwscmongodb:mV2GqGnzoOXPF82QZbEzEi0QcFSLK4fyh2EAzU3KrZfw1wSePaQbKINUrWKfblBS3diQfJCd7ugAOYHMZK2eLA" +
-		"==@hwscmongodb.documents.azure.com:10255/?ssl=true&replicaSet=globaldb"
-	mongoDB           = "hwsc-document"
-	mongoDBCollection = "hwsc-document"
-
 	// available - Service is ready and available
 	available state = 0
 
@@ -82,7 +76,7 @@ func (d duidLocker) NewDUID() string {
 }
 
 // GetStatus gets the current status of the service.
-func (s Service) GetStatus(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
+func (s *Service) GetStatus(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
 	log.Println("[INFO] Requesting GetStatus service")
 
 	// Lock the state for reading
@@ -99,7 +93,7 @@ func (s Service) GetStatus(ctx context.Context, req *pb.DocumentRequest) (*pb.Do
 	}
 
 	// Check MongoDB Server
-	client, err := mongo.NewClient(mongoServerDBReader)
+	client, err := mongo.NewClient(conf.DocumentDB.Reader)
 	if err != nil {
 		log.Printf("[ERROR] Creating MongoDB client: %s\n", err.Error())
 		return &pb.DocumentResponse{
@@ -133,31 +127,25 @@ func (s Service) GetStatus(ctx context.Context, req *pb.DocumentRequest) (*pb.Do
 
 // CreateDocument creates a document in MongoDB.
 // Returns the Document.
-func (s Service) CreateDocument(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
+func (s *Service) CreateDocument(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
 	log.Println("[INFO] Requesting CreateDocument service")
 
 	if ok := isStateAvailable(); !ok {
-		return nil, status.Error(codes.Unavailable, "Service unavailable")
+		return nil, errServiceUnavailable
 	}
 
 	if req == nil {
 		log.Println("[ERROR] Nil request")
-		return nil, status.Error(codes.InvalidArgument, "Nil request")
+		return nil, errNilRequest
 	}
 
 	doc := req.GetData()
 	if doc == nil {
 		log.Println("[ERROR] Nil request data")
-		return nil, status.Error(codes.InvalidArgument, "Nil request data")
+		return nil, errNilRequestData
 	}
 
 	doc.Duid = duidGenerator.NewDUID()
-	doc.CreateTimestamp = time.Now().UTC().Unix()
-
-	if err := ValidateDocument(doc); err != nil {
-		log.Printf("[ERROR] %s\n", err.Error())
-		return nil, status.Error(codes.InvalidArgument, err.Error())
-	}
 
 	// Get the specific lock if it already exists, else make the lock
 	lock, _ := serviceClientLocker.LoadOrStore(doc.GetDuid(), &sync.RWMutex{})
@@ -166,10 +154,57 @@ func (s Service) CreateDocument(ctx context.Context, req *pb.DocumentRequest) (*
 	// Unlock before the function exits
 	defer lock.(*sync.RWMutex).Unlock()
 
+	// Extract image URLS
+	if doc.GetImageUrlsMap() == nil {
+		doc.ImageUrlsMap = make(map[string]string)
+	}
+	if req.GetImageUrls() != nil {
+		for _, url := range req.GetImageUrls() {
+			doc.ImageUrlsMap[uuid.New().String()] = url
+		}
+	}
+
+	// Extract audio URLS
+	if doc.GetAudioUrlsMap() == nil {
+		doc.AudioUrlsMap = make(map[string]string)
+	}
+	if req.GetAudioUrls() != nil {
+		for _, url := range req.GetAudioUrls() {
+			doc.AudioUrlsMap[uuid.New().String()] = url
+		}
+	}
+
+	// Extract video URLS
+	if doc.GetVideoUrlsMap() == nil {
+		doc.VideoUrlsMap = make(map[string]string)
+	}
+	if req.GetVideoUrls() != nil {
+		for _, url := range req.GetVideoUrls() {
+			doc.VideoUrlsMap[uuid.New().String()] = url
+		}
+	}
+
+	// Extract file URLS
+	if doc.GetFileUrlsMap() == nil {
+		doc.FileUrlsMap = make(map[string]string)
+	}
+	if req.GetFileUrls() != nil {
+		for _, url := range req.GetFileUrls() {
+			doc.FileUrlsMap[uuid.New().String()] = url
+		}
+	}
+
+	doc.CreateTimestamp = time.Now().UTC().Unix()
+
+	if err := ValidateDocument(doc); err != nil {
+		log.Printf("[ERROR] %s\n", err.Error())
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
 	log.Printf("[INFO] Document contains:\n %s\n\n", doc)
 
 	log.Printf("[INFO] Connecting to mongodb://hwscmongodb duid: %s - uuid: %s\n", doc.GetDuid(), doc.GetUuid())
-	client, err := mongo.NewClient(mongoServerDBWriter)
+	client, err := mongo.NewClient(conf.DocumentDB.Writer)
 	if err != nil {
 		log.Printf("[ERROR] Creating MongoDB client: %s\n", err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
@@ -180,7 +215,7 @@ func (s Service) CreateDocument(ctx context.Context, req *pb.DocumentRequest) (*
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	collection := client.Database(mongoDB).Collection(mongoDBCollection)
+	collection := client.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
 
 	res, err := collection.InsertOne(context.Background(), doc)
 	if err != nil {
@@ -210,22 +245,22 @@ func (s Service) CreateDocument(ctx context.Context, req *pb.DocumentRequest) (*
 
 // ListUserDocumentCollection retrieves all the MongoDB documents for a specific user with the given UUID.
 // Returns a collection of Documents.
-func (s Service) ListUserDocumentCollection(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
+func (s *Service) ListUserDocumentCollection(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
 	log.Println("[INFO] Requesting ListUserDocumentCollection service")
 
 	if ok := isStateAvailable(); !ok {
-		return nil, status.Error(codes.Unavailable, "Service unavailable")
+		return nil, errServiceUnavailable
 	}
 
 	if req == nil {
 		log.Println("[ERROR] Nil request")
-		return nil, status.Error(codes.InvalidArgument, "Nil request")
+		return nil, errNilRequest
 	}
 
 	doc := req.GetData()
 	if doc == nil {
 		log.Println("[ERROR] Nil request data")
-		return nil, status.Error(codes.InvalidArgument, "Nil request data")
+		return nil, errNilRequestData
 	}
 
 	if err := ValidateUUID(doc.GetUuid()); err != nil {
@@ -234,7 +269,7 @@ func (s Service) ListUserDocumentCollection(ctx context.Context, req *pb.Documen
 	}
 
 	log.Printf("[INFO] Connecting to mongodb://hwscmongodb uuid: %s\n", doc.GetUuid())
-	client, err := mongo.NewClient(mongoServerDBReader)
+	client, err := mongo.NewClient(conf.DocumentDB.Reader)
 	if err != nil {
 		log.Printf("[ERROR] Creating MongoDB client: %s\n", err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
@@ -245,7 +280,7 @@ func (s Service) ListUserDocumentCollection(ctx context.Context, req *pb.Documen
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	collection := client.Database(mongoDB).Collection(mongoDBCollection)
+	collection := client.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
 
 	// Find all MongoDB documents for the specific uuid
 	filter := bson.NewDocument(bson.EC.String("uuid", doc.GetUuid()))
@@ -318,27 +353,74 @@ func (s Service) ListUserDocumentCollection(ctx context.Context, req *pb.Documen
 
 // UpdateDocument (completely) updates a MongoDB document with a given DUID.
 // Returns the updated Document.
-func (s Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
+func (s *Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
 	log.Println("[INFO] Requesting UpdateDocument service")
 
 	if ok := isStateAvailable(); !ok {
-		return nil, status.Error(codes.Unavailable, "Service unavailable")
+		return nil, errServiceUnavailable
 	}
 
 	if req == nil {
 		log.Println("[ERROR] Nil request")
-		return nil, status.Error(codes.InvalidArgument, "Nil request")
+		return nil, errNilRequest
 	}
 
 	doc := req.GetData()
 	if doc == nil {
 		log.Println("[ERROR] Nil request data")
-		return nil, status.Error(codes.InvalidArgument, "Nil request data")
+		return nil, errNilRequestData
 	}
 
 	if doc.GetDuid() == "" {
 		log.Printf("[ERROR] Missing DUID")
-		return nil, status.Error(codes.InvalidArgument, "Missing DUID")
+		return nil, errMissingDUID
+	}
+
+	// Get the specific lock if it already exists, else make the lock
+	lock, _ := serviceClientLocker.LoadOrStore(doc.GetDuid(), &sync.RWMutex{})
+	// Lock
+	lock.(*sync.RWMutex).Lock()
+	// Unlock before the function exits
+	defer lock.(*sync.RWMutex).Unlock()
+
+	// Extract image URLS
+	if doc.GetImageUrlsMap() == nil {
+		doc.ImageUrlsMap = make(map[string]string)
+	}
+	if req.GetImageUrls() != nil {
+		for _, url := range req.GetImageUrls() {
+			doc.ImageUrlsMap[uuid.New().String()] = url
+		}
+	}
+
+	// Extract audio URLS
+	if doc.GetAudioUrlsMap() == nil {
+		doc.AudioUrlsMap = make(map[string]string)
+	}
+	if req.GetAudioUrls() != nil {
+		for _, url := range req.GetAudioUrls() {
+			doc.AudioUrlsMap[uuid.New().String()] = url
+		}
+	}
+
+	// Extract video URLS
+	if doc.GetVideoUrlsMap() == nil {
+		doc.VideoUrlsMap = make(map[string]string)
+	}
+	if req.GetVideoUrls() != nil {
+		for _, url := range req.GetVideoUrls() {
+			doc.VideoUrlsMap[uuid.New().String()] = url
+		}
+	}
+
+	// Extract file URLS
+	if doc.GetFileUrlsMap() == nil {
+		doc.FileUrlsMap = make(map[string]string)
+	}
+	if req.GetFileUrls() != nil {
+		for _, url := range req.GetFileUrls() {
+			doc.FileUrlsMap[uuid.New().String()] = url
+		}
 	}
 
 	doc.UpdateTimestamp = time.Now().UTC().Unix()
@@ -350,16 +432,9 @@ func (s Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (*
 
 	log.Printf("[INFO] Document contains:\n %s\n\n", doc)
 
-	// Get the specific lock if it already exists, else make the lock
-	lock, _ := serviceClientLocker.LoadOrStore(doc.GetDuid(), &sync.RWMutex{})
-	// Lock
-	lock.(*sync.RWMutex).Lock()
-	// Unlock before the function exits
-	defer lock.(*sync.RWMutex).Unlock()
-
 	log.Printf("[INFO] Connecting to mongodb://hwscmongodb duid: %s - uuid: %s\n",
 		doc.GetDuid(), doc.GetUuid())
-	client, err := mongo.NewClient(mongoServerDBWriter)
+	client, err := mongo.NewClient(conf.DocumentDB.Writer)
 	if err != nil {
 		log.Printf("[ERROR] Creating MongoDB client: %s\n", err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
@@ -370,7 +445,7 @@ func (s Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (*
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	collection := client.Database(mongoDB).Collection(mongoDBCollection)
+	collection := client.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
 
 	filter := bson.NewDocument(
 		bson.EC.String("duid", doc.GetDuid()),
@@ -402,6 +477,17 @@ func (s Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (*
 			doc.GetDuid(), doc.GetUuid())
 	}
 
+	if err := ValidateDocument(document); err != nil {
+		log.Printf("[ERROR] Success updating document, duid: %s - uuid: %s with validation error: %s\n",
+			doc.GetDuid(), doc.GetUuid(), err.Error())
+		log.Printf("[ERROR] Suspected document: \n%s\n\n", doc)
+		return &pb.DocumentResponse{
+			Status:  &pb.DocumentResponse_Code{Code: uint32(codes.Internal)},
+			Message: "Updated document with validation error",
+			Data:    document,
+		}, nil
+	}
+
 	log.Printf("[DEBUG] Updated document: \n%s\n\n", document)
 
 	if err := client.Disconnect(context.TODO()); err != nil {
@@ -427,27 +513,27 @@ func (s Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (*
 
 // DeleteDocument deletes a MongoDB document using UUID and DUID.
 // Returns the deleted Document.
-func (s Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
+func (s *Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
 	log.Println("[INFO] Requesting DeleteDocument service")
 
 	if ok := isStateAvailable(); !ok {
-		return nil, status.Error(codes.Unavailable, "Service unavailable")
+		return nil, errServiceUnavailable
 	}
 
 	if req == nil {
 		log.Println("[ERROR] Nil request")
-		return nil, status.Error(codes.InvalidArgument, "Nil request")
+		return nil, errNilRequest
 	}
 
 	doc := req.GetData()
 	if doc == nil {
 		log.Println("[ERROR] Nil request data")
-		return nil, status.Error(codes.InvalidArgument, "Nil request data")
+		return nil, errNilRequestData
 	}
 
 	if doc.GetDuid() == "" {
 		log.Printf("[ERROR] Missing DUID")
-		return nil, status.Error(codes.InvalidArgument, "Missing DUID")
+		return nil, errMissingDUID
 	}
 
 	if err := ValidateDUID(doc.GetDuid()); err != nil {
@@ -469,7 +555,7 @@ func (s Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (*
 
 	log.Printf("[INFO] Connecting to mongodb://hwscmongodb duid: %s - uuid: %s\n",
 		doc.GetDuid(), doc.GetUuid())
-	client, err := mongo.NewClient(mongoServerDBWriter)
+	client, err := mongo.NewClient(conf.DocumentDB.Writer)
 	if err != nil {
 		log.Printf("[ERROR] Creating MongoDB client: %s\n", err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
@@ -480,7 +566,7 @@ func (s Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (*
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	collection := client.Database(mongoDB).Collection(mongoDBCollection)
+	collection := client.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
 
 	filter := bson.NewDocument(
 		bson.EC.String("duid", doc.GetDuid()),
@@ -506,6 +592,17 @@ func (s Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (*
 		return nil, status.Errorf(codes.InvalidArgument,
 			"Document not found, duid: %s - uuid: %s",
 			doc.GetDuid(), doc.GetUuid())
+	}
+
+	if err := ValidateDocument(document); err != nil {
+		log.Printf("[ERROR] Success deleting document, duid: %s - uuid: %s with validation error: %s\n",
+			doc.GetDuid(), doc.GetUuid(), err.Error())
+		log.Printf("[ERROR] Suspected document: \n%s\n\n", doc)
+		return &pb.DocumentResponse{
+			Status:  &pb.DocumentResponse_Code{Code: uint32(codes.Internal)},
+			Message: "Deleted document with validation error",
+			Data:    document,
+		}, nil
 	}
 
 	log.Printf("[DEBUG] Deleted document: \n%s\n\n", document)
@@ -535,7 +632,7 @@ func (s Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (*
 // AddFileMetadata adds a new FileMetadata in a MongoDB document using a given url, UUID and DUID.
 // Returns the updated Document.
 // TODO
-func (s Service) AddFileMetadata(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
+func (s *Service) AddFileMetadata(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
 
 	return nil, nil
 
@@ -544,7 +641,39 @@ func (s Service) AddFileMetadata(ctx context.Context, req *pb.DocumentRequest) (
 // DeleteFileMetadata deletes a FileMetadata in a MongoDB document using a given FUID, UUID and DUID.
 // Returns the updated Document.
 //TODO
-func (s Service) DeleteFileMetadata(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
+func (s *Service) DeleteFileMetadata(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
+
+	return nil, nil
+
+}
+
+// ListDistinctFieldValues list all the unique fields values required for the front-end drop-down filter
+// Returns the QueryTransaction.
+//TODO
+func (s *Service) ListDistinctFieldValues(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
+
+	return nil, nil
+
+}
+
+// QueryDocument queries the MongoDB server with the given query parameters.
+// Returns a collection of Documents.
+func (s *Service) QueryDocument(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
+	log.Println("[INFO] Requesting QueryDocument service")
+	if ok := isStateAvailable(); !ok {
+		return nil, errServiceUnavailable
+	}
+
+	if req == nil {
+		log.Println("[ERROR] Nil request")
+		return nil, errNilRequest
+	}
+
+	doc := req.GetData()
+	if doc == nil {
+		log.Println("[ERROR] Nil request data")
+		return nil, errNilRequestData
+	}
 
 	return nil, nil
 
