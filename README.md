@@ -25,6 +25,13 @@ The proto file and compiled proto buffers are located in [hwsc-api-blocks](https
 ### DeleteFileMetadata
 - Deletes a FileMetadata in a MongoDB document using a given FUID, UUID and DUID.
 - Returns the updated Document.
+### ListDistinctFieldValues
+- Retrieves all the unique fields values required for the front-end drop-down filter.
+- Returns the QueryTransaction
+### QueryDocument
+- Queries the MongoDB server with the given query parameters.
+- Returns a collection of Documents.
+
 ## Prerequisites
 - GoLang version [go 1.11.1](https://golang.org/dl/)
 - GoLang Dependency Management [dep](https://github.com/golang/dep)
@@ -32,6 +39,11 @@ The proto file and compiled proto buffers are located in [hwsc-api-blocks](https
 
 ## How to Run
 1. Install dependencies and generate vendor folder ``$ dep ensure -v``
-2. Run main ``go run main.go``
+2. Run main ``$ go run main.go``
 3. [Optional] If a new proto file and compiled proto buffer exists in [hwsc-api-blocks](https://github.com/faraonc/hwsc-api-blocks/tree/master/int/hwsc-document-svc/proto), update dependency ``$dep ensure -update``
+
+## How to Unit Test
+1. ``$ cd service``
+2. For command-line summary, ``$ go test -cover -v``
+3. For comprehensive summary, ``$ bash unit_test.sh``
 

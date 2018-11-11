@@ -16,15 +16,18 @@ const (
 	maxFirstNameLength    = 32
 	maxCallTypeNameLength = 64
 	maxGroundTypeLength   = 64
-	maxRegionLength       = 64
+	maxCityLength         = 64
+	maxStateLength        = 32
+	maxProvinceLength     = 48
+	maxCountryLength      = 64
 	maxSensorTypeLength   = 64
 	maxSensorNameLength   = 64
 	// KiloHertz
-	maxSampleRate = 4000000000
-	maxLatitude   = 90
-	minLatitude   = -90
-	maxLongitude  = 180
-	minLongitude  = -180
+	maxSamplingRate = 4000000000
+	maxLatitude     = 90
+	minLatitude     = -90
+	maxLongitude    = 180
+	minLongitude    = -180
 	// Minimum timestamp in seconds (Jan 1, 1990)
 	minTimestamp = 631152000
 )
@@ -61,10 +64,8 @@ func ValidateDocument(meta *pb.Document) error {
 	if err := ValidateUUID(meta.GetUuid()); err != nil {
 		return err
 	}
-	if err := ValidateLastName(meta.GetLastName()); err != nil {
-		return err
-	}
-	if err := ValidateFirstName(meta.GetFirstName()); err != nil {
+	if err := ValidatePublisher(meta.GetPublisherName().GetLastName(),
+		meta.GetPublisherName().GetFirstName()); err != nil {
 		return err
 	}
 	if err := ValidateCallTypeName(meta.GetCallTypeName()); err != nil {
@@ -73,7 +74,8 @@ func ValidateDocument(meta *pb.Document) error {
 	if err := ValidateGroundType(meta.GetGroundType()); err != nil {
 		return err
 	}
-	if err := ValidateRegion(meta.GetRegion()); err != nil {
+	if err := ValidateStudySite(meta.GetStudySite().GetCity(), meta.GetStudySite().GetState(),
+		meta.GetStudySite().GetProvince(), meta.GetStudySite().GetCountry()); err != nil {
 		return err
 	}
 	if err := ValidateOcean(meta.GetOcean()); err != nil {
@@ -85,7 +87,7 @@ func ValidateDocument(meta *pb.Document) error {
 	if err := ValidateSensorName(meta.GetSensorName()); err != nil {
 		return err
 	}
-	if err := ValidateSampleRate(meta.GetSampleRate()); err != nil {
+	if err := ValidateSamplingRate(meta.GetSamplingRate()); err != nil {
 		return err
 	}
 	if err := ValidateLatitude(meta.GetLatitude()); err != nil {
@@ -94,16 +96,16 @@ func ValidateDocument(meta *pb.Document) error {
 	if err := ValidateLongitude(meta.GetLongitude()); err != nil {
 		return err
 	}
-	if err := ValidateImageURLs(meta.GetImageUrl()); err != nil {
+	if err := ValidateImageURLs(meta.GetImageUrlsMap()); err != nil {
 		return err
 	}
-	if err := ValidateAudioURLs(meta.GetAudioUrl()); err != nil {
+	if err := ValidateAudioURLs(meta.GetAudioUrlsMap()); err != nil {
 		return err
 	}
-	if err := ValidateVideoURLs(meta.GetVideoUrl()); err != nil {
+	if err := ValidateVideoURLs(meta.GetVideoUrlsMap()); err != nil {
 		return err
 	}
-	if err := ValidateFileURLs(meta.GetFileUrl()); err != nil {
+	if err := ValidateFileURLs(meta.GetFileUrlsMap()); err != nil {
 		return err
 	}
 	if err := ValidateRecordTimestamp(meta.GetRecordTimestamp()); err != nil {
@@ -115,7 +117,7 @@ func ValidateDocument(meta *pb.Document) error {
 	if err := ValidateUpdateTimestamp(meta.GetUpdateTimestamp(), meta.GetCreateTimestamp()); err != nil {
 		return err
 	}
-	if len(meta.GetImageUrl()) == 0 && len(meta.GetAudioUrl()) == 0 {
+	if len(meta.GetImageUrlsMap()) == 0 && len(meta.GetAudioUrlsMap()) == 0 {
 		return errors.New("requires at least 1 valid Document ImageURL or AudioURL")
 	}
 
@@ -146,6 +148,19 @@ func ValidateFUID(fuid string) error {
 	if !fuidRegex.MatchString(fuid) {
 		return errors.New("invalid Document fuid")
 	}
+	return nil
+}
+
+// ValidatePublisher validates the publisher name.
+// Returns an error if last name or first name fails validation
+func ValidatePublisher(lastName string, firstName string) error {
+	if err := ValidateLastName(lastName); err != nil {
+		return err
+	}
+	if err := ValidateFirstName(firstName); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -185,11 +200,57 @@ func ValidateGroundType(groundType string) error {
 	return nil
 }
 
-// ValidateRegion validates region.
-// Returns an error if region is an empty string or exceeds 64 chars.
-func ValidateRegion(region string) error {
-	if strings.TrimSpace(region) == "" || len(region) > maxRegionLength {
-		return errors.New("invalid Document Region")
+// ValidateStudySite validates study site.
+// Returns an error if city, state, province, or country fails validation
+func ValidateStudySite(city string, state string, province string, country string) error {
+	if err := ValidateCity(city); err != nil {
+		return err
+	}
+	if err := ValidateState(state); err != nil {
+		return err
+	}
+	if err := ValidateProvince(province); err != nil {
+		return err
+	}
+	if err := ValidateCountry(country); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ValidateCity validates city study site.
+// Returns an error if city is an empty string or exceeds 64 chars.
+func ValidateCity(city string) error {
+	if strings.TrimSpace(city) == "" || len(city) > maxCityLength {
+		return errors.New("invalid Document City")
+	}
+	return nil
+}
+
+// ValidateState validates state study site.
+// Returns an error if state exceeds 32 chars.
+func ValidateState(state string) error {
+	if len(state) > maxStateLength {
+		return errors.New("invalid Document State")
+	}
+	return nil
+}
+
+// ValidateProvince validates province study site.
+// Returns an error if province exceeds 48 chars.
+func ValidateProvince(province string) error {
+	if len(province) > maxProvinceLength {
+		return errors.New("invalid Document Province")
+	}
+	return nil
+}
+
+// ValidateCountry validates country study site.
+// Returns an error if country is an empty string or exceeds 64 chars.
+func ValidateCountry(country string) error {
+	if strings.TrimSpace(country) == "" || len(country) > maxCountryLength {
+		return errors.New("invalid Document Country")
 	}
 	return nil
 }
@@ -243,11 +304,11 @@ func ValidateSensorName(sensorName string) error {
 	return nil
 }
 
-// ValidateSampleRate validates sample rate.
-// Returns an error if sample rate exceeds max sample rate of 4000000000 KHz.
-func ValidateSampleRate(sampleRate uint32) error {
-	if sampleRate > maxSampleRate {
-		return errors.New("invalid Document SampleRate")
+// ValidateSamplingRate validates sampling rate.
+// Returns an error if sampling rate exceeds max sampling rate of 4000000000 KHz.
+func ValidateSamplingRate(samplingRate uint32) error {
+	if samplingRate > maxSamplingRate {
+		return errors.New("invalid Document SamplingRate")
 	}
 	return nil
 }
