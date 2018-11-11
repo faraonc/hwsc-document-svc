@@ -15,7 +15,7 @@
   name = "github.com/faraonc/hwsc-api-blocks"
   packages = ["int/hwsc-document-svc/proto"]
   pruneopts = "UT"
-  revision = "3f45e20d78b1f9d7e78c16000974e8ae6b1676af"
+  revision = "d55eb9b23a5f2c1c42091a362d2ddc9fc7125333"
 
 [[projects]]
   digest = "1:586ea76dbd0374d6fb649a91d70d652b7fe0ccffb8910a77468e7702e7901f3d"
@@ -180,7 +180,7 @@
     "trace",
   ]
   pruneopts = "UT"
-  revision = "04ba8c85dd55b4ee6099abbb0a90760b080c24a4"
+  revision = "03003ca0c849e57b6ea29a4bab8d3cb6e4d568fe"
 
 [[projects]]
   branch = "master"
@@ -227,7 +227,7 @@
   name = "google.golang.org/genproto"
   packages = ["googleapis/rpc/status"]
   pruneopts = "UT"
-  revision = "5fc9ac5403620be16bcdb0c8e7644b1178472c3b"
+  revision = "b5d43981345bdb2c233eb4bf3277847b48c6fdc6"
 
 [[projects]]
   digest = "1:c3ad9841823db6da420a5625b367913b4ff54bbe60e8e3c98bd20e243e62e2d2"

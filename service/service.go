@@ -160,7 +160,7 @@ func (s Service) CreateDocument(ctx context.Context, req *pb.DocumentRequest) (*
 	lock.(*sync.RWMutex).Lock()
 	// Unlock before the function exits
 	defer lock.(*sync.RWMutex).Unlock()
-	// TODO unit test nil lists
+
 	// Extract image URLS
 	if doc.GetImageUrlsMap() == nil {
 		doc.ImageUrlsMap = make(map[string]string)
@@ -382,6 +382,52 @@ func (s Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (*
 		return nil, status.Error(codes.InvalidArgument, "Missing DUID")
 	}
 
+	// Get the specific lock if it already exists, else make the lock
+	lock, _ := serviceClientLocker.LoadOrStore(doc.GetDuid(), &sync.RWMutex{})
+	// Lock
+	lock.(*sync.RWMutex).Lock()
+	// Unlock before the function exits
+	defer lock.(*sync.RWMutex).Unlock()
+
+	// Extract image URLS
+	if doc.GetImageUrlsMap() == nil {
+		doc.ImageUrlsMap = make(map[string]string)
+	}
+	if req.GetImageUrls() != nil {
+		for _, url := range req.GetImageUrls() {
+			doc.ImageUrlsMap[uuid.New().String()] = url
+		}
+	}
+
+	// Extract audio URLS
+	if doc.GetAudioUrlsMap() == nil {
+		doc.AudioUrlsMap = make(map[string]string)
+	}
+	if req.GetAudioUrls() != nil {
+		for _, url := range req.GetAudioUrls() {
+			doc.AudioUrlsMap[uuid.New().String()] = url
+		}
+	}
+
+	// Extract video URLS
+	if doc.GetVideoUrlsMap() == nil {
+		doc.VideoUrlsMap = make(map[string]string)
+	}
+	if req.GetVideoUrls() != nil {
+		for _, url := range req.GetVideoUrls() {
+			doc.VideoUrlsMap[uuid.New().String()] = url
+		}
+	}
+	// Extract file URLS
+	if doc.GetFileUrlsMap() == nil {
+		doc.FileUrlsMap = make(map[string]string)
+	}
+	if req.GetFileUrls() != nil {
+		for _, url := range req.GetFileUrls() {
+			doc.FileUrlsMap[uuid.New().String()] = url
+		}
+	}
+
 	doc.UpdateTimestamp = time.Now().UTC().Unix()
 
 	if err := ValidateDocument(doc); err != nil {
@@ -390,13 +436,6 @@ func (s Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (*
 	}
 
 	log.Printf("[INFO] Document contains:\n %s\n\n", doc)
-
-	// Get the specific lock if it already exists, else make the lock
-	lock, _ := serviceClientLocker.LoadOrStore(doc.GetDuid(), &sync.RWMutex{})
-	// Lock
-	lock.(*sync.RWMutex).Lock()
-	// Unlock before the function exits
-	defer lock.(*sync.RWMutex).Unlock()
 
 	log.Printf("[INFO] Connecting to mongodb://hwscmongodb duid: %s - uuid: %s\n",
 		doc.GetDuid(), doc.GetUuid())
@@ -613,7 +652,7 @@ func (s Service) DeleteFileMetadata(ctx context.Context, req *pb.DocumentRequest
 
 }
 
-// ListDistinctFieldValues list all the unique fields values required for the drop-down filter
+// ListDistinctFieldValues list all the unique fields values required for the front-end drop-down filter
 // Returns the QueryTransaction.
 //TODO
 func (s Service) ListDistinctFieldValues(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {

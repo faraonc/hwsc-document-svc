@@ -34,17 +34,17 @@ func TestValidateDocument(t *testing.T) {
 			Latitude:     89.123,
 			Longitude:    -100.123,
 			ImageUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/images/Rotating_earth_(large).gif"},
 			AudioUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3"},
 			VideoUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			FileUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			RecordTimestamp: 1514764800,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 0,
@@ -73,11 +73,11 @@ func TestValidateDocument(t *testing.T) {
 			ImageUrlsMap: map[string]string{},
 			AudioUrlsMap: map[string]string{},
 			VideoUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			FileUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			RecordTimestamp: 1514764800,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 0,
@@ -104,17 +104,17 @@ func TestValidateDocument(t *testing.T) {
 			Latitude:     89.123,
 			Longitude:    -100.123,
 			ImageUrlsMap: map[string]string{
-				"4ff303392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df":  "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
+				"4ff303392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df":  "https://hwscdevstorage.blob.core.windows.net/images/Rotating_earth_(large).gif"},
 			AudioUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3"},
 			VideoUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			FileUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			RecordTimestamp: 1514764800,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 0,
@@ -141,17 +141,17 @@ func TestValidateDocument(t *testing.T) {
 			Latitude:     89.123,
 			Longitude:    -100.123,
 			ImageUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/images/Rotating_earth_(large).gif"},
 			AudioUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3"},
 			VideoUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			FileUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			RecordTimestamp: 1514764800,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 0,
@@ -178,17 +178,17 @@ func TestValidateDocument(t *testing.T) {
 			Latitude:     89.123,
 			Longitude:    -100.123,
 			ImageUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/images/Rotating_earth_(large).gif"},
 			AudioUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3"},
 			VideoUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			FileUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			RecordTimestamp: 1514764800,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 0,
@@ -215,17 +215,17 @@ func TestValidateDocument(t *testing.T) {
 			Latitude:     89.123,
 			Longitude:    -100.123,
 			ImageUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/images/Rotating_earth_(large).gif"},
 			AudioUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3"},
 			VideoUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			FileUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			RecordTimestamp: 1514764800,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 0,
@@ -252,17 +252,17 @@ func TestValidateDocument(t *testing.T) {
 			Latitude:     89.123,
 			Longitude:    -100.123,
 			ImageUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/images/Rotating_earth_(large).gif"},
 			AudioUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3"},
 			VideoUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			FileUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			RecordTimestamp: 1514764800,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 0,
@@ -289,17 +289,17 @@ func TestValidateDocument(t *testing.T) {
 			Latitude:     89.123,
 			Longitude:    -100.123,
 			ImageUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/images/Rotating_earth_(large).gif"},
 			AudioUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3"},
 			VideoUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			FileUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			RecordTimestamp: 1514764800,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 0,
@@ -326,17 +326,17 @@ func TestValidateDocument(t *testing.T) {
 			Latitude:     89.123,
 			Longitude:    -100.123,
 			ImageUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/images/Rotating_earth_(large).gif"},
 			AudioUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3"},
 			VideoUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			FileUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			RecordTimestamp: 1514764800,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 0,
@@ -363,23 +363,99 @@ func TestValidateDocument(t *testing.T) {
 			Latitude:     89.123,
 			Longitude:    -100.123,
 			ImageUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/images/Rotating_earth_(large).gif"},
 			AudioUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3"},
 			VideoUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			FileUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			RecordTimestamp: 1514764800,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
 			true, "invalid Document City"},
+		{&pb.Document{
+			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
+			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
+			PublisherName: &pb.Publisher{
+				LastName:  "Kim",
+				FirstName: "Lisa",
+			},
+			CallTypeName: "some call type name",
+			GroundType:   "some ground type",
+			StudySite: &pb.StudySite{
+				City:    "Seattle",
+				State:   "123456789012345678901234567890123",
+				Country: "USA",
+			},
+			Ocean:        "Pacific Ocean",
+			SensorType:   "some sensor type",
+			SensorName:   "some sensor name",
+			SamplingRate: 100,
+			Latitude:     89.123,
+			Longitude:    -100.123,
+			ImageUrlsMap: map[string]string{
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/images/Rotating_earth_(large).gif"},
+			AudioUrlsMap: map[string]string{
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3"},
+			VideoUrlsMap: map[string]string{
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
+			FileUrlsMap: map[string]string{
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
+			RecordTimestamp: 1514764800,
+			CreateTimestamp: 1539831496,
+			UpdateTimestamp: 0,
+			IsPublic:        true,
+		},
+			true, "invalid Document State"},
+		{&pb.Document{
+			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
+			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
+			PublisherName: &pb.Publisher{
+				LastName:  "Kim",
+				FirstName: "Lisa",
+			},
+			CallTypeName: "some call type name",
+			GroundType:   "some ground type",
+			StudySite: &pb.StudySite{
+				City:     "Vancouver",
+				Province: "1234567890123456789012345678901234567890123456789",
+				Country:  "Canada",
+			},
+			Ocean:        "Pacific Ocean",
+			SensorType:   "some sensor type",
+			SensorName:   "some sensor name",
+			SamplingRate: 100,
+			Latitude:     89.123,
+			Longitude:    -100.123,
+			ImageUrlsMap: map[string]string{
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/images/Rotating_earth_(large).gif"},
+			AudioUrlsMap: map[string]string{
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3"},
+			VideoUrlsMap: map[string]string{
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
+			FileUrlsMap: map[string]string{
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
+			RecordTimestamp: 1514764800,
+			CreateTimestamp: 1539831496,
+			UpdateTimestamp: 0,
+			IsPublic:        true,
+		},
+			true, "invalid Document Province"},
 		{&pb.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
@@ -400,17 +476,17 @@ func TestValidateDocument(t *testing.T) {
 			Latitude:     89.123,
 			Longitude:    -100.123,
 			ImageUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/images/Rotating_earth_(large).gif"},
 			AudioUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3"},
 			VideoUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			FileUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			RecordTimestamp: 1514764800,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 0,
@@ -437,17 +513,17 @@ func TestValidateDocument(t *testing.T) {
 			Latitude:     89.123,
 			Longitude:    -100.123,
 			ImageUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/images/Rotating_earth_(large).gif"},
 			AudioUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3"},
 			VideoUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			FileUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			RecordTimestamp: 1514764800,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 0,
@@ -474,17 +550,17 @@ func TestValidateDocument(t *testing.T) {
 			Latitude:     89.123,
 			Longitude:    -100.123,
 			ImageUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/images/Rotating_earth_(large).gif"},
 			AudioUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3"},
 			VideoUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			FileUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			RecordTimestamp: 1514764800,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 0,
@@ -511,17 +587,17 @@ func TestValidateDocument(t *testing.T) {
 			Latitude:     89.123,
 			Longitude:    -100.123,
 			ImageUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/images/Rotating_earth_(large).gif"},
 			AudioUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3"},
 			VideoUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			FileUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			RecordTimestamp: 1514764800,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 0,
@@ -548,17 +624,17 @@ func TestValidateDocument(t *testing.T) {
 			Latitude:     89.123,
 			Longitude:    -100.123,
 			ImageUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/images/Rotating_earth_(large).gif"},
 			AudioUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3"},
 			VideoUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			FileUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			RecordTimestamp: 1514764800,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 0,
@@ -585,17 +661,17 @@ func TestValidateDocument(t *testing.T) {
 			Latitude:     99.123,
 			Longitude:    -100.123,
 			ImageUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/images/Rotating_earth_(large).gif"},
 			AudioUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3"},
 			VideoUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			FileUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			RecordTimestamp: 1514764800,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 0,
@@ -622,17 +698,17 @@ func TestValidateDocument(t *testing.T) {
 			Latitude:     89.123,
 			Longitude:    -180.123,
 			ImageUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/images/Rotating_earth_(large).gif"},
 			AudioUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3"},
 			VideoUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			FileUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			RecordTimestamp: 1514764800,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 0,
@@ -660,16 +736,16 @@ func TestValidateDocument(t *testing.T) {
 			Longitude:    -100.123,
 			ImageUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/images/Rotating_earth_(large).gif"},
 			AudioUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3"},
 			VideoUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			FileUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			RecordTimestamp: 1514764800,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 0,
@@ -696,17 +772,17 @@ func TestValidateDocument(t *testing.T) {
 			Latitude:     89.123,
 			Longitude:    -100.123,
 			ImageUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/images/Rotating_earth_(large).gif"},
 			AudioUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3"},
 			VideoUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			FileUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			RecordTimestamp: 1514764800,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 0,
@@ -733,17 +809,17 @@ func TestValidateDocument(t *testing.T) {
 			Latitude:     89.123,
 			Longitude:    -100.123,
 			ImageUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/images/Rotating_earth_(large).gif"},
 			AudioUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3"},
 			VideoUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			FileUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			RecordTimestamp: 1514764800,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 0,
@@ -770,17 +846,17 @@ func TestValidateDocument(t *testing.T) {
 			Latitude:     89.123,
 			Longitude:    -100.123,
 			ImageUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/images/Rotating_earth_(large).gif"},
 			AudioUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3"},
 			VideoUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			FileUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			RecordTimestamp: 1514764800,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 0,
@@ -807,17 +883,17 @@ func TestValidateDocument(t *testing.T) {
 			Latitude:     89.123,
 			Longitude:    -100.123,
 			ImageUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/images/Rotating_earth_(large).gif"},
 			AudioUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3"},
 			VideoUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			FileUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			RecordTimestamp: 0,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 0,
@@ -844,17 +920,17 @@ func TestValidateDocument(t *testing.T) {
 			Latitude:     89.123,
 			Longitude:    -100.123,
 			ImageUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/images/Rotating_earth_(large).gif"},
 			AudioUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3"},
 			VideoUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			FileUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			RecordTimestamp: 1539831497,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 0,
@@ -881,17 +957,17 @@ func TestValidateDocument(t *testing.T) {
 			Latitude:     89.123,
 			Longitude:    -100.123,
 			ImageUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/images/Rotating_earth_(large).gif"},
 			AudioUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3"},
 			VideoUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			FileUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4"},
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			RecordTimestamp: 1514764800,
 			CreateTimestamp: 1539831496,
 			UpdateTimestamp: 1539831495,
@@ -1416,27 +1492,27 @@ func TestValidateImageURLs(t *testing.T) {
 		errorStr string
 	}{
 		{map[string]string{
-			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.jpg",
-			"4ff30392-8ec8-45a4-ba94-5e22c4a686d1": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
-			"4ff30392-8ec8-45a4-ba94-5e22c4a686d2": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif",
+			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/images/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.jpg",
+			"4ff30392-8ec8-45a4-ba94-5e22c4a686d1": "https://hwscdevstorage.blob.core.windows.net/imimagesage/hulkgif.png",
+			"4ff30392-8ec8-45a4-ba94-5e22c4a686d2": "https://hwscdevstorage.blob.core.windows.net/images/Rotating_earth_(large).gif",
 		}, false, ""},
 		{map[string]string{
-			"4ff30392-8ec8-45a4-ba9a4-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.jpg",
+			"4ff30392-8ec8-45a4-ba9a4-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/images/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.jpg",
 		}, true, "invalid Document fuid"},
 		{nil,
 			true, "nil Document ImageURLs",
 		},
 		{map[string]string{
 			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "",
-			"4ff30392-8ec8-45a4-ba94-5e22c4a686d1": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
-			"4ff30392-8ec8-45a4-ba94-5e22c4a686d2": "https://hwssappstorage.blob.core.windows.net/image/Rotating_earth_(large).gif",
+			"4ff30392-8ec8-45a4-ba94-5e22c4a686d1": "https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png",
+			"4ff30392-8ec8-45a4-ba94-5e22c4a686d2": "https://hwscdevstorage.blob.core.windows.net/images/Rotating_earth_(large).gif",
 		}, true, "invalid Document ImageURL"},
 		{map[string]string{
-			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "hwssappstorage.blob.core.windows.net/image/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.jpg",
-		}, true, "invalid Document ImageURL: hwssappstorage.blob.core.windows.net/image/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.jpg"},
+			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "hwscdevstorage.blob.core.windows.net/images/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.jpg",
+		}, true, "invalid Document ImageURL: hwscdevstorage.blob.core.windows.net/images/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.jpg"},
 		{map[string]string{
-			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3",
-		}, true, "invalid Document image type ImageURL: https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
+			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3",
+		}, true, "invalid Document image type ImageURL: https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3"},
 		{map[string]string{}, false, ""},
 	}
 
@@ -1457,11 +1533,11 @@ func TestValidateAudioURLs(t *testing.T) {
 		errorStr string
 	}{
 		{map[string]string{
-			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
-			"4ff30392-8ec8-45a4-ba94-5e22c4a686d1": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3",
+			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
+			"4ff30392-8ec8-45a4-ba94-5e22c4a686d1": "https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3",
 		}, false, ""},
 		{map[string]string{
-			"4ff30392-8ec8-45a4-ba9a4-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3",
+			"4ff30392-8ec8-45a4-ba9a4-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3",
 		}, true, "invalid Document fuid",
 		},
 		{nil,
@@ -1469,15 +1545,15 @@ func TestValidateAudioURLs(t *testing.T) {
 		},
 		{map[string]string{
 			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "",
-			"4ff30392-8ec8-45a4-ba94-5e22c4a686d1": "https://hwssappstorage.blob.core.windows.net/audio/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
-			"4ff30392-8ec8-45a4-ba94-5e22c4a686d2": "https://hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3",
+			"4ff30392-8ec8-45a4-ba94-5e22c4a686d1": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
+			"4ff30392-8ec8-45a4-ba94-5e22c4a686d2": "https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3",
 		}, true, "invalid Document AudioURL"},
 		{map[string]string{
-			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3",
-		}, true, "invalid Document AudioURL: hwssappstorage.blob.core.windows.net/audio/Milad Hosseini - Deli Asheghetam [128].mp3"},
+			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3",
+		}, true, "invalid Document AudioURL: hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3"},
 		{map[string]string{
-			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
-		}, true, "invalid Document audio type AudioURL: https://hwssappstorage.blob.core.windows.net/image/hulkgif.png"},
+			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png",
+		}, true, "invalid Document audio type AudioURL: https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png"},
 		{map[string]string{}, false, ""},
 	}
 
@@ -1498,11 +1574,11 @@ func TestValidateVideoURLs(t *testing.T) {
 		errorStr string
 	}{
 		{map[string]string{
-			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-			"4ff30392-8ec8-45a4-ba94-5e22c4a686d1": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4",
+			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+			"4ff30392-8ec8-45a4-ba94-5e22c4a686d1": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4",
 		}, false, ""},
 		{map[string]string{
-			"4ff30392-8ec8-45a4-ba9a4-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4",
+			"4ff30392-8ec8-45a4-ba9a4-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4",
 		}, true, "invalid Document fuid",
 		},
 		{nil,
@@ -1510,15 +1586,15 @@ func TestValidateVideoURLs(t *testing.T) {
 		},
 		{map[string]string{
 			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "",
-			"4ff30392-8ec8-45a4-ba94-5e22c4a686d1": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-			"4ff30392-8ec8-45a4-ba94-5e22c4a686d2": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4",
+			"4ff30392-8ec8-45a4-ba94-5e22c4a686d1": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+			"4ff30392-8ec8-45a4-ba94-5e22c4a686d2": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4",
 		}, true, "invalid Document VideoURL"},
 		{map[string]string{
-			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-		}, true, "invalid Document VideoURL: hwssappstorage.blob.core.windows.net/video/videoplayback.wmv"},
+			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+		}, true, "invalid Document VideoURL: hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv"},
 		{map[string]string{
-			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/image/hulkgif.png",
-		}, true, "invalid Document video type VideoURL: https://hwssappstorage.blob.core.windows.net/image/hulkgif.png"},
+			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png",
+		}, true, "invalid Document video type VideoURL: https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png"},
 		{map[string]string{}, false, ""},
 	}
 
@@ -1539,11 +1615,11 @@ func TestValidateFileURLs(t *testing.T) {
 		errorStr string
 	}{
 		{map[string]string{
-			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-			"4ff30392-8ec8-45a4-ba94-5e22c4a686d1": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4",
+			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+			"4ff30392-8ec8-45a4-ba94-5e22c4a686d1": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4",
 		}, false, ""},
 		{map[string]string{
-			"4ff30392-8ec8-45a4-ba9a4-5e22c4a686de": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4",
+			"4ff30392-8ec8-45a4-ba9a4-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4",
 		}, true, "invalid Document fuid",
 		},
 		{nil,
@@ -1551,12 +1627,12 @@ func TestValidateFileURLs(t *testing.T) {
 		},
 		{map[string]string{
 			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "",
-			"4ff30392-8ec8-45a4-ba94-5e22c4a686d1": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-			"4ff30392-8ec8-45a4-ba94-5e22c4a686d2": "https://hwssappstorage.blob.core.windows.net/video/videoplayback.mp4",
+			"4ff30392-8ec8-45a4-ba94-5e22c4a686d1": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+			"4ff30392-8ec8-45a4-ba94-5e22c4a686d2": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4",
 		}, true, "invalid Document FileURL"},
 		{map[string]string{
-			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "hwssappstorage.blob.core.windows.net/video/videoplayback.wmv",
-		}, true, "invalid Document FileURL: hwssappstorage.blob.core.windows.net/video/videoplayback.wmv"},
+			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+		}, true, "invalid Document FileURL: hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv"},
 		{map[string]string{}, false, ""},
 	}
 

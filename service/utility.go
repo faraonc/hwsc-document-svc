@@ -74,7 +74,7 @@ func ValidateDocument(meta *pb.Document) error {
 	if err := ValidateGroundType(meta.GetGroundType()); err != nil {
 		return err
 	}
-	if err := ValidateStudySite(meta.GetStudySite().GetCity(), meta.GetStudySite().GetState(), //TODO unit test
+	if err := ValidateStudySite(meta.GetStudySite().GetCity(), meta.GetStudySite().GetState(),
 		meta.GetStudySite().GetProvince(), meta.GetStudySite().GetCountry()); err != nil {
 		return err
 	}
@@ -142,6 +142,15 @@ func ValidateUUID(uuid string) error {
 	return nil
 }
 
+// ValidateFUID validates fuid.
+// Returns an error if fuid fails regex validation.
+func ValidateFUID(fuid string) error {
+	if !fuidRegex.MatchString(fuid) {
+		return errors.New("invalid Document fuid")
+	}
+	return nil
+}
+
 // ValidatePublisher validates the publisher name.
 // Returns an error if last name or first name fails validation
 func ValidatePublisher(lastName string, firstName string) error {
@@ -152,15 +161,6 @@ func ValidatePublisher(lastName string, firstName string) error {
 		return err
 	}
 
-	return nil
-}
-
-// ValidateFUID validates fuid.
-// Returns an error if fuid fails regex validation.
-func ValidateFUID(fuid string) error {
-	if !fuidRegex.MatchString(fuid) {
-		return errors.New("invalid Document fuid")
-	}
 	return nil
 }
 
@@ -229,7 +229,7 @@ func ValidateCity(city string) error {
 }
 
 // ValidateState validates state study site.
-// Returns an error if state exceeds 32 chars. //TODO unit test
+// Returns an error if state exceeds 32 chars.
 func ValidateState(state string) error {
 	if len(state) > maxStateLength {
 		return errors.New("invalid Document State")
@@ -238,7 +238,7 @@ func ValidateState(state string) error {
 }
 
 // ValidateProvince validates province study site.
-// Returns an error if province exceeds 48 chars. //TODO unit test
+// Returns an error if province exceeds 48 chars.
 func ValidateProvince(province string) error {
 	if len(province) > maxProvinceLength {
 		return errors.New("invalid Document Province")
