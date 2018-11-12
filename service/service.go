@@ -2,6 +2,7 @@ package service
 
 import (
 	pb "github.com/faraonc/hwsc-api-blocks/int/hwsc-document-svc/proto"
+	"github.com/faraonc/hwsc-document-svc/conf"
 	"github.com/google/uuid"
 	"github.com/mongodb/mongo-go-driver/bson"
 	"github.com/mongodb/mongo-go-driver/mongo"
@@ -34,14 +35,6 @@ type duidLocker struct {
 type Service struct{}
 
 const (
-	//TODO New MongoDB Server, currently using DEV SERVER
-	mongoServerDBWriter = "mongodb://hwsc-dev-mongodb:Xt1i0AF9xv5TGlkZFkO3fFQcmb2EFFczbaWJVdVoSp2ZUbRY6ttuyjkgkg6H3UELojGqHEEfIuMebJwrVcFoIA" +
-		"==@hwsc-dev-mongodb.documents.azure.com:10255/?ssl=true&replicaSet=globaldb"
-	mongoServerDBReader = "mongodb://hwsc-dev-mongodb:QJmIqTki1VGEPoGI4Tfn32g4rTnZrWUlv9jkWKbHSH4A8E0KGMRNUxiCHJfP4ecwEpUYm7yrpER4CLMfCcRMnQ" +
-		"==@hwsc-dev-mongodb.documents.azure.com:10255/?ssl=true&replicaSet=globaldb"
-	mongoDB           = "dev-document"
-	mongoDBCollection = "dev-document"
-
 	// available - Service is ready and available
 	available state = 0
 
@@ -100,7 +93,7 @@ func (s *Service) GetStatus(ctx context.Context, req *pb.DocumentRequest) (*pb.D
 	}
 
 	// Check MongoDB Server
-	client, err := mongo.NewClient(mongoServerDBReader)
+	client, err := mongo.NewClient(conf.DocumentDB.Reader)
 	if err != nil {
 		log.Printf("[ERROR] Creating MongoDB client: %s\n", err.Error())
 		return &pb.DocumentResponse{
@@ -211,7 +204,7 @@ func (s *Service) CreateDocument(ctx context.Context, req *pb.DocumentRequest) (
 	log.Printf("[INFO] Document contains:\n %s\n\n", doc)
 
 	log.Printf("[INFO] Connecting to mongodb://hwscmongodb duid: %s - uuid: %s\n", doc.GetDuid(), doc.GetUuid())
-	client, err := mongo.NewClient(mongoServerDBWriter)
+	client, err := mongo.NewClient(conf.DocumentDB.Writer)
 	if err != nil {
 		log.Printf("[ERROR] Creating MongoDB client: %s\n", err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
@@ -222,7 +215,7 @@ func (s *Service) CreateDocument(ctx context.Context, req *pb.DocumentRequest) (
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	collection := client.Database(mongoDB).Collection(mongoDBCollection)
+	collection := client.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
 
 	res, err := collection.InsertOne(context.Background(), doc)
 	if err != nil {
@@ -276,7 +269,7 @@ func (s *Service) ListUserDocumentCollection(ctx context.Context, req *pb.Docume
 	}
 
 	log.Printf("[INFO] Connecting to mongodb://hwscmongodb uuid: %s\n", doc.GetUuid())
-	client, err := mongo.NewClient(mongoServerDBReader)
+	client, err := mongo.NewClient(conf.DocumentDB.Reader)
 	if err != nil {
 		log.Printf("[ERROR] Creating MongoDB client: %s\n", err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
@@ -287,7 +280,7 @@ func (s *Service) ListUserDocumentCollection(ctx context.Context, req *pb.Docume
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	collection := client.Database(mongoDB).Collection(mongoDBCollection)
+	collection := client.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
 
 	// Find all MongoDB documents for the specific uuid
 	filter := bson.NewDocument(bson.EC.String("uuid", doc.GetUuid()))
@@ -441,7 +434,7 @@ func (s *Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (
 
 	log.Printf("[INFO] Connecting to mongodb://hwscmongodb duid: %s - uuid: %s\n",
 		doc.GetDuid(), doc.GetUuid())
-	client, err := mongo.NewClient(mongoServerDBWriter)
+	client, err := mongo.NewClient(conf.DocumentDB.Writer)
 	if err != nil {
 		log.Printf("[ERROR] Creating MongoDB client: %s\n", err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
@@ -452,7 +445,7 @@ func (s *Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	collection := client.Database(mongoDB).Collection(mongoDBCollection)
+	collection := client.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
 
 	filter := bson.NewDocument(
 		bson.EC.String("duid", doc.GetDuid()),
@@ -562,7 +555,7 @@ func (s *Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (
 
 	log.Printf("[INFO] Connecting to mongodb://hwscmongodb duid: %s - uuid: %s\n",
 		doc.GetDuid(), doc.GetUuid())
-	client, err := mongo.NewClient(mongoServerDBWriter)
+	client, err := mongo.NewClient(conf.DocumentDB.Writer)
 	if err != nil {
 		log.Printf("[ERROR] Creating MongoDB client: %s\n", err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
@@ -573,7 +566,7 @@ func (s *Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	collection := client.Database(mongoDB).Collection(mongoDBCollection)
+	collection := client.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
 
 	filter := bson.NewDocument(
 		bson.EC.String("duid", doc.GetDuid()),
