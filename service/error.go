@@ -11,6 +11,7 @@ var (
 	errNilRequest         = status.Error(codes.InvalidArgument, "Nil request")
 	errNilRequestData     = status.Error(codes.InvalidArgument, "Nil request data")
 	errMissingDUID        = status.Error(codes.InvalidArgument, "Missing DUID")
+	errNilQueryParameters = status.Error(codes.InvalidArgument, "Nil query parameters")
 
 	errAtLeastOneImageAudioURL        = errors.New("requires at least 1 valid Document ImageURL or AudioURL")
 	errInvalidDocumentDUID            = errors.New("invalid Document duid")

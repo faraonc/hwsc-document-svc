@@ -669,11 +669,18 @@ func (s *Service) QueryDocument(ctx context.Context, req *pb.DocumentRequest) (*
 		return nil, errNilRequest
 	}
 
-	doc := req.GetData()
-	if doc == nil {
-		log.Println("[ERROR] Nil request data")
-		return nil, errNilRequestData
+	if req.GetQueryParameters() == nil || (
+		req.GetQueryParameters().GetPublishers() == nil &&
+		req.GetQueryParameters().GetStudySites() == nil &&
+		req.GetQueryParameters().GetCallTypes() == nil &&
+		req.GetQueryParameters().GetGroundTypes() == nil &&
+		req.GetQueryParameters().GetSensorTypes() == nil &&
+		req.GetQueryParameters().GetSensorNames() == nil) {
+
+		log.Println("[ERROR] Nil query parameters")
+		return nil, errNilQueryParameters
 	}
+
 
 	return nil, nil
 
