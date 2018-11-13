@@ -11,7 +11,8 @@ var (
 	errNilRequest         = status.Error(codes.InvalidArgument, "Nil request")
 	errNilRequestData     = status.Error(codes.InvalidArgument, "Nil request data")
 	errMissingDUID        = status.Error(codes.InvalidArgument, "Missing DUID")
-	errNilQueryParameters = status.Error(codes.InvalidArgument, "Nil query parameters")
+	errNilQueryArgs       = status.Error(codes.InvalidArgument, "Nil query arguments")
+	errEmptyQueryArgs     = status.Error(codes.InvalidArgument, "Empty query arguments")
 
 	errAtLeastOneImageAudioURL        = errors.New("requires at least 1 valid Document ImageURL or AudioURL")
 	errInvalidDocumentDUID            = errors.New("invalid Document duid")
@@ -42,4 +43,6 @@ var (
 	errInvalidDocumentRecordTimestamp = errors.New("invalid Document RecordTimestamp")
 	errInvalidDocumentCreateTimestamp = errors.New("invalid Document CreateTimestamp")
 	errInvalidUpdateTimestamp         = errors.New("invalid Document UpdateTimestamp")
+	errNilQueryTransaction            = errors.New("nil QueryTransaction")
+	errNilQueryTransactionFields      = errors.New("nil QueryTransaction Fields")
 )

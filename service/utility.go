@@ -3,6 +3,7 @@ package service
 import (
 	"fmt"
 	pb "github.com/faraonc/hwsc-api-blocks/int/hwsc-document-svc/proto"
+	"github.com/mongodb/mongo-go-driver/bson"
 	"log"
 	"net/url"
 	"regexp"
@@ -477,4 +478,118 @@ func isStateAvailable() bool {
 	}
 
 	return true
+}
+
+//TODO unit test
+//TODO error checking
+func buildAggregatePipeline(queryParams *pb.QueryTransaction) (*bson.Array, error) {
+	if queryParams == nil {
+		return nil, errNilQueryTransaction
+	}
+
+	if queryParams.GetPublishers() == nil &&
+		queryParams.GetStudySites() == nil &&
+		queryParams.GetCallTypes() == nil &&
+		queryParams.GetGroundTypes() == nil &&
+		queryParams.GetSensorTypes() == nil &&
+		queryParams.GetSensorNames() == nil {
+
+		return nil, errNilQueryTransactionFields
+	}
+
+	lastNames, firstNames := extractPublishersFields(queryParams.GetPublishers())
+	cities, states, provinces, countries := extractStudySitesFields(queryParams.GetStudySites())
+
+	pipeline := bson.NewArray(
+		bson.VC.DocumentFromElements(
+			bson.EC.SubDocumentFromElements(
+				"$match",
+				bson.EC.SubDocumentFromElements("publisherName.lastName",
+					buildArrayFromElements(lastNames)),
+				bson.EC.SubDocumentFromElements("publisherName.firstName",
+					buildArrayFromElements(firstNames)),
+
+				bson.EC.SubDocumentFromElements("studySite.city",
+					buildArrayFromElements(cities)),
+				bson.EC.SubDocumentFromElements("studySite.state",
+					buildArrayFromElements(states)),
+				bson.EC.SubDocumentFromElements("studySite.province",
+					buildArrayFromElements(provinces)),
+				bson.EC.SubDocumentFromElements("studySite.country",
+					buildArrayFromElements(countries)),
+
+				bson.EC.SubDocumentFromElements("callTypeName",
+					buildArrayFromElements(queryParams.GetCallTypes())),
+
+				bson.EC.SubDocumentFromElements("groundType",
+					buildArrayFromElements(queryParams.GetGroundTypes())),
+
+				bson.EC.SubDocumentFromElements("sensorType",
+					buildArrayFromElements(queryParams.GetSensorTypes())),
+
+				bson.EC.SubDocumentFromElements("sensorName",
+					buildArrayFromElements(queryParams.GetSensorNames())),
+			),
+		),
+	)
+
+	return pipeline, nil
+}
+
+func buildArrayFromElements(elems []string) *bson.Element {
+	elemVals := make([]*bson.Value, len(elems))
+	for i := 0; i < len(elems); i++ {
+		elemVals[i] = bson.VC.String(elems[i])
+	}
+
+	if len(elemVals) == 0{
+		return bson.EC.ArrayFromElements("$in", bson.VC.Regex(".*", ""))
+	}
+
+	return bson.EC.ArrayFromElements("$in", elemVals...)
+}
+
+func extractPublishersFields(publishers []*pb.Publisher) (lastNames, firstNames []string) {
+	if publishers == nil {
+		return []string{}, []string{}
+	}
+
+	lastNames = make([]string, len(publishers))
+	firstNames = make([]string, len(publishers))
+
+	for i := 0; i < len(publishers); i++ {
+		lastNames[i] = publishers[i].GetLastName()
+		firstNames[i] = publishers[i].GetFirstName()
+	}
+
+	return
+}
+
+func extractStudySitesFields(studySites []*pb.StudySite) (cities, states, provinces, countries []string) {
+	if studySites == nil {
+		return []string{}, []string{}, []string{}, []string{}
+	}
+
+	cities = make([]string, len(studySites))
+	states = make([]string, 0)
+	provinces = make([]string, 0)
+	countries = make([]string, len(studySites))
+
+	for i := 0; i < len(studySites); i++ {
+		cities[i] = studySites[i].GetCity()
+
+		tempState := strings.TrimSpace(studySites[i].GetState())
+		if tempState != "" {
+			states = append(states, tempState)
+		}
+
+		tempProvince := strings.TrimSpace(studySites[i].GetProvince())
+		if tempState != "" {
+			provinces = append(provinces, tempProvince)
+		}
+
+		countries[i] = studySites[i].GetCountry()
+	}
+
+	return
 }

@@ -657,7 +657,7 @@ func (s *Service) ListDistinctFieldValues(ctx context.Context, req *pb.DocumentR
 }
 
 // QueryDocument queries the MongoDB server with the given query parameters.
-// Returns a collection of Documents.
+// Returns a collection of Documents. //TODO unit test
 func (s *Service) QueryDocument(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
 	log.Println("[INFO] Requesting QueryDocument service")
 	if ok := isStateAvailable(); !ok {
@@ -668,20 +668,102 @@ func (s *Service) QueryDocument(ctx context.Context, req *pb.DocumentRequest) (*
 		log.Println("[ERROR] Nil request")
 		return nil, errNilRequest
 	}
+	queryParams := req.GetQueryParameters()
+	if queryParams == nil || (queryParams.GetPublishers() == nil &&
+		queryParams.GetStudySites() == nil &&
+		queryParams.GetCallTypes() == nil &&
+		queryParams.GetGroundTypes() == nil &&
+		queryParams.GetSensorTypes() == nil &&
+		queryParams.GetSensorNames() == nil) {
 
-	if req.GetQueryParameters() == nil || (
-		req.GetQueryParameters().GetPublishers() == nil &&
-		req.GetQueryParameters().GetStudySites() == nil &&
-		req.GetQueryParameters().GetCallTypes() == nil &&
-		req.GetQueryParameters().GetGroundTypes() == nil &&
-		req.GetQueryParameters().GetSensorTypes() == nil &&
-		req.GetQueryParameters().GetSensorNames() == nil) {
-
-		log.Println("[ERROR] Nil query parameters")
-		return nil, errNilQueryParameters
+		log.Println("[ERROR] Nil query arguments")
+		return nil, errNilQueryArgs
 	}
 
+	if len(queryParams.GetPublishers()) == 0 &&
+		len(queryParams.GetStudySites()) == 0 &&
+		len(queryParams.GetCallTypes()) == 0 &&
+		len(queryParams.GetGroundTypes()) == 0 &&
+		len(queryParams.GetSensorTypes()) == 0 &&
+		len(queryParams.GetSensorNames()) == 0 &&
+		queryParams.GetMinRecordTimestamp() == 0 &&
+		queryParams.GetMaxRecordTimestamp() == 0 {
 
-	return nil, nil
+		log.Println("[ERROR] Empty query arguments")
+		return nil, errEmptyQueryArgs
+	}
+
+	log.Printf("[INFO] QueryParameters contains:\n %s\n\n", queryParams)
+
+	log.Println("[INFO] Connecting to mongodb://hwscmongodb")
+	client, err := mongo.NewClient(conf.DocumentDB.Reader)
+	if err != nil {
+		log.Printf("[ERROR] Creating MongoDB client: %s\n", err.Error())
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	if err := client.Connect(context.TODO()); err != nil {
+		log.Printf("[ERROR] Connecting MongoDB client: %s\n", err.Error())
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	collection := client.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
+
+	//filter, err := buildBsonFilter(queryParams)
+	pipeline, err := buildAggregatePipeline(queryParams)
+
+	cur, err := collection.Aggregate(context.Background(), pipeline)
+	if err != nil {
+		log.Printf("[ERROR] Find: %s\n", err.Error())
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	// Close the MongoDB cursor before the function exits
+	defer cur.Close(context.Background())
+	// Extract the documents
+	documentCollection := make([]*pb.Document, 0)
+	for cur.Next(context.Background()) {
+		if err := cur.Err(); err != nil {
+			log.Printf("[ERROR] Cursor Err: %s\n", err.Error())
+			return nil, status.Error(codes.Internal, err.Error())
+		}
+
+		// Mutate and retrieve Document
+		document := &pb.Document{}
+		if err := cur.Decode(document); err != nil {
+			log.Printf("[ERROR] Cursor Decode: %s\n", err.Error())
+			return nil, status.Error(codes.Internal, err.Error())
+		}
+
+		// Validate the retrieved Document from MongoDB
+		if err := ValidateDocument(document); err != nil {
+			log.Printf("[ERROR] Failed document validation: %s\n", err.Error())
+			return nil, status.Errorf(codes.Internal, "Failed document validation: %s", err.Error())
+		}
+		documentCollection = append(documentCollection, document)
+		log.Printf("[DEBUG] document: \n%s\n\n", document)
+
+	}
+
+	if err := cur.Err(); err != nil {
+		log.Printf("[ERROR] Cursor Err: %s\n", err.Error())
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	if err := client.Disconnect(context.TODO()); err != nil {
+		log.Printf("[ERROR] Success querying documents with disconnection error: %s\n", err.Error())
+		return &pb.DocumentResponse{
+			Status:             &pb.DocumentResponse_Code{Code: uint32(codes.Internal)},
+			Message:            "Queried documents with MongoDB disconnection error",
+			DocumentCollection: documentCollection,
+		}, nil
+	}
+
+	log.Println("[INFO] Success querying documents")
+	return &pb.DocumentResponse{
+		Status:             &pb.DocumentResponse_Code{Code: uint32(codes.OK)},
+		Message:            codes.OK.String(),
+		DocumentCollection: documentCollection,
+	}, nil
 
 }
