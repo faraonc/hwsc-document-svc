@@ -668,32 +668,14 @@ func (s *Service) QueryDocument(ctx context.Context, req *pb.DocumentRequest) (*
 		log.Println("[ERROR] Nil request")
 		return nil, errNilRequest
 	}
-	queryParams := req.GetQueryParameters()
-	if queryParams == nil || (queryParams.GetPublishers() == nil &&
-		queryParams.GetStudySites() == nil &&
-		queryParams.GetCallTypes() == nil &&
-		queryParams.GetGroundTypes() == nil &&
-		queryParams.GetSensorTypes() == nil &&
-		queryParams.GetSensorNames() == nil) {
 
+	queryParams := req.GetQueryParameters()
+	if queryParams == nil {
 		log.Println("[ERROR] Nil query arguments")
 		return nil, errNilQueryArgs
 	}
 
-	if len(queryParams.GetPublishers()) == 0 &&
-		len(queryParams.GetStudySites()) == 0 &&
-		len(queryParams.GetCallTypes()) == 0 &&
-		len(queryParams.GetGroundTypes()) == 0 &&
-		len(queryParams.GetSensorTypes()) == 0 &&
-		len(queryParams.GetSensorNames()) == 0 &&
-		queryParams.GetMinRecordTimestamp() == 0 &&
-		queryParams.GetMaxRecordTimestamp() == 0 {
-
-		log.Println("[ERROR] Empty query arguments")
-		return nil, errEmptyQueryArgs
-	}
-
-	log.Printf("[INFO] QueryParameters contains:\n %s\n\n", queryParams)
+	log.Printf("[INFO] QueryParameters contains:\n %s\n", queryParams)
 
 	log.Println("[INFO] Connecting to mongodb://hwscmongodb")
 	client, err := mongo.NewClient(conf.DocumentDB.Reader)
@@ -709,9 +691,7 @@ func (s *Service) QueryDocument(ctx context.Context, req *pb.DocumentRequest) (*
 
 	collection := client.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
 
-	//filter, err := buildBsonFilter(queryParams)
 	pipeline, err := buildAggregatePipeline(queryParams)
-
 	cur, err := collection.Aggregate(context.Background(), pipeline)
 	if err != nil {
 		log.Printf("[ERROR] Find: %s\n", err.Error())

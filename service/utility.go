@@ -487,16 +487,6 @@ func buildAggregatePipeline(queryParams *pb.QueryTransaction) (*bson.Array, erro
 		return nil, errNilQueryTransaction
 	}
 
-	if queryParams.GetPublishers() == nil &&
-		queryParams.GetStudySites() == nil &&
-		queryParams.GetCallTypes() == nil &&
-		queryParams.GetGroundTypes() == nil &&
-		queryParams.GetSensorTypes() == nil &&
-		queryParams.GetSensorNames() == nil {
-
-		return nil, errNilQueryTransactionFields
-	}
-
 	lastNames, firstNames := extractPublishersFields(queryParams.GetPublishers())
 	cities, states, provinces, countries := extractStudySitesFields(queryParams.GetStudySites())
 
@@ -537,43 +527,42 @@ func buildAggregatePipeline(queryParams *pb.QueryTransaction) (*bson.Array, erro
 }
 
 func buildArrayFromElements(elems []string) *bson.Element {
+	if elems == nil || len(elems) == 0 {
+		return bson.EC.ArrayFromElements("$in", bson.VC.Regex(".*", ""))
+	}
 	elemVals := make([]*bson.Value, len(elems))
 	for i := 0; i < len(elems); i++ {
 		elemVals[i] = bson.VC.String(elems[i])
 	}
 
-	if len(elemVals) == 0{
-		return bson.EC.ArrayFromElements("$in", bson.VC.Regex(".*", ""))
-	}
-
 	return bson.EC.ArrayFromElements("$in", elemVals...)
 }
 
-func extractPublishersFields(publishers []*pb.Publisher) (lastNames, firstNames []string) {
-	if publishers == nil {
+func extractPublishersFields(publishers []*pb.Publisher) ([]string, []string) {
+	if publishers == nil || len(publishers) == 0 {
 		return []string{}, []string{}
 	}
 
-	lastNames = make([]string, len(publishers))
-	firstNames = make([]string, len(publishers))
+	lastNames := make([]string, len(publishers))
+	firstNames := make([]string, len(publishers))
 
 	for i := 0; i < len(publishers); i++ {
 		lastNames[i] = publishers[i].GetLastName()
 		firstNames[i] = publishers[i].GetFirstName()
 	}
 
-	return
+	return lastNames, firstNames
 }
 
-func extractStudySitesFields(studySites []*pb.StudySite) (cities, states, provinces, countries []string) {
-	if studySites == nil {
+func extractStudySitesFields(studySites []*pb.StudySite) ([]string, []string, []string, []string) {
+	if studySites == nil || len(studySites) == 0 {
 		return []string{}, []string{}, []string{}, []string{}
 	}
 
-	cities = make([]string, len(studySites))
-	states = make([]string, 0)
-	provinces = make([]string, 0)
-	countries = make([]string, len(studySites))
+	cities := make([]string, len(studySites))
+	states := make([]string, 0)
+	provinces := make([]string, 0)
+	countries := make([]string, len(studySites))
 
 	for i := 0; i < len(studySites); i++ {
 		cities[i] = studySites[i].GetCity()
@@ -591,5 +580,5 @@ func extractStudySitesFields(studySites []*pb.StudySite) (cities, states, provin
 		countries[i] = studySites[i].GetCountry()
 	}
 
-	return
+	return cities, states, provinces, countries
 }
