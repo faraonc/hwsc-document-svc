@@ -692,6 +692,10 @@ func (s *Service) QueryDocument(ctx context.Context, req *pb.DocumentRequest) (*
 	collection := client.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
 
 	pipeline, err := buildAggregatePipeline(queryParams)
+	if err != nil {
+		log.Printf("[ERROR] %s\n", err.Error())
+		return nil, status.Error(codes.Internal, err.Error())
+	}
 	cur, err := collection.Aggregate(context.Background(), pipeline)
 	if err != nil {
 		log.Printf("[ERROR] Find: %s\n", err.Error())

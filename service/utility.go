@@ -573,7 +573,7 @@ func extractStudySitesFields(studySites []*pb.StudySite) ([]string, []string, []
 		}
 
 		tempProvince := strings.TrimSpace(studySites[i].GetProvince())
-		if tempState != "" {
+		if tempProvince != "" {
 			provinces = append(provinces, tempProvince)
 		}
 
