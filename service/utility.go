@@ -509,7 +509,7 @@ func buildAggregatePipeline(queryParams *pb.QueryTransaction) (*bson.Array, erro
 					buildArrayFromElements(countries)),
 
 				bson.EC.SubDocumentFromElements("callTypeName",
-					buildArrayFromElements(queryParams.GetCallTypes())),
+					buildArrayFromElements(queryParams.GetCallTypeNames())),
 
 				bson.EC.SubDocumentFromElements("groundType",
 					buildArrayFromElements(queryParams.GetGroundTypes())),
@@ -565,7 +565,7 @@ func extractStudySitesFields(studySites []*pb.StudySite) ([]string, []string, []
 	countries := make([]string, len(studySites))
 
 	for i := 0; i < len(studySites); i++ {
-		cities[i] = studySites[i].GetCity()
+		cities[i] = strings.TrimSpace(studySites[i].GetCity())
 
 		tempState := strings.TrimSpace(studySites[i].GetState())
 		if tempState != "" {
@@ -577,7 +577,7 @@ func extractStudySitesFields(studySites []*pb.StudySite) ([]string, []string, []
 			provinces = append(provinces, tempProvince)
 		}
 
-		countries[i] = studySites[i].GetCountry()
+		countries[i] = strings.TrimSpace(studySites[i].GetCountry())
 	}
 
 	return cities, states, provinces, countries

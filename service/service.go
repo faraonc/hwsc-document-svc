@@ -131,18 +131,19 @@ func (s *Service) CreateDocument(ctx context.Context, req *pb.DocumentRequest) (
 	log.Println("[INFO] Requesting CreateDocument service")
 
 	if ok := isStateAvailable(); !ok {
-		return nil, errServiceUnavailable
+		log.Printf("[INFO] %s\n", errServiceUnavailable.Error())
+		return nil, status.Error(codes.Unavailable, errServiceUnavailable.Error())
 	}
 
 	if req == nil {
-		log.Println("[ERROR] Nil request")
-		return nil, errNilRequest
+		log.Printf("[ERROR] %s\n", errNilRequest.Error())
+		return nil, status.Error(codes.InvalidArgument, errNilRequest.Error())
 	}
 
 	doc := req.GetData()
 	if doc == nil {
-		log.Println("[ERROR] Nil request data")
-		return nil, errNilRequestData
+		log.Printf("[ERROR] %s\n", errNilRequestData.Error())
+		return nil, status.Error(codes.InvalidArgument, errNilRequestData.Error())
 	}
 
 	doc.Duid = duidGenerator.NewDUID()
@@ -249,18 +250,19 @@ func (s *Service) ListUserDocumentCollection(ctx context.Context, req *pb.Docume
 	log.Println("[INFO] Requesting ListUserDocumentCollection service")
 
 	if ok := isStateAvailable(); !ok {
-		return nil, errServiceUnavailable
+		log.Printf("[ERROR] %s\n", errServiceUnavailable.Error())
+		return nil, status.Error(codes.Unavailable, errServiceUnavailable.Error())
 	}
 
 	if req == nil {
-		log.Println("[ERROR] Nil request")
-		return nil, errNilRequest
+		log.Printf("[ERROR] %s\n", errNilRequest.Error())
+		return nil, status.Error(codes.InvalidArgument, errNilRequest.Error())
 	}
 
 	doc := req.GetData()
 	if doc == nil {
-		log.Println("[ERROR] Nil request data")
-		return nil, errNilRequestData
+		log.Printf("[ERROR] %s\n", errNilRequestData.Error())
+		return nil, status.Error(codes.InvalidArgument, errNilRequestData.Error())
 	}
 
 	if err := ValidateUUID(doc.GetUuid()); err != nil {
@@ -291,7 +293,11 @@ func (s *Service) ListUserDocumentCollection(ctx context.Context, req *pb.Docume
 	}
 
 	// Close the MongoDB cursor before the function exits
-	defer cur.Close(context.Background())
+	defer func() {
+		if err := cur.Close(context.Background()); err != nil {
+			log.Printf("[ERROR] Cursor Err: %s\n", err.Error())
+		}
+	}()
 
 	// Extract the documents
 	documentCollection := make([]*pb.Document, 0)
@@ -357,23 +363,24 @@ func (s *Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (
 	log.Println("[INFO] Requesting UpdateDocument service")
 
 	if ok := isStateAvailable(); !ok {
-		return nil, errServiceUnavailable
+		log.Printf("[ERROR] %s\n", errServiceUnavailable.Error())
+		return nil, status.Error(codes.Unavailable, errServiceUnavailable.Error())
 	}
 
 	if req == nil {
-		log.Println("[ERROR] Nil request")
-		return nil, errNilRequest
+		log.Printf("[ERROR] %s\n", errNilRequest.Error())
+		return nil, status.Error(codes.InvalidArgument, errNilRequest.Error())
 	}
 
 	doc := req.GetData()
 	if doc == nil {
-		log.Println("[ERROR] Nil request data")
-		return nil, errNilRequestData
+		log.Printf("[ERROR] %s\n", errNilRequestData.Error())
+		return nil, status.Error(codes.InvalidArgument, errNilRequestData.Error())
 	}
 
 	if doc.GetDuid() == "" {
 		log.Printf("[ERROR] Missing DUID")
-		return nil, errMissingDUID
+		return nil, status.Error(codes.InvalidArgument, errMissingDUID.Error())
 	}
 
 	// Get the specific lock if it already exists, else make the lock
@@ -517,23 +524,24 @@ func (s *Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (
 	log.Println("[INFO] Requesting DeleteDocument service")
 
 	if ok := isStateAvailable(); !ok {
-		return nil, errServiceUnavailable
+		log.Printf("[ERROR] %s\n", errServiceUnavailable.Error())
+		return nil, status.Error(codes.Unavailable, errServiceUnavailable.Error())
 	}
 
 	if req == nil {
-		log.Println("[ERROR] Nil request")
-		return nil, errNilRequest
+		log.Printf("[ERROR] %s\n", errNilRequest.Error())
+		return nil, status.Error(codes.InvalidArgument, errNilRequest.Error())
 	}
 
 	doc := req.GetData()
 	if doc == nil {
-		log.Println("[ERROR] Nil request data")
-		return nil, errNilRequestData
+		log.Printf("[ERROR] %s\n", errNilRequestData.Error())
+		return nil, status.Error(codes.InvalidArgument, errNilRequestData.Error())
 	}
 
 	if doc.GetDuid() == "" {
 		log.Printf("[ERROR] Missing DUID")
-		return nil, errMissingDUID
+		return nil, status.Error(codes.InvalidArgument, errMissingDUID.Error())
 	}
 
 	if err := ValidateDUID(doc.GetDuid()); err != nil {
@@ -661,18 +669,19 @@ func (s *Service) ListDistinctFieldValues(ctx context.Context, req *pb.DocumentR
 func (s *Service) QueryDocument(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
 	log.Println("[INFO] Requesting QueryDocument service")
 	if ok := isStateAvailable(); !ok {
-		return nil, errServiceUnavailable
+		log.Printf("[ERROR] %s\n", errServiceUnavailable.Error())
+		return nil, status.Error(codes.Unavailable, errServiceUnavailable.Error())
 	}
 
 	if req == nil {
-		log.Println("[ERROR] Nil request")
-		return nil, errNilRequest
+		log.Printf("[ERROR] %s\n", errNilRequest.Error())
+		return nil, status.Error(codes.InvalidArgument, errNilRequest.Error())
 	}
 
 	queryParams := req.GetQueryParameters()
 	if queryParams == nil {
-		log.Println("[ERROR] Nil query arguments")
-		return nil, errNilQueryArgs
+		log.Printf("[ERROR] %s\n", errNilQueryArgs.Error())
+		return nil, status.Error(codes.InvalidArgument, errNilQueryArgs.Error())
 	}
 
 	log.Printf("[INFO] QueryParameters contains:\n %s\n", queryParams)
@@ -703,7 +712,12 @@ func (s *Service) QueryDocument(ctx context.Context, req *pb.DocumentRequest) (*
 	}
 
 	// Close the MongoDB cursor before the function exits
-	defer cur.Close(context.Background())
+	defer func() {
+		if err := cur.Close(context.Background()); err != nil {
+			log.Printf("[ERROR] Cursor Err: %s\n", err.Error())
+		}
+	}()
+
 	// Extract the documents
 	documentCollection := make([]*pb.Document, 0)
 	for cur.Next(context.Background()) {

@@ -2,17 +2,14 @@ package service
 
 import (
 	"errors"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 var (
-	errServiceUnavailable = status.Error(codes.Unavailable, "Service unavailable")
-	errNilRequest         = status.Error(codes.InvalidArgument, "Nil request")
-	errNilRequestData     = status.Error(codes.InvalidArgument, "Nil request data")
-	errMissingDUID        = status.Error(codes.InvalidArgument, "Missing DUID")
-	errNilQueryArgs       = status.Error(codes.InvalidArgument, "Nil query arguments")
-
+	errServiceUnavailable             = errors.New("service unavailable")
+	errNilRequest                     = errors.New("nil request")
+	errNilRequestData                 = errors.New("nil request data")
+	errMissingDUID                    = errors.New("missing DUID")
+	errNilQueryArgs                   = errors.New("nil query arguments")
 	errAtLeastOneImageAudioURL        = errors.New("requires at least 1 valid Document ImageURL or AudioURL")
 	errInvalidDocumentDUID            = errors.New("invalid Document duid")
 	errInvalidDocumentUUID            = errors.New("invalid Document uuid")

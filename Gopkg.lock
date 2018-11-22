@@ -27,11 +27,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:ef5cd2f9e25cc945fc599f5ef783b2da1cc2d5f0b158b80f5347bab4b96f7487"
+  digest = "1:4d1bd6a409325e54e339507cdf9df2344f054f97226abce501540c36075f5047"
   name = "github.com/faraonc/hwsc-api-blocks"
   packages = ["int/hwsc-document-svc/proto"]
   pruneopts = "UT"
-  revision = "d55eb9b23a5f2c1c42091a362d2ddc9fc7125333"
+  revision = "8a6e7f74b94f8a744d762fdd206459a048f82d00"
 
 [[projects]]
   digest = "1:abeb38ade3f32a92943e5be54f55ed6d6e3b6602761d74b4aab4c9dd45c18abd"
@@ -80,12 +80,12 @@
   revision = "2e65f85255dbc3072edf28d6b5b8efc472979f5a"
 
 [[projects]]
-  digest = "1:3a26588bc48b96825977c1b3df964f8fd842cd6860cc26370588d3563433cf11"
+  digest = "1:236d7e1bdb50d8f68559af37dbcf9d142d56b431c9b2176d41e2a009b664cda8"
   name = "github.com/google/uuid"
   packages = ["."]
   pruneopts = "UT"
-  revision = "d460ce9f8df2e77fb1ba55ca87fafed96c607494"
-  version = "v1.0.0"
+  revision = "9b3b1e0f5f99ae461456d768e7d301a7acdaa2d8"
+  version = "v1.1.0"
 
 [[projects]]
   digest = "1:ea40c24cdbacd054a6ae9de03e62c5f252479b96c716375aace5c120d68647c8"
@@ -114,7 +114,7 @@
   version = "v0.3.6"
 
 [[projects]]
-  digest = "1:6f6059f6fe2abaeb033bce72f84ff3da0f00fe6255cf075d62ea89a8ed2e002b"
+  digest = "1:0d20f7f342b12cafa6d286b019ef4813c60c125d4f2c606dbb0bd10b6348bb7e"
   name = "github.com/micro/go-config"
   packages = [
     ".",
@@ -132,8 +132,8 @@
     "source/file",
   ]
   pruneopts = "UT"
-  revision = "5257420bbbf11e151d5a44f031cc26fee3b12963"
-  version = "v0.9.0"
+  revision = "beb1552e4eac267d924dad2d9b18be58f30281af"
+  version = "v0.10.0"
 
 [[projects]]
   digest = "1:e3492bfc9acbe6e04b51fe36220f9aea8c919885632f0de55685db80c0029844"
@@ -244,7 +244,7 @@
   name = "golang.org/x/crypto"
   packages = ["pbkdf2"]
   pruneopts = "UT"
-  revision = "e4dc69e5b2fd71dcaf8bd5d054eb936deb78d1fa"
+  revision = "3d3f9f413869b949e48070b5bc593aa22cc2b8f2"
 
 [[projects]]
   branch = "master"
@@ -260,7 +260,7 @@
     "trace",
   ]
   pruneopts = "UT"
-  revision = "03003ca0c849e57b6ea29a4bab8d3cb6e4d568fe"
+  revision = "adae6a3d119ae4890b46832a2e88a95adc62b8e7"
 
 [[projects]]
   branch = "master"
@@ -272,11 +272,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:7ba061af4131fb44b30448572acd0d6fefbf63a61b97b7ef1dea0be5871c2742"
+  digest = "1:225564f71149334315118db714e1ea87513e4a11cf4acb27e26bc7577cebfa0b"
   name = "golang.org/x/sys"
   packages = ["unix"]
   pruneopts = "UT"
-  revision = "66b7b1311ac80bbafcd2daeef9a5e6e2cd1e2399"
+  revision = "0cf1ed9e522b7dbb416f080a5c8003de9b702bf4"
 
 [[projects]]
   digest = "1:a2ab62866c75542dd18d2b069fec854577a20211d7c0ea6ae746072a1dccdd18"

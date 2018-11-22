@@ -67,11 +67,11 @@ func TestCreateDocument(t *testing.T) {
 		isExpErr    bool
 	}{
 		{&pb.DocumentRequest{}, unavailable,
-			errServiceUnavailable.Error(), true},
+			"rpc error: code = Unavailable desc = service unavailable", true},
 		{nil, available,
-			errNilRequest.Error(), true},
+			"rpc error: code = InvalidArgument desc = nil request", true},
 		{&pb.DocumentRequest{}, available,
-			errNilRequestData.Error(), true},
+			"rpc error: code = InvalidArgument desc = nil request data", true},
 		{&pb.DocumentRequest{Data: &pb.Document{
 			Uuid: "garbage",
 		}}, available,
@@ -150,11 +150,11 @@ func TestListUserDocumentCollection(t *testing.T) {
 		isExpErr    bool
 	}{
 		{&pb.DocumentRequest{}, unavailable, 0,
-			errServiceUnavailable.Error(), true},
+			"rpc error: code = Unavailable desc = service unavailable", true},
 		{nil, available, 0,
-			errNilRequest.Error(), true},
+			"rpc error: code = InvalidArgument desc = nil request", true},
 		{&pb.DocumentRequest{}, available, 0,
-			errNilRequestData.Error(), true},
+			"rpc error: code = InvalidArgument desc = nil request data", true},
 		{&pb.DocumentRequest{Data: &pb.Document{
 			Uuid: "garbage",
 		}}, available, 0,
@@ -203,15 +203,15 @@ func TestUpdateDocument(t *testing.T) {
 		isExpErr    bool
 	}{
 		{&pb.DocumentRequest{}, unavailable,
-			errServiceUnavailable.Error(), true},
+			"rpc error: code = Unavailable desc = service unavailable", true},
 		{nil, available,
-			errNilRequest.Error(), true},
+			"rpc error: code = InvalidArgument desc = nil request", true},
 		{&pb.DocumentRequest{}, available,
-			errNilRequestData.Error(), true},
+			"rpc error: code = InvalidArgument desc = nil request data", true},
 		{&pb.DocumentRequest{Data: &pb.Document{
 			Duid: "",
 		}}, available,
-			errMissingDUID.Error(), true},
+			"rpc error: code = InvalidArgument desc = missing DUID", true},
 		{&pb.DocumentRequest{
 			Data: &pb.Document{
 				Duid: tempDUID,
@@ -318,13 +318,13 @@ func TestDeleteDocument(t *testing.T) {
 		isExpErr    bool
 	}{
 		{&pb.DocumentRequest{}, unavailable,
-			errServiceUnavailable.Error(), true},
+			"rpc error: code = Unavailable desc = service unavailable", true},
 		{nil, available,
-			errNilRequest.Error(), true},
+			"rpc error: code = InvalidArgument desc = nil request", true},
 		{&pb.DocumentRequest{}, available,
-			errNilRequestData.Error(), true},
+			"rpc error: code = InvalidArgument desc = nil request data", true},
 		{&pb.DocumentRequest{Data: &pb.Document{}}, available,
-			errMissingDUID.Error(), true},
+			"rpc error: code = InvalidArgument desc = missing DUID", true},
 		{&pb.DocumentRequest{Data: &pb.Document{
 			Duid: "1CMjlaqHYNJhnVvWiGus3EiOno8",
 		}}, available,
