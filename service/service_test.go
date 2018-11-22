@@ -376,3 +376,72 @@ func TestDeleteDocument(t *testing.T) {
 
 	}
 }
+
+func TestQueryDocument(t *testing.T) {
+	cases := []struct {
+		req         *pb.DocumentRequest
+		serverState state
+		expMsg      string
+		isExpErr    bool
+	}{
+		{&pb.DocumentRequest{}, unavailable,
+			"rpc error: code = Unavailable desc = service unavailable", true},
+		{nil, available,
+			"rpc error: code = InvalidArgument desc = nil request", true},
+		{&pb.DocumentRequest{}, available,
+			"rpc error: code = InvalidArgument desc = nil query arguments", true},
+		{
+			&pb.DocumentRequest{
+				QueryParameters: &pb.QueryTransaction{
+					Publishers: []*pb.Publisher{
+						{
+							LastName:  "Seger",
+							FirstName: "Kerri",
+						},
+						{
+							LastName:  "Abadi",
+							FirstName: "Shima",
+						},
+					},
+					StudySites: []*pb.StudySite{
+						{
+							City:     "San Diego",
+							State:    "California",
+							Province: "",
+							Country:  "USA",
+						},
+						{
+							City:     "Batangas City",
+							State:    "",
+							Province: "Batangas",
+							Country:  "Philippines",
+						},
+						{
+							City:     "Some City",
+							State:    "",
+							Province: "",
+							Country:  "Some Country",
+						},
+					},
+					CallTypeNames: []string{},
+					GroundTypes:   []string{"Wookie"},
+					SensorTypes:   []string{"BProbe"},
+					SensorNames:   []string{"Moto"},
+				},
+			}, available, "OK", false,
+		},
+	}
+
+	for _, c := range cases {
+		serviceStateLocker.currentServiceState = c.serverState
+		s := Service{}
+		res, err := s.QueryDocument(context.TODO(), c.req)
+		if !c.isExpErr {
+			assert.Equal(t, c.expMsg, res.GetMessage())
+		} else {
+			assert.Equal(t, c.expMsg, err.Error())
+			assert.EqualError(t, err, c.expMsg)
+		}
+
+	}
+}

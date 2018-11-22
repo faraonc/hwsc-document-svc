@@ -273,13 +273,6 @@ func (s *Service) ListUserDocumentCollection(ctx context.Context, req *pb.Docume
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	// Close the MongoDB cursor before the function exits
-	defer func() {
-		if err := cur.Close(context.Background()); err != nil {
-			log.Printf("[ERROR] Cursor Err: %s\n", err.Error())
-		}
-	}()
-
 	// Extract the documents
 	documentCollection := make([]*pb.Document, 0)
 	for cur.Next(context.Background()) {
@@ -311,6 +304,10 @@ func (s *Service) ListUserDocumentCollection(ctx context.Context, req *pb.Docume
 	if err := cur.Err(); err != nil {
 		log.Printf("[ERROR] Cursor Err: %s\n", err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	if err := cur.Close(context.Background()); err != nil {
+		log.Printf("[ERROR] Cursor Err: %s\n", err.Error())
 	}
 
 	if len(documentCollection) == 0 {
@@ -677,13 +674,6 @@ func (s *Service) QueryDocument(ctx context.Context, req *pb.DocumentRequest) (*
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	// Close the MongoDB cursor before the function exits
-	defer func() {
-		if err := cur.Close(context.Background()); err != nil {
-			log.Printf("[ERROR] Cursor Err: %s\n", err.Error())
-		}
-	}()
-
 	// Extract the documents
 	documentCollection := make([]*pb.Document, 0)
 	for cur.Next(context.Background()) {
@@ -712,6 +702,10 @@ func (s *Service) QueryDocument(ctx context.Context, req *pb.DocumentRequest) (*
 	if err := cur.Err(); err != nil {
 		log.Printf("[ERROR] Cursor Err: %s\n", err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
+	}
+	
+	if err := cur.Close(context.Background()); err != nil {
+		log.Printf("[ERROR] Cursor Err: %s\n", err.Error())
 	}
 
 	if err := DisconnectMongoDBClient(client); err != nil {
