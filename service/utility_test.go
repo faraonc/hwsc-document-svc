@@ -2,11 +2,54 @@ package service
 
 import (
 	pb "github.com/faraonc/hwsc-api-blocks/int/hwsc-document-svc/proto"
+	"github.com/faraonc/hwsc-document-svc/conf"
 	"github.com/mongodb/mongo-go-driver/bson"
 	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
 )
+
+func TestDialMongoDB(t *testing.T) {
+	cases := []struct {
+		uri      string
+		isExpErr bool
+		errorStr string
+	}{
+		{conf.DocumentDB.Reader, false, ""},
+		{"", true, "error parsing uri (): scheme must be \"mongodb\" or \"mongodb+srv\""},
+	}
+
+	for _, c := range cases {
+		client, err := DialMongoDB(c.uri)
+		if c.isExpErr {
+			assert.EqualError(t, err, c.errorStr)
+		} else {
+			assert.Nil(t, err)
+			assert.NotNil(t, client)
+		}
+	}
+}
+
+func TestDisconnectMongoDBClient(t *testing.T) {
+	cases := []struct {
+		uri      string
+		isExpErr bool
+		errorStr string
+	}{
+		{conf.DocumentDB.Reader, false, ""},
+		{"", true, errNilMongoDBClient.Error()},
+	}
+
+	for _, c := range cases {
+		client, _ := DialMongoDB(c.uri)
+		err := DisconnectMongoDBClient(client)
+		if c.isExpErr {
+			assert.EqualError(t, err, c.errorStr)
+		} else {
+			assert.Nil(t, err)
+		}
+	}
+}
 
 func TestValidateDocument(t *testing.T) {
 
@@ -1908,8 +1951,8 @@ func TestExtractPublishersFields(t *testing.T) {
 
 	for _, c := range cases {
 		lastNames, firstNames := extractPublishersFields(c.input)
-		assert.True(t, areSliceEqual(c.lastNames, lastNames))
-		assert.True(t, areSliceEqual(c.firstNames, firstNames))
+		assert.True(t, areSlicesEqual(c.lastNames, lastNames))
+		assert.True(t, areSlicesEqual(c.firstNames, firstNames))
 	}
 }
 
@@ -1965,14 +2008,14 @@ func TestExtractStudySitesFields(t *testing.T) {
 
 	for _, c := range cases {
 		cities, states, provinces, countries := extractStudySitesFields(c.input)
-		assert.True(t, areSliceEqual(c.cities, cities))
-		assert.True(t, areSliceEqual(c.states, states))
-		assert.True(t, areSliceEqual(c.provinces, provinces))
-		assert.True(t, areSliceEqual(c.countries, countries))
+		assert.True(t, areSlicesEqual(c.cities, cities))
+		assert.True(t, areSlicesEqual(c.states, states))
+		assert.True(t, areSlicesEqual(c.provinces, provinces))
+		assert.True(t, areSlicesEqual(c.countries, countries))
 	}
 }
 
-func areSliceEqual(a, b []string) bool {
+func areSlicesEqual(a, b []string) bool {
 
 	// If one is nil, the other must also be nil.
 	if (a == nil) != (b == nil) {

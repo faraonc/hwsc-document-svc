@@ -4,6 +4,8 @@ import (
 	"fmt"
 	pb "github.com/faraonc/hwsc-api-blocks/int/hwsc-document-svc/proto"
 	"github.com/mongodb/mongo-go-driver/bson"
+	"github.com/mongodb/mongo-go-driver/mongo"
+	"golang.org/x/net/context"
 	"log"
 	"net/url"
 	"regexp"
@@ -54,6 +56,34 @@ var (
 		"arctic":   true,
 	}
 )
+
+// DialMongoDB connects a client to MongoDB server.
+// Returns a MongoDB Client or any dialing error.
+func DialMongoDB(uri string) (*mongo.Client, error) {
+	client, err := mongo.NewClient(uri)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := client.Connect(context.TODO()); err != nil {
+		return nil, err
+	}
+
+	return client, nil
+}
+
+// DisconnectMongoDBClient disconnects a client from MongoDB server.
+// Returns if there is any disconnection error.
+func DisconnectMongoDBClient(client *mongo.Client) error {
+	if client == nil {
+		return errNilMongoDBClient
+	}
+	if err := client.Disconnect(context.TODO()); err != nil {
+		return err
+	}
+
+	return nil
+}
 
 // ValidateDocument validates the Document.
 // Returns an error if field fails validation.
@@ -480,8 +510,6 @@ func isStateAvailable() bool {
 	return true
 }
 
-//TODO unit test
-//TODO error checking
 func buildAggregatePipeline(queryParams *pb.QueryTransaction) (*bson.Array, error) {
 	if queryParams == nil {
 		return nil, errNilQueryTransaction

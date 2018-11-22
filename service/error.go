@@ -6,6 +6,7 @@ import (
 
 var (
 	errServiceUnavailable             = errors.New("service unavailable")
+	errNilMongoDBClient               = errors.New("nil MongoDB client")
 	errNilRequest                     = errors.New("nil request")
 	errNilRequestData                 = errors.New("nil request data")
 	errMissingDUID                    = errors.New("missing DUID")
