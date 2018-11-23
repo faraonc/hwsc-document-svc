@@ -703,7 +703,7 @@ func (s *Service) QueryDocument(ctx context.Context, req *pb.DocumentRequest) (*
 		log.Printf("[ERROR] Cursor Err: %s\n", err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
 	}
-	
+
 	if err := cur.Close(context.Background()); err != nil {
 		log.Printf("[ERROR] Cursor Err: %s\n", err.Error())
 	}

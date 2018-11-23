@@ -571,12 +571,19 @@ func extractPublishersFields(publishers []*pb.Publisher) ([]string, []string) {
 		return []string{}, []string{}
 	}
 
-	lastNames := make([]string, len(publishers))
-	firstNames := make([]string, len(publishers))
+	lastNames := make([]string, 0)
+	firstNames := make([]string, 0)
 
 	for i := 0; i < len(publishers); i++ {
-		lastNames[i] = publishers[i].GetLastName()
-		firstNames[i] = publishers[i].GetFirstName()
+		tempLastName := strings.TrimSpace(publishers[i].GetLastName())
+		if tempLastName != "" {
+			lastNames = append(lastNames, tempLastName)
+		}
+
+		tempFirstName := strings.TrimSpace(publishers[i].GetFirstName())
+		if tempFirstName != "" {
+			firstNames = append(firstNames, tempFirstName)
+		}
 	}
 
 	return lastNames, firstNames
@@ -587,13 +594,16 @@ func extractStudySitesFields(studySites []*pb.StudySite) ([]string, []string, []
 		return []string{}, []string{}, []string{}, []string{}
 	}
 
-	cities := make([]string, len(studySites))
+	cities := make([]string, 0)
 	states := make([]string, 0)
 	provinces := make([]string, 0)
-	countries := make([]string, len(studySites))
+	countries := make([]string, 0)
 
 	for i := 0; i < len(studySites); i++ {
-		cities[i] = strings.TrimSpace(studySites[i].GetCity())
+		tempCity := strings.TrimSpace(studySites[i].GetCity())
+		if tempCity != "" {
+			cities = append(cities, tempCity)
+		}
 
 		tempState := strings.TrimSpace(studySites[i].GetState())
 		if tempState != "" {
@@ -605,7 +615,10 @@ func extractStudySitesFields(studySites []*pb.StudySite) ([]string, []string, []
 			provinces = append(provinces, tempProvince)
 		}
 
-		countries[i] = strings.TrimSpace(studySites[i].GetCountry())
+		tempCountry := strings.TrimSpace(studySites[i].GetCountry())
+		if tempCountry != "" {
+			countries = append(countries, tempCountry)
+		}
 	}
 
 	return cities, states, provinces, countries

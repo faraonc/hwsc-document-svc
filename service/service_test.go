@@ -383,52 +383,49 @@ func TestQueryDocument(t *testing.T) {
 		serverState state
 		expMsg      string
 		isExpErr    bool
+		expNumDocs  int
 	}{
 		{&pb.DocumentRequest{}, unavailable,
-			"rpc error: code = Unavailable desc = service unavailable", true},
+			"rpc error: code = Unavailable desc = service unavailable", true, 0,
+		},
 		{nil, available,
-			"rpc error: code = InvalidArgument desc = nil request", true},
+			"rpc error: code = InvalidArgument desc = nil request", true, 0,
+		},
 		{&pb.DocumentRequest{}, available,
-			"rpc error: code = InvalidArgument desc = nil query arguments", true},
+			"rpc error: code = InvalidArgument desc = nil query arguments", true, 0,
+		},
 		{
-			&pb.DocumentRequest{
-				QueryParameters: &pb.QueryTransaction{
-					Publishers: []*pb.Publisher{
-						{
-							LastName:  "Seger",
-							FirstName: "Kerri",
-						},
-						{
-							LastName:  "Abadi",
-							FirstName: "Shima",
-						},
+			&pb.DocumentRequest{QueryParameters: &pb.QueryTransaction{}}, available,
+			"OK", false, 32,
+		},
+		{
+			&pb.DocumentRequest{QueryParameters: &pb.QueryTransaction{
+				Publishers: []*pb.Publisher{
+					{
+						LastName:  "Seger",
+						FirstName: "Kerri",
 					},
-					StudySites: []*pb.StudySite{
-						{
-							City:     "San Diego",
-							State:    "California",
-							Province: "",
-							Country:  "USA",
-						},
-						{
-							City:     "Batangas City",
-							State:    "",
-							Province: "Batangas",
-							Country:  "Philippines",
-						},
-						{
-							City:     "Some City",
-							State:    "",
-							Province: "",
-							Country:  "Some Country",
-						},
+					{
+						LastName:  "Abadi",
+						FirstName: "Shima",
 					},
-					CallTypeNames: []string{},
-					GroundTypes:   []string{"Wookie"},
-					SensorTypes:   []string{"BProbe"},
-					SensorNames:   []string{"Moto"},
 				},
-			}, available, "OK", false,
+			}}, available,
+			"OK", false, 11,
+		},
+		{
+			&pb.DocumentRequest{QueryParameters: &pb.QueryTransaction{
+				Publishers: []*pb.Publisher{
+					{
+						LastName:  "Seger",
+						FirstName: "Kerri",
+					},
+				},
+				CallTypeNames: []string{
+					"Wookie",
+				},
+			}}, available,
+			"OK", false, 1,
 		},
 	}
 
@@ -437,7 +434,7 @@ func TestQueryDocument(t *testing.T) {
 		s := Service{}
 		res, err := s.QueryDocument(context.TODO(), c.req)
 		if !c.isExpErr {
-			assert.Equal(t, c.expMsg, res.GetMessage())
+			assert.Equal(t, c.expNumDocs, len(res.GetDocumentCollection()))
 		} else {
 			assert.Equal(t, c.expMsg, err.Error())
 			assert.EqualError(t, err, c.expMsg)
