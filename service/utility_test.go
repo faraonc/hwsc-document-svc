@@ -2,10 +2,54 @@ package service
 
 import (
 	pb "github.com/faraonc/hwsc-api-blocks/int/hwsc-document-svc/proto"
+	"github.com/faraonc/hwsc-document-svc/conf"
+	"github.com/mongodb/mongo-go-driver/bson"
 	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
 )
+
+func TestDialMongoDB(t *testing.T) {
+	cases := []struct {
+		uri      string
+		isExpErr bool
+		errorStr string
+	}{
+		{conf.DocumentDB.Reader, false, ""},
+		{"", true, "error parsing uri (): scheme must be \"mongodb\" or \"mongodb+srv\""},
+	}
+
+	for _, c := range cases {
+		client, err := DialMongoDB(c.uri)
+		if c.isExpErr {
+			assert.EqualError(t, err, c.errorStr)
+		} else {
+			assert.Nil(t, err)
+			assert.NotNil(t, client)
+		}
+	}
+}
+
+func TestDisconnectMongoDBClient(t *testing.T) {
+	cases := []struct {
+		uri      string
+		isExpErr bool
+		errorStr string
+	}{
+		{conf.DocumentDB.Reader, false, ""},
+		{"", true, errNilMongoDBClient.Error()},
+	}
+
+	for _, c := range cases {
+		client, _ := DialMongoDB(c.uri)
+		err := DisconnectMongoDBClient(client)
+		if c.isExpErr {
+			assert.EqualError(t, err, c.errorStr)
+		} else {
+			assert.Nil(t, err)
+		}
+	}
+}
 
 func TestValidateDocument(t *testing.T) {
 
@@ -1738,4 +1782,255 @@ func TestIsStateAvailable(t *testing.T) {
 		assert.Equal(t, c.expRet, isStateAvailable())
 	}
 
+}
+
+func TestBuildAggregatePipeline(t *testing.T) {
+	cases := []struct {
+		input     *pb.QueryTransaction
+		expOutput *bson.Array
+		isExpErr  bool
+		errorStr  string
+	}{
+		{nil, nil, true, errNilQueryTransaction.Error()},
+		{
+			&pb.QueryTransaction{
+				Publishers: []*pb.Publisher{
+					{
+						LastName:  "Seger",
+						FirstName: "Kerri",
+					},
+					{
+						LastName:  "Abadi",
+						FirstName: "Shima",
+					},
+				},
+				StudySites: []*pb.StudySite{
+					{
+						City:     "San Diego",
+						State:    "California",
+						Province: "",
+						Country:  "USA",
+					},
+					{
+						City:     "Batangas City",
+						State:    "",
+						Province: "Batangas",
+						Country:  "Philippines",
+					},
+					{
+						City:     "Some City",
+						State:    "",
+						Province: "",
+						Country:  "Some Country",
+					},
+				},
+				CallTypeNames: []string{},
+				GroundTypes:   []string{"Wookie"},
+				SensorTypes:   []string{"BProbe"},
+				SensorNames:   []string{"Moto"},
+			},
+			bson.NewArray(
+				bson.VC.DocumentFromElements(
+					bson.EC.SubDocumentFromElements(
+						"$match",
+						bson.EC.SubDocumentFromElements("publisherName.lastName",
+							bson.EC.ArrayFromElements("$in",
+								bson.VC.String("Seger"),
+								bson.VC.String("Abadi"),
+							)),
+						bson.EC.SubDocumentFromElements("publisherName.firstName",
+							bson.EC.ArrayFromElements("$in",
+								bson.VC.String("Kerri"),
+								bson.VC.String("Shima"),
+							)),
+						bson.EC.SubDocumentFromElements("studySite.city",
+							bson.EC.ArrayFromElements("$in",
+								bson.VC.String("San Diego"),
+								bson.VC.String("Batangas City"),
+								bson.VC.String("Some City"),
+							)),
+						bson.EC.SubDocumentFromElements("studySite.state",
+							bson.EC.ArrayFromElements("$in",
+								bson.VC.String("California"),
+							)),
+						bson.EC.SubDocumentFromElements("studySite.province",
+							bson.EC.ArrayFromElements("$in",
+								bson.VC.String("Batangas"),
+							)),
+						bson.EC.SubDocumentFromElements("studySite.country",
+							bson.EC.ArrayFromElements("$in",
+								bson.VC.String("USA"),
+								bson.VC.String("Philippines"),
+								bson.VC.String("Some Country"),
+							)),
+						bson.EC.SubDocumentFromElements("callTypeName",
+							bson.EC.ArrayFromElements("$in", bson.VC.Regex(".*", ""))),
+						bson.EC.SubDocumentFromElements("groundType",
+							bson.EC.ArrayFromElements("$in",
+								bson.VC.String("Wookie"),
+							)),
+						bson.EC.SubDocumentFromElements("sensorType",
+							bson.EC.ArrayFromElements("$in",
+								bson.VC.String("BProbe"),
+							)),
+						bson.EC.SubDocumentFromElements("sensorName",
+							bson.EC.ArrayFromElements("$in",
+								bson.VC.String("Moto"),
+							)),
+					),
+				),
+			),
+			false,
+			"",
+		},
+	}
+
+	for _, c := range cases {
+		_, err := buildAggregatePipeline(c.input)
+		if c.isExpErr {
+			assert.EqualError(t, err, c.errorStr)
+		} else {
+			assert.Nil(t, err)
+		}
+	}
+}
+
+func TestBuildArrayFromElements(t *testing.T) {
+	cases := []struct {
+		input     []string
+		expOutput *bson.Element
+	}{
+		{nil, bson.EC.ArrayFromElements("$in", bson.VC.Regex(".*", ""))},
+		{[]string{}, bson.EC.ArrayFromElements("$in", bson.VC.Regex(".*", ""))},
+
+		{[]string{
+			"Seger",
+			"Abadi",
+		},
+			bson.EC.ArrayFromElements("$in",
+				bson.VC.String("Seger"),
+				bson.VC.String("Abadi")),
+		},
+	}
+
+	for _, c := range cases {
+		elems := buildArrayFromElements(c.input)
+		assert.True(t, elems.Equal(c.expOutput))
+	}
+}
+
+func TestExtractPublishersFields(t *testing.T) {
+	cases := []struct {
+		input      []*pb.Publisher
+		lastNames  []string
+		firstNames []string
+	}{
+		{nil, []string{}, []string{}},
+		{[]*pb.Publisher{}, []string{}, []string{}},
+		{
+			[]*pb.Publisher{
+				{
+					LastName:  "Seger",
+					FirstName: "Kerri",
+				},
+				{
+					LastName:  "Abadi",
+					FirstName: "Shima",
+				},
+			},
+			[]string{
+				"Seger",
+				"Abadi",
+			},
+			[]string{
+				"Kerri",
+				"Shima",
+			},
+		},
+	}
+
+	for _, c := range cases {
+		lastNames, firstNames := extractPublishersFields(c.input)
+		assert.True(t, areSlicesEqual(c.lastNames, lastNames))
+		assert.True(t, areSlicesEqual(c.firstNames, firstNames))
+	}
+}
+
+func TestExtractStudySitesFields(t *testing.T) {
+	cases := []struct {
+		input     []*pb.StudySite
+		cities    []string
+		states    []string
+		provinces []string
+		countries []string
+	}{
+		{nil, []string{}, []string{}, []string{}, []string{}},
+		{[]*pb.StudySite{}, []string{}, []string{}, []string{}, []string{}},
+		{
+			[]*pb.StudySite{
+				{
+					City:     "San Diego",
+					State:    "California",
+					Province: "",
+					Country:  "USA",
+				},
+				{
+					City:     "Batangas City",
+					State:    "",
+					Province: "Batangas",
+					Country:  "Philippines",
+				},
+				{
+					City:     "Some City",
+					State:    "",
+					Province: "",
+					Country:  "Some Country",
+				},
+			},
+			[]string{
+				"San Diego",
+				"Batangas City",
+				"Some City",
+			},
+			[]string{
+				"California",
+			},
+			[]string{
+				"Batangas",
+			},
+			[]string{
+				"USA",
+				"Philippines",
+				"Some Country",
+			},
+		},
+	}
+
+	for _, c := range cases {
+		cities, states, provinces, countries := extractStudySitesFields(c.input)
+		assert.True(t, areSlicesEqual(c.cities, cities))
+		assert.True(t, areSlicesEqual(c.states, states))
+		assert.True(t, areSlicesEqual(c.provinces, provinces))
+		assert.True(t, areSlicesEqual(c.countries, countries))
+	}
+}
+
+func areSlicesEqual(a, b []string) bool {
+
+	// If one is nil, the other must also be nil.
+	if (a == nil) != (b == nil) {
+		return false
+	}
+
+	if len(a) != len(b) {
+		return false
+	}
+
+	for i := range a {
+		if a[i] != b[i] {
+			return false
+		}
+	}
+
+	return true
 }

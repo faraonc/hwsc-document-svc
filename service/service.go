@@ -5,7 +5,6 @@ import (
 	"github.com/faraonc/hwsc-document-svc/conf"
 	"github.com/google/uuid"
 	"github.com/mongodb/mongo-go-driver/bson"
-	"github.com/mongodb/mongo-go-driver/mongo"
 	"github.com/mongodb/mongo-go-driver/mongo/findopt"
 	"github.com/mongodb/mongo-go-driver/mongo/mongoopt"
 	"github.com/segmentio/ksuid"
@@ -93,25 +92,17 @@ func (s *Service) GetStatus(ctx context.Context, req *pb.DocumentRequest) (*pb.D
 	}
 
 	// Check MongoDB Server
-	client, err := mongo.NewClient(conf.DocumentDB.Reader)
+	client, err := DialMongoDB(conf.DocumentDB.Reader)
 	if err != nil {
-		log.Printf("[ERROR] Creating MongoDB client: %s\n", err.Error())
+		log.Printf("[ERROR] %s\n", err.Error())
 		return &pb.DocumentResponse{
 			Status:  &pb.DocumentResponse_Code{Code: uint32(codes.Unavailable)},
 			Message: codes.Unavailable.String(),
 		}, nil
 	}
 
-	if err := client.Connect(context.TODO()); err != nil {
-		log.Printf("[ERROR] Connecting MongoDB client: %s\n", err.Error())
-		return &pb.DocumentResponse{
-			Status:  &pb.DocumentResponse_Code{Code: uint32(codes.Unavailable)},
-			Message: codes.Unavailable.String(),
-		}, nil
-	}
-
-	if err := client.Disconnect(context.TODO()); err != nil {
-		log.Printf("[ERROR] Disconnecting MongoDB client: %s\n", err.Error())
+	if err := DisconnectMongoDBClient(client); err != nil {
+		log.Printf("[ERROR] %s\n", err.Error())
 		return &pb.DocumentResponse{
 			Status:  &pb.DocumentResponse_Code{Code: uint32(codes.Unavailable)},
 			Message: codes.Unavailable.String(),
@@ -131,18 +122,19 @@ func (s *Service) CreateDocument(ctx context.Context, req *pb.DocumentRequest) (
 	log.Println("[INFO] Requesting CreateDocument service")
 
 	if ok := isStateAvailable(); !ok {
-		return nil, errServiceUnavailable
+		log.Printf("[INFO] %s\n", errServiceUnavailable.Error())
+		return nil, status.Error(codes.Unavailable, errServiceUnavailable.Error())
 	}
 
 	if req == nil {
-		log.Println("[ERROR] Nil request")
-		return nil, errNilRequest
+		log.Printf("[ERROR] %s\n", errNilRequest.Error())
+		return nil, status.Error(codes.InvalidArgument, errNilRequest.Error())
 	}
 
 	doc := req.GetData()
 	if doc == nil {
-		log.Println("[ERROR] Nil request data")
-		return nil, errNilRequestData
+		log.Printf("[ERROR] %s\n", errNilRequestData.Error())
+		return nil, status.Error(codes.InvalidArgument, errNilRequestData.Error())
 	}
 
 	doc.Duid = duidGenerator.NewDUID()
@@ -204,14 +196,9 @@ func (s *Service) CreateDocument(ctx context.Context, req *pb.DocumentRequest) (
 	log.Printf("[INFO] Document contains:\n %s\n\n", doc)
 
 	log.Printf("[INFO] Connecting to mongodb://hwscmongodb duid: %s - uuid: %s\n", doc.GetDuid(), doc.GetUuid())
-	client, err := mongo.NewClient(conf.DocumentDB.Writer)
+	client, err := DialMongoDB(conf.DocumentDB.Writer)
 	if err != nil {
-		log.Printf("[ERROR] Creating MongoDB client: %s\n", err.Error())
-		return nil, status.Error(codes.Internal, err.Error())
-	}
-
-	if err := client.Connect(context.TODO()); err != nil {
-		log.Printf("[ERROR] Connecting MongoDB client: %s\n", err.Error())
+		log.Printf("[ERROR] %s\n", err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
@@ -223,7 +210,7 @@ func (s *Service) CreateDocument(ctx context.Context, req *pb.DocumentRequest) (
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	if err := client.Disconnect(context.TODO()); err != nil {
+	if err := DisconnectMongoDBClient(client); err != nil {
 		log.Printf("[ERROR] Inserted document _id: %v, with disconnection error: %s\n",
 			res.InsertedID, err.Error())
 		return &pb.DocumentResponse{
@@ -249,18 +236,19 @@ func (s *Service) ListUserDocumentCollection(ctx context.Context, req *pb.Docume
 	log.Println("[INFO] Requesting ListUserDocumentCollection service")
 
 	if ok := isStateAvailable(); !ok {
-		return nil, errServiceUnavailable
+		log.Printf("[ERROR] %s\n", errServiceUnavailable.Error())
+		return nil, status.Error(codes.Unavailable, errServiceUnavailable.Error())
 	}
 
 	if req == nil {
-		log.Println("[ERROR] Nil request")
-		return nil, errNilRequest
+		log.Printf("[ERROR] %s\n", errNilRequest.Error())
+		return nil, status.Error(codes.InvalidArgument, errNilRequest.Error())
 	}
 
 	doc := req.GetData()
 	if doc == nil {
-		log.Println("[ERROR] Nil request data")
-		return nil, errNilRequestData
+		log.Printf("[ERROR] %s\n", errNilRequestData.Error())
+		return nil, status.Error(codes.InvalidArgument, errNilRequestData.Error())
 	}
 
 	if err := ValidateUUID(doc.GetUuid()); err != nil {
@@ -269,14 +257,9 @@ func (s *Service) ListUserDocumentCollection(ctx context.Context, req *pb.Docume
 	}
 
 	log.Printf("[INFO] Connecting to mongodb://hwscmongodb uuid: %s\n", doc.GetUuid())
-	client, err := mongo.NewClient(conf.DocumentDB.Reader)
+	client, err := DialMongoDB(conf.DocumentDB.Reader)
 	if err != nil {
-		log.Printf("[ERROR] Creating MongoDB client: %s\n", err.Error())
-		return nil, status.Error(codes.Internal, err.Error())
-	}
-
-	if err := client.Connect(context.TODO()); err != nil {
-		log.Printf("[ERROR] Connecting MongoDB client: %s\n", err.Error())
+		log.Printf("[ERROR] %s\n", err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
@@ -289,9 +272,6 @@ func (s *Service) ListUserDocumentCollection(ctx context.Context, req *pb.Docume
 		log.Printf("[ERROR] Find: %s\n", err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
 	}
-
-	// Close the MongoDB cursor before the function exits
-	defer cur.Close(context.Background())
 
 	// Extract the documents
 	documentCollection := make([]*pb.Document, 0)
@@ -326,12 +306,16 @@ func (s *Service) ListUserDocumentCollection(ctx context.Context, req *pb.Docume
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
+	if err := cur.Close(context.Background()); err != nil {
+		log.Printf("[ERROR] Cursor Err: %s\n", err.Error())
+	}
+
 	if len(documentCollection) == 0 {
 		log.Printf("[ERROR] No document for uuid: %s\n", doc.GetUuid())
 		return nil, status.Errorf(codes.InvalidArgument, "No document for uuid: %s", doc.GetUuid())
 	}
 
-	if err := client.Disconnect(context.TODO()); err != nil {
+	if err := DisconnectMongoDBClient(client); err != nil {
 		log.Printf("[ERROR] Success listing documents, uuid: %s with disconnection error: %s\n",
 			doc.GetUuid(), err.Error())
 		return &pb.DocumentResponse{
@@ -357,23 +341,24 @@ func (s *Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (
 	log.Println("[INFO] Requesting UpdateDocument service")
 
 	if ok := isStateAvailable(); !ok {
-		return nil, errServiceUnavailable
+		log.Printf("[ERROR] %s\n", errServiceUnavailable.Error())
+		return nil, status.Error(codes.Unavailable, errServiceUnavailable.Error())
 	}
 
 	if req == nil {
-		log.Println("[ERROR] Nil request")
-		return nil, errNilRequest
+		log.Printf("[ERROR] %s\n", errNilRequest.Error())
+		return nil, status.Error(codes.InvalidArgument, errNilRequest.Error())
 	}
 
 	doc := req.GetData()
 	if doc == nil {
-		log.Println("[ERROR] Nil request data")
-		return nil, errNilRequestData
+		log.Printf("[ERROR] %s\n", errNilRequestData.Error())
+		return nil, status.Error(codes.InvalidArgument, errNilRequestData.Error())
 	}
 
 	if doc.GetDuid() == "" {
 		log.Printf("[ERROR] Missing DUID")
-		return nil, errMissingDUID
+		return nil, status.Error(codes.InvalidArgument, errMissingDUID.Error())
 	}
 
 	// Get the specific lock if it already exists, else make the lock
@@ -434,14 +419,9 @@ func (s *Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (
 
 	log.Printf("[INFO] Connecting to mongodb://hwscmongodb duid: %s - uuid: %s\n",
 		doc.GetDuid(), doc.GetUuid())
-	client, err := mongo.NewClient(conf.DocumentDB.Writer)
+	client, err := DialMongoDB(conf.DocumentDB.Writer)
 	if err != nil {
-		log.Printf("[ERROR] Creating MongoDB client: %s\n", err.Error())
-		return nil, status.Error(codes.Internal, err.Error())
-	}
-
-	if err := client.Connect(context.TODO()); err != nil {
-		log.Printf("[ERROR] Connecting MongoDB client: %s\n", err.Error())
+		log.Printf("[ERROR] %s\n", err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
@@ -490,7 +470,7 @@ func (s *Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (
 
 	log.Printf("[DEBUG] Updated document: \n%s\n\n", document)
 
-	if err := client.Disconnect(context.TODO()); err != nil {
+	if err := DisconnectMongoDBClient(client); err != nil {
 		log.Printf("[ERROR] Success updating document, duid: %s - uuid: %s with disconnection error: %s\n",
 			doc.GetDuid(), doc.GetUuid(), err.Error())
 		return &pb.DocumentResponse{
@@ -517,23 +497,24 @@ func (s *Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (
 	log.Println("[INFO] Requesting DeleteDocument service")
 
 	if ok := isStateAvailable(); !ok {
-		return nil, errServiceUnavailable
+		log.Printf("[ERROR] %s\n", errServiceUnavailable.Error())
+		return nil, status.Error(codes.Unavailable, errServiceUnavailable.Error())
 	}
 
 	if req == nil {
-		log.Println("[ERROR] Nil request")
-		return nil, errNilRequest
+		log.Printf("[ERROR] %s\n", errNilRequest.Error())
+		return nil, status.Error(codes.InvalidArgument, errNilRequest.Error())
 	}
 
 	doc := req.GetData()
 	if doc == nil {
-		log.Println("[ERROR] Nil request data")
-		return nil, errNilRequestData
+		log.Printf("[ERROR] %s\n", errNilRequestData.Error())
+		return nil, status.Error(codes.InvalidArgument, errNilRequestData.Error())
 	}
 
 	if doc.GetDuid() == "" {
 		log.Printf("[ERROR] Missing DUID")
-		return nil, errMissingDUID
+		return nil, status.Error(codes.InvalidArgument, errMissingDUID.Error())
 	}
 
 	if err := ValidateDUID(doc.GetDuid()); err != nil {
@@ -555,14 +536,9 @@ func (s *Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (
 
 	log.Printf("[INFO] Connecting to mongodb://hwscmongodb duid: %s - uuid: %s\n",
 		doc.GetDuid(), doc.GetUuid())
-	client, err := mongo.NewClient(conf.DocumentDB.Writer)
+	client, err := DialMongoDB(conf.DocumentDB.Writer)
 	if err != nil {
-		log.Printf("[ERROR] Creating MongoDB client: %s\n", err.Error())
-		return nil, status.Error(codes.Internal, err.Error())
-	}
-
-	if err := client.Connect(context.TODO()); err != nil {
-		log.Printf("[ERROR] Connecting MongoDB client: %s\n", err.Error())
+		log.Printf("[ERROR] %s\n", err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
@@ -607,7 +583,7 @@ func (s *Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (
 
 	log.Printf("[DEBUG] Deleted document: \n%s\n\n", document)
 
-	if err := client.Disconnect(context.TODO()); err != nil {
+	if err := DisconnectMongoDBClient(client); err != nil {
 		log.Printf("[ERROR] Success deleting document, duid: %s - uuid: %s with disconnection error: %s\n",
 			doc.GetDuid(), doc.GetUuid(), err.Error())
 		return &pb.DocumentResponse{
@@ -661,20 +637,101 @@ func (s *Service) ListDistinctFieldValues(ctx context.Context, req *pb.DocumentR
 func (s *Service) QueryDocument(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
 	log.Println("[INFO] Requesting QueryDocument service")
 	if ok := isStateAvailable(); !ok {
-		return nil, errServiceUnavailable
+		log.Printf("[ERROR] %s\n", errServiceUnavailable.Error())
+		return nil, status.Error(codes.Unavailable, errServiceUnavailable.Error())
 	}
 
 	if req == nil {
-		log.Println("[ERROR] Nil request")
-		return nil, errNilRequest
+		log.Printf("[ERROR] %s\n", errNilRequest.Error())
+		return nil, status.Error(codes.InvalidArgument, errNilRequest.Error())
 	}
 
-	doc := req.GetData()
-	if doc == nil {
-		log.Println("[ERROR] Nil request data")
-		return nil, errNilRequestData
+	queryParams := req.GetQueryParameters()
+	if queryParams == nil {
+		log.Printf("[ERROR] %s\n", errNilQueryArgs.Error())
+		return nil, status.Error(codes.InvalidArgument, errNilQueryArgs.Error())
 	}
 
-	return nil, nil
+	if err := ValidateRecordTimestamp(queryParams.MinRecordTimestamp); err != nil {
+		log.Printf("[ERROR] %s\n", err)
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	if err := ValidateRecordTimestamp(queryParams.MaxRecordTimestamp); err != nil {
+		log.Printf("[ERROR] %s\n", err)
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	log.Printf("[INFO] QueryParameters contains:\n %s\n", queryParams)
+
+	log.Println("[INFO] Connecting to mongodb://hwscmongodb")
+	client, err := DialMongoDB(conf.DocumentDB.Reader)
+	if err != nil {
+		log.Printf("[ERROR] %s\n", err.Error())
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	collection := client.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
+
+	pipeline, err := buildAggregatePipeline(queryParams)
+	if err != nil {
+		log.Printf("[ERROR] %s\n", err.Error())
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+	cur, err := collection.Aggregate(context.Background(), pipeline)
+	if err != nil {
+		log.Printf("[ERROR] Find: %s\n", err.Error())
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	// Extract the documents
+	documentCollection := make([]*pb.Document, 0)
+	for cur.Next(context.Background()) {
+		if err := cur.Err(); err != nil {
+			log.Printf("[ERROR] Cursor Err: %s\n", err.Error())
+			return nil, status.Error(codes.Internal, err.Error())
+		}
+
+		// Mutate and retrieve Document
+		document := &pb.Document{}
+		if err := cur.Decode(document); err != nil {
+			log.Printf("[ERROR] Cursor Decode: %s\n", err.Error())
+			return nil, status.Error(codes.Internal, err.Error())
+		}
+
+		// Validate the retrieved Document from MongoDB
+		if err := ValidateDocument(document); err != nil {
+			log.Printf("[ERROR] Failed document validation: %s\n", err.Error())
+			return nil, status.Errorf(codes.Internal, "Failed document validation: %s", err.Error())
+		}
+		documentCollection = append(documentCollection, document)
+		log.Printf("[DEBUG] document: \n%s\n\n", document)
+
+	}
+
+	if err := cur.Err(); err != nil {
+		log.Printf("[ERROR] Cursor Err: %s\n", err.Error())
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	if err := cur.Close(context.Background()); err != nil {
+		log.Printf("[ERROR] Cursor Err: %s\n", err.Error())
+	}
+
+	if err := DisconnectMongoDBClient(client); err != nil {
+		log.Printf("[ERROR] Success querying documents with disconnection error: %s\n", err.Error())
+		return &pb.DocumentResponse{
+			Status:             &pb.DocumentResponse_Code{Code: uint32(codes.Internal)},
+			Message:            "Queried documents with MongoDB disconnection error",
+			DocumentCollection: documentCollection,
+		}, nil
+	}
+
+	log.Println("[INFO] Success querying documents")
+	return &pb.DocumentResponse{
+		Status:             &pb.DocumentResponse_Code{Code: uint32(codes.OK)},
+		Message:            codes.OK.String(),
+		DocumentCollection: documentCollection,
+	}, nil
 
 }

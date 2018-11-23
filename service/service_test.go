@@ -7,6 +7,7 @@ import (
 	"golang.org/x/net/context"
 	"math/rand"
 	"testing"
+	"time"
 )
 
 var (
@@ -67,11 +68,11 @@ func TestCreateDocument(t *testing.T) {
 		isExpErr    bool
 	}{
 		{&pb.DocumentRequest{}, unavailable,
-			errServiceUnavailable.Error(), true},
+			"rpc error: code = Unavailable desc = service unavailable", true},
 		{nil, available,
-			errNilRequest.Error(), true},
+			"rpc error: code = InvalidArgument desc = nil request", true},
 		{&pb.DocumentRequest{}, available,
-			errNilRequestData.Error(), true},
+			"rpc error: code = InvalidArgument desc = nil request data", true},
 		{&pb.DocumentRequest{Data: &pb.Document{
 			Uuid: "garbage",
 		}}, available,
@@ -150,11 +151,11 @@ func TestListUserDocumentCollection(t *testing.T) {
 		isExpErr    bool
 	}{
 		{&pb.DocumentRequest{}, unavailable, 0,
-			errServiceUnavailable.Error(), true},
+			"rpc error: code = Unavailable desc = service unavailable", true},
 		{nil, available, 0,
-			errNilRequest.Error(), true},
+			"rpc error: code = InvalidArgument desc = nil request", true},
 		{&pb.DocumentRequest{}, available, 0,
-			errNilRequestData.Error(), true},
+			"rpc error: code = InvalidArgument desc = nil request data", true},
 		{&pb.DocumentRequest{Data: &pb.Document{
 			Uuid: "garbage",
 		}}, available, 0,
@@ -203,15 +204,15 @@ func TestUpdateDocument(t *testing.T) {
 		isExpErr    bool
 	}{
 		{&pb.DocumentRequest{}, unavailable,
-			errServiceUnavailable.Error(), true},
+			"rpc error: code = Unavailable desc = service unavailable", true},
 		{nil, available,
-			errNilRequest.Error(), true},
+			"rpc error: code = InvalidArgument desc = nil request", true},
 		{&pb.DocumentRequest{}, available,
-			errNilRequestData.Error(), true},
+			"rpc error: code = InvalidArgument desc = nil request data", true},
 		{&pb.DocumentRequest{Data: &pb.Document{
 			Duid: "",
 		}}, available,
-			errMissingDUID.Error(), true},
+			"rpc error: code = InvalidArgument desc = missing DUID", true},
 		{&pb.DocumentRequest{
 			Data: &pb.Document{
 				Duid: tempDUID,
@@ -318,13 +319,13 @@ func TestDeleteDocument(t *testing.T) {
 		isExpErr    bool
 	}{
 		{&pb.DocumentRequest{}, unavailable,
-			errServiceUnavailable.Error(), true},
+			"rpc error: code = Unavailable desc = service unavailable", true},
 		{nil, available,
-			errNilRequest.Error(), true},
+			"rpc error: code = InvalidArgument desc = nil request", true},
 		{&pb.DocumentRequest{}, available,
-			errNilRequestData.Error(), true},
+			"rpc error: code = InvalidArgument desc = nil request data", true},
 		{&pb.DocumentRequest{Data: &pb.Document{}}, available,
-			errMissingDUID.Error(), true},
+			"rpc error: code = InvalidArgument desc = missing DUID", true},
 		{&pb.DocumentRequest{Data: &pb.Document{
 			Duid: "1CMjlaqHYNJhnVvWiGus3EiOno8",
 		}}, available,
@@ -369,6 +370,103 @@ func TestDeleteDocument(t *testing.T) {
 		res, err := s.DeleteDocument(context.TODO(), c.req)
 		if !c.isExpErr {
 			assert.Equal(t, c.expMsg, res.GetMessage())
+		} else {
+			assert.Equal(t, c.expMsg, err.Error())
+			assert.EqualError(t, err, c.expMsg)
+		}
+
+	}
+}
+
+func TestQueryDocument(t *testing.T) {
+	cases := []struct {
+		req         *pb.DocumentRequest
+		serverState state
+		expMsg      string
+		isExpErr    bool
+		expNumDocs  int
+	}{
+		{&pb.DocumentRequest{}, unavailable,
+			"rpc error: code = Unavailable desc = service unavailable", true, 0,
+		},
+		{nil, available,
+			"rpc error: code = InvalidArgument desc = nil request", true, 0,
+		},
+		{&pb.DocumentRequest{}, available,
+			"rpc error: code = InvalidArgument desc = nil query arguments", true, 0,
+		},
+		{
+			&pb.DocumentRequest{QueryParameters: &pb.QueryTransaction{
+				MinRecordTimestamp: minTimestamp,
+				MaxRecordTimestamp: time.Now().UTC().Unix() - 1,
+			}}, available,
+			"OK", false, 32,
+		},
+		{
+			&pb.DocumentRequest{QueryParameters: &pb.QueryTransaction{
+				Publishers: []*pb.Publisher{
+					{
+						LastName:  "Seger",
+						FirstName: "Kerri",
+					},
+					{
+						LastName:  "Abadi",
+						FirstName: "Shima",
+					},
+				},
+				MinRecordTimestamp: minTimestamp,
+				MaxRecordTimestamp: time.Now().UTC().Unix() - 1,
+			}}, available,
+			"OK", false, 11,
+		},
+		{
+			&pb.DocumentRequest{QueryParameters: &pb.QueryTransaction{
+				Publishers: []*pb.Publisher{
+					{
+						LastName:  "Seger",
+						FirstName: "Kerri",
+					},
+				},
+				CallTypeNames: []string{
+					"Wookie",
+				},
+				MinRecordTimestamp: minTimestamp,
+				MaxRecordTimestamp: time.Now().UTC().Unix() - 1,
+			}}, available,
+			"OK", false, 1,
+		},
+		{
+			&pb.DocumentRequest{QueryParameters: &pb.QueryTransaction{
+				MinRecordTimestamp: 1446744336,
+				MaxRecordTimestamp: 1510287809,
+			}}, available,
+			"OK", false, 12,
+		},
+		{
+			&pb.DocumentRequest{QueryParameters: &pb.QueryTransaction{
+				MinRecordTimestamp: 0,
+				MaxRecordTimestamp: 1510287809,
+			}}, available,
+			"rpc error: code = InvalidArgument desc = invalid Document RecordTimestamp",
+			true, 0,
+		},
+		{
+			&pb.DocumentRequest{QueryParameters: &pb.QueryTransaction{
+				MinRecordTimestamp: 1446744336,
+				MaxRecordTimestamp: 0,
+			}}, available,
+			"rpc error: code = InvalidArgument desc = invalid Document RecordTimestamp",
+			true, 0,
+		},
+	}
+
+	for _, c := range cases {
+		serviceStateLocker.currentServiceState = c.serverState
+		s := Service{}
+		res, err := s.QueryDocument(context.TODO(), c.req)
+		if !c.isExpErr {
+			assert.Nil(t, err)
+			assert.Equal(t, c.expNumDocs, len(res.GetDocumentCollection()))
 		} else {
 			assert.Equal(t, c.expMsg, err.Error())
 			assert.EqualError(t, err, c.expMsg)

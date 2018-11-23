@@ -3,6 +3,9 @@ package service
 import (
 	"fmt"
 	pb "github.com/faraonc/hwsc-api-blocks/int/hwsc-document-svc/proto"
+	"github.com/mongodb/mongo-go-driver/bson"
+	"github.com/mongodb/mongo-go-driver/mongo"
+	"golang.org/x/net/context"
 	"log"
 	"net/url"
 	"regexp"
@@ -53,6 +56,34 @@ var (
 		"arctic":   true,
 	}
 )
+
+// DialMongoDB connects a client to MongoDB server.
+// Returns a MongoDB Client or any dialing error.
+func DialMongoDB(uri string) (*mongo.Client, error) {
+	client, err := mongo.NewClient(uri)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := client.Connect(context.TODO()); err != nil {
+		return nil, err
+	}
+
+	return client, nil
+}
+
+// DisconnectMongoDBClient disconnects a client from MongoDB server.
+// Returns if there is any disconnection error.
+func DisconnectMongoDBClient(client *mongo.Client) error {
+	if client == nil {
+		return errNilMongoDBClient
+	}
+	if err := client.Disconnect(context.TODO()); err != nil {
+		return err
+	}
+
+	return nil
+}
 
 // ValidateDocument validates the Document.
 // Returns an error if field fails validation.
@@ -477,4 +508,122 @@ func isStateAvailable() bool {
 	}
 
 	return true
+}
+
+func buildAggregatePipeline(queryParams *pb.QueryTransaction) (*bson.Array, error) {
+	if queryParams == nil {
+		return nil, errNilQueryTransaction
+	}
+
+	lastNames, firstNames := extractPublishersFields(queryParams.GetPublishers())
+	cities, states, provinces, countries := extractStudySitesFields(queryParams.GetStudySites())
+
+	pipeline := bson.NewArray(
+		bson.VC.DocumentFromElements(
+			bson.EC.SubDocumentFromElements(
+				"$match",
+				bson.EC.SubDocumentFromElements("publisherName.lastName",
+					buildArrayFromElements(lastNames)),
+				bson.EC.SubDocumentFromElements("publisherName.firstName",
+					buildArrayFromElements(firstNames)),
+
+				bson.EC.SubDocumentFromElements("studySite.city",
+					buildArrayFromElements(cities)),
+				bson.EC.SubDocumentFromElements("studySite.state",
+					buildArrayFromElements(states)),
+				bson.EC.SubDocumentFromElements("studySite.province",
+					buildArrayFromElements(provinces)),
+				bson.EC.SubDocumentFromElements("studySite.country",
+					buildArrayFromElements(countries)),
+
+				bson.EC.SubDocumentFromElements("callTypeName",
+					buildArrayFromElements(queryParams.GetCallTypeNames())),
+
+				bson.EC.SubDocumentFromElements("groundType",
+					buildArrayFromElements(queryParams.GetGroundTypes())),
+
+				bson.EC.SubDocumentFromElements("sensorType",
+					buildArrayFromElements(queryParams.GetSensorTypes())),
+
+				bson.EC.SubDocumentFromElements("sensorName",
+					buildArrayFromElements(queryParams.GetSensorNames())),
+
+				bson.EC.SubDocumentFromElements("recordTimestamp",
+					bson.EC.Int64("$gte", queryParams.GetMinRecordTimestamp()),
+					bson.EC.Int64("$lte", queryParams.GetMaxRecordTimestamp())),
+			),
+		),
+	)
+
+	return pipeline, nil
+}
+
+func buildArrayFromElements(elems []string) *bson.Element {
+	if elems == nil || len(elems) == 0 {
+		return bson.EC.ArrayFromElements("$in", bson.VC.Regex(".*", ""))
+	}
+	elemVals := make([]*bson.Value, len(elems))
+	for i := 0; i < len(elems); i++ {
+		elemVals[i] = bson.VC.String(elems[i])
+	}
+
+	return bson.EC.ArrayFromElements("$in", elemVals...)
+}
+
+func extractPublishersFields(publishers []*pb.Publisher) ([]string, []string) {
+	if publishers == nil || len(publishers) == 0 {
+		return []string{}, []string{}
+	}
+
+	lastNames := make([]string, 0)
+	firstNames := make([]string, 0)
+
+	for i := 0; i < len(publishers); i++ {
+		tempLastName := strings.TrimSpace(publishers[i].GetLastName())
+		if tempLastName != "" {
+			lastNames = append(lastNames, tempLastName)
+		}
+
+		tempFirstName := strings.TrimSpace(publishers[i].GetFirstName())
+		if tempFirstName != "" {
+			firstNames = append(firstNames, tempFirstName)
+		}
+	}
+
+	return lastNames, firstNames
+}
+
+func extractStudySitesFields(studySites []*pb.StudySite) ([]string, []string, []string, []string) {
+	if studySites == nil || len(studySites) == 0 {
+		return []string{}, []string{}, []string{}, []string{}
+	}
+
+	cities := make([]string, 0)
+	states := make([]string, 0)
+	provinces := make([]string, 0)
+	countries := make([]string, 0)
+
+	for i := 0; i < len(studySites); i++ {
+		tempCity := strings.TrimSpace(studySites[i].GetCity())
+		if tempCity != "" {
+			cities = append(cities, tempCity)
+		}
+
+		tempState := strings.TrimSpace(studySites[i].GetState())
+		if tempState != "" {
+			states = append(states, tempState)
+		}
+
+		tempProvince := strings.TrimSpace(studySites[i].GetProvince())
+		if tempProvince != "" {
+			provinces = append(provinces, tempProvince)
+		}
+
+		tempCountry := strings.TrimSpace(studySites[i].GetCountry())
+		if tempCountry != "" {
+			countries = append(countries, tempCountry)
+		}
+	}
+
+	return cities, states, provinces, countries
 }
