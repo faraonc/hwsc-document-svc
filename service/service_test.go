@@ -7,6 +7,7 @@ import (
 	"golang.org/x/net/context"
 	"math/rand"
 	"testing"
+	"time"
 )
 
 var (
@@ -395,7 +396,10 @@ func TestQueryDocument(t *testing.T) {
 			"rpc error: code = InvalidArgument desc = nil query arguments", true, 0,
 		},
 		{
-			&pb.DocumentRequest{QueryParameters: &pb.QueryTransaction{}}, available,
+			&pb.DocumentRequest{QueryParameters: &pb.QueryTransaction{
+				MinRecordTimestamp: minTimestamp,
+				MaxRecordTimestamp: time.Now().UTC().Unix() - 1,
+			}}, available,
 			"OK", false, 32,
 		},
 		{
@@ -410,6 +414,8 @@ func TestQueryDocument(t *testing.T) {
 						FirstName: "Shima",
 					},
 				},
+				MinRecordTimestamp: minTimestamp,
+				MaxRecordTimestamp: time.Now().UTC().Unix() - 1,
 			}}, available,
 			"OK", false, 11,
 		},
@@ -424,8 +430,33 @@ func TestQueryDocument(t *testing.T) {
 				CallTypeNames: []string{
 					"Wookie",
 				},
+				MinRecordTimestamp: minTimestamp,
+				MaxRecordTimestamp: time.Now().UTC().Unix() - 1,
 			}}, available,
 			"OK", false, 1,
+		},
+		{
+			&pb.DocumentRequest{QueryParameters: &pb.QueryTransaction{
+				MinRecordTimestamp: 1446744336,
+				MaxRecordTimestamp: 1510287809,
+			}}, available,
+			"OK", false, 12,
+		},
+		{
+			&pb.DocumentRequest{QueryParameters: &pb.QueryTransaction{
+				MinRecordTimestamp: 0,
+				MaxRecordTimestamp: 1510287809,
+			}}, available,
+			"rpc error: code = InvalidArgument desc = invalid Document RecordTimestamp",
+			true, 0,
+		},
+		{
+			&pb.DocumentRequest{QueryParameters: &pb.QueryTransaction{
+				MinRecordTimestamp: 1446744336,
+				MaxRecordTimestamp: 0,
+			}}, available,
+			"rpc error: code = InvalidArgument desc = invalid Document RecordTimestamp",
+			true, 0,
 		},
 	}
 
@@ -434,6 +465,7 @@ func TestQueryDocument(t *testing.T) {
 		s := Service{}
 		res, err := s.QueryDocument(context.TODO(), c.req)
 		if !c.isExpErr {
+			assert.Nil(t, err)
 			assert.Equal(t, c.expNumDocs, len(res.GetDocumentCollection()))
 		} else {
 			assert.Equal(t, c.expMsg, err.Error())

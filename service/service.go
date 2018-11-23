@@ -652,6 +652,16 @@ func (s *Service) QueryDocument(ctx context.Context, req *pb.DocumentRequest) (*
 		return nil, status.Error(codes.InvalidArgument, errNilQueryArgs.Error())
 	}
 
+	if err := ValidateRecordTimestamp(queryParams.MinRecordTimestamp); err != nil {
+		log.Printf("[ERROR] %s\n", err)
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	if err := ValidateRecordTimestamp(queryParams.MaxRecordTimestamp); err != nil {
+		log.Printf("[ERROR] %s\n", err)
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
 	log.Printf("[INFO] QueryParameters contains:\n %s\n", queryParams)
 
 	log.Println("[INFO] Connecting to mongodb://hwscmongodb")

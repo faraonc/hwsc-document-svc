@@ -547,6 +547,10 @@ func buildAggregatePipeline(queryParams *pb.QueryTransaction) (*bson.Array, erro
 
 				bson.EC.SubDocumentFromElements("sensorName",
 					buildArrayFromElements(queryParams.GetSensorNames())),
+
+				bson.EC.SubDocumentFromElements("recordTimestamp",
+					bson.EC.Int64("$gte", queryParams.GetMinRecordTimestamp()),
+					bson.EC.Int64("$lte", queryParams.GetMaxRecordTimestamp())),
 			),
 		),
 	)
