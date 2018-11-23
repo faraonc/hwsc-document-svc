@@ -55,6 +55,22 @@ var (
 		"southern": true,
 		"arctic":   true,
 	}
+	distinctSearchFieldNames = map[int]string{
+		0: "publisherName",
+		1: "studySite",
+		2: "callTypeName",
+		3: "groundType",
+		4: "sensorType",
+		5: "sensorName",
+	}
+	distinctResultFieldIndices = map[string]int{
+		"Publishers":    0,
+		"StudySites":    1,
+		"CallTypeNames": 2,
+		"GroundTypes":   3,
+		"SensorTypes":   4,
+		"SensorNames":   5,
+	}
 )
 
 // DialMongoDB connects a client to MongoDB server.
@@ -626,4 +642,79 @@ func extractStudySitesFields(studySites []*pb.StudySite) ([]string, []string, []
 	}
 
 	return cities, states, provinces, countries
+}
+
+//TODO unit test
+func extractDistinctResults(queryResult *pb.QueryTransaction, fieldName string, distinctResult []interface{}) error {
+	if queryResult == nil {
+		return errNilQueryResult
+	}
+
+	if distinctResult == nil || len(distinctResult) == 0 {
+		return errInvalidDistinctResult
+	}
+
+	var err error
+	switch fieldName {
+	case "Publishers":
+		queryResult.Publishers, err = extractDistinctPublishers(distinctResult)
+	case "StudySites":
+		queryResult.StudySites, err = extractDistinctStudySites(distinctResult)
+	case "CallTypeNames":
+		queryResult.CallTypeNames, err = extractDistinct(distinctResult)
+	case "GroundTypes":
+		queryResult.GroundTypes, err = extractDistinct(distinctResult)
+	case "SensorTypes":
+		queryResult.SensorTypes, err = extractDistinct(distinctResult)
+	case "SensorNames":
+		queryResult.SensorNames, err = extractDistinct(distinctResult)
+	default:
+		err = errInvalidDistinctFieldName
+	}
+
+	return err
+}
+
+//TODO unit test
+func extractDistinctPublishers(distinctResult []interface{}) ([]*pb.Publisher, error) {
+	if distinctResult == nil || len(distinctResult) == 0 {
+		return nil, errInvalidDistinctResult
+	}
+	publishers := make([]*pb.Publisher, 0)
+	for _, v := range distinctResult {
+		publishers = append(publishers, &pb.Publisher{
+			LastName:  v.(*bson.Document).ElementAt(0).Value().StringValue(),
+			FirstName: v.(*bson.Document).ElementAt(1).Value().StringValue(),
+		})
+	}
+	return publishers, nil
+}
+
+//TODO unit test
+func extractDistinctStudySites(distinctResult []interface{}) ([]*pb.StudySite, error) {
+	if distinctResult == nil || len(distinctResult) == 0 {
+		return nil, errInvalidDistinctResult
+	}
+	studySites := make([]*pb.StudySite, 0)
+	for _, v := range distinctResult {
+		studySites = append(studySites, &pb.StudySite{
+			City:     v.(*bson.Document).ElementAt(0).Value().StringValue(),
+			State:    v.(*bson.Document).ElementAt(1).Value().StringValue(),
+			Province: v.(*bson.Document).ElementAt(2).Value().StringValue(),
+			Country:  v.(*bson.Document).ElementAt(3).Value().StringValue(),
+		})
+	}
+	return studySites, nil
+}
+
+//TODO unit test
+func extractDistinct(distinctResult []interface{}) ([]string, error) {
+	if distinctResult == nil || len(distinctResult) == 0 {
+		return nil, errInvalidDistinctResult
+	}
+	distinct := make([]string, len(distinctResult))
+	for i := 0; i < len(distinctResult); i++ {
+		distinct[i] = distinctResult[i].(string)
+	}
+	return distinct, nil
 }

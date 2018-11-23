@@ -12,6 +12,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"log"
+	"reflect"
 	"sync"
 	"time"
 )
@@ -625,10 +626,70 @@ func (s *Service) DeleteFileMetadata(ctx context.Context, req *pb.DocumentReques
 
 // ListDistinctFieldValues list all the unique fields values required for the front-end drop-down filter
 // Returns the QueryTransaction.
-//TODO
+//TODO Unit test
 func (s *Service) ListDistinctFieldValues(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
+	log.Println("[INFO] Requesting ListDistinctFieldValues service")
+	if ok := isStateAvailable(); !ok {
+		log.Printf("[ERROR] %s\n", errServiceUnavailable.Error())
+		return nil, status.Error(codes.Unavailable, errServiceUnavailable.Error())
+	}
 
-	return nil, nil
+	if req == nil {
+		log.Printf("[ERROR] %s\n", errNilRequest.Error())
+		return nil, status.Error(codes.InvalidArgument, errNilRequest.Error())
+	}
+
+	log.Println("[INFO] Connecting to mongodb://hwscmongodb")
+	client, err := DialMongoDB(conf.DocumentDB.Reader)
+	if err != nil {
+		log.Printf("[ERROR] %s\n", err.Error())
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	collection := client.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
+
+	// Get distinct using field names in distinctSearchFieldNames
+	distinctResult := make([][]interface{}, 6)
+	for i := 0; i < len(distinctSearchFieldNames); i++ {
+		doc := &bson.Document{}
+		result, err := collection.Distinct(context.Background(), distinctSearchFieldNames[i], doc)
+		if err != nil {
+			log.Printf("[ERROR] Distinct: %s\n", err.Error())
+			return nil, status.Error(codes.Internal, err.Error())
+		}
+		distinctResult[i] = result
+	}
+
+	// Extract distinct from distinctResult, and put them in queryResult
+	queryResult := &pb.QueryTransaction{}
+	val := reflect.ValueOf(*queryResult)
+	for i := 0; i < len(distinctResultFieldIndices); i++ {
+		fieldName := val.Type().Field(i).Name
+		if err := extractDistinctResults(queryResult,
+			fieldName, distinctResult[distinctResultFieldIndices[fieldName]]); err != nil {
+
+			log.Printf("[ERROR] %s\n", err.Error())
+			return nil, status.Error(codes.Internal, err.Error())
+		}
+	}
+
+	log.Printf("[DEBUG] distinct values: \n%v\n\n", queryResult)
+
+	if err := DisconnectMongoDBClient(client); err != nil {
+		log.Printf("[ERROR] Success listing distinct field values with disconnection error: %s\n", err.Error())
+		return &pb.DocumentResponse{
+			Status:       &pb.DocumentResponse_Code{Code: uint32(codes.Internal)},
+			Message:      "Queried documents with MongoDB disconnection error",
+			QueryResults: queryResult,
+		}, nil
+	}
+
+	log.Println("[INFO] Success listing distinct field values")
+	return &pb.DocumentResponse{
+		Status:       &pb.DocumentResponse_Code{Code: uint32(codes.OK)},
+		Message:      codes.OK.String(),
+		QueryResults: queryResult,
+	}, nil
 
 }
 
