@@ -2015,22 +2015,274 @@ func TestExtractStudySitesFields(t *testing.T) {
 	}
 }
 
-func areSlicesEqual(a, b []string) bool {
-
-	// If one is nil, the other must also be nil.
-	if (a == nil) != (b == nil) {
-		return false
+func TestExtractDistinctResults(t *testing.T) {
+	cases := []struct {
+		input       []interface{}
+		queryResult *pb.QueryTransaction
+		expOutput   *pb.QueryTransaction
+		fieldName   string
+		isExpErr    bool
+		errorStr    string
+	}{
+		{nil, nil, nil, "", true, errNilQueryResult.Error()},
+		{nil, &pb.QueryTransaction{}, nil, "", true, errInvalidDistinctResult.Error()},
+		{
+			[]interface{}{
+				bson.NewDocument().Append(
+					bson.EC.String("LastName", "Seger"),
+					bson.EC.String("FirstName", "Kerri"),
+				),
+				bson.NewDocument().Append(
+					bson.EC.String("LastName", "Abadi"),
+					bson.EC.String("FirstName", "Shima"),
+				),
+			},
+			&pb.QueryTransaction{},
+			&pb.QueryTransaction{
+				Publishers: []*pb.Publisher{
+					{LastName: "Seger", FirstName: "Kerri"},
+					{LastName: "Abadi", FirstName: "Shima"},
+				},
+			},
+			"Publishers",
+			false,
+			"",
+		},
+		{
+			[]interface{}{
+				bson.NewDocument().Append(
+					bson.EC.String("City", "Batangas City"),
+					bson.EC.String("State", ""),
+					bson.EC.String("Province", "Batangas"),
+					bson.EC.String("Country", "Philippines"),
+				),
+				bson.NewDocument().Append(
+					bson.EC.String("City", "San Diego"),
+					bson.EC.String("State", "California"),
+					bson.EC.String("Province", ""),
+					bson.EC.String("Country", "USA"),
+				),
+			},
+			&pb.QueryTransaction{},
+			&pb.QueryTransaction{
+				StudySites: []*pb.StudySite{
+					{City: "Batangas City", Province: "Batangas", Country: "Philippines"},
+					{City: "San Diego", State: "California", Country: "USA"},
+				},
+			},
+			"StudySites",
+			false,
+			"",
+		},
+		{
+			[]interface{}{
+				"ab",
+				"cd",
+			},
+			&pb.QueryTransaction{},
+			&pb.QueryTransaction{
+				CallTypeNames: []string{
+					"ab",
+					"cd",
+				},
+			},
+			"CallTypeNames",
+			false,
+			"",
+		},
+		{
+			[]interface{}{
+				"ef",
+				"gh",
+			},
+			&pb.QueryTransaction{},
+			&pb.QueryTransaction{
+				GroundTypes: []string{
+					"ef",
+					"gh",
+				},
+			},
+			"GroundTypes",
+			false,
+			"",
+		},
+		{
+			[]interface{}{
+				"ij",
+				"kl",
+			},
+			&pb.QueryTransaction{},
+			&pb.QueryTransaction{
+				SensorTypes: []string{
+					"ij",
+					"kl",
+				},
+			},
+			"SensorTypes",
+			false,
+			"",
+		},
+		{
+			[]interface{}{
+				"mn",
+				"op",
+			},
+			&pb.QueryTransaction{},
+			&pb.QueryTransaction{
+				SensorNames: []string{
+					"mn",
+					"op",
+				},
+			},
+			"SensorNames",
+			false,
+			"",
+		},
+		{
+			[]interface{}{
+				"mn",
+			},
+			&pb.QueryTransaction{},
+			&pb.QueryTransaction{
+				SensorNames: []string{
+					"mn",
+				},
+			},
+			"default",
+			true,
+			errInvalidDistinctFieldName.Error(),
+		},
 	}
 
-	if len(a) != len(b) {
-		return false
-	}
-
-	for i := range a {
-		if a[i] != b[i] {
-			return false
+	for _, c := range cases {
+		err := extractDistinctResults(c.queryResult, c.fieldName, c.input)
+		if !c.isExpErr {
+			assert.Equal(t, c.expOutput, c.queryResult)
+		} else {
+			assert.EqualError(t, err, c.errorStr)
 		}
 	}
+}
 
-	return true
+func TestExtractDistinctPublishers(t *testing.T) {
+	cases := []struct {
+		input     []interface{}
+		expOutput []*pb.Publisher
+		isExpErr  bool
+		errorStr  string
+	}{
+		{nil, nil, true, errInvalidDistinctResult.Error()},
+		{[]interface{}{}, nil, true, errInvalidDistinctResult.Error()},
+		{
+			[]interface{}{
+				bson.NewDocument().Append(
+					bson.EC.String("LastName", "Seger"),
+					bson.EC.String("FirstName", "Kerri"),
+				),
+				bson.NewDocument().Append(
+					bson.EC.String("LastName", "Abadi"),
+					bson.EC.String("FirstName", "Shima"),
+				),
+			},
+			[]*pb.Publisher{
+				{LastName: "Seger", FirstName: "Kerri"},
+				{LastName: "Abadi", FirstName: "Shima"},
+			},
+			false,
+			"",
+		},
+	}
+
+	for _, c := range cases {
+		ret, err := extractDistinctPublishers(c.input)
+		if !c.isExpErr {
+			assert.Equal(t, c.expOutput, ret)
+		} else {
+			assert.EqualError(t, err, c.errorStr)
+		}
+	}
+}
+
+func TestExtractDistinctStudySites(t *testing.T) {
+	cases := []struct {
+		input     []interface{}
+		expOutput []*pb.StudySite
+		isExpErr  bool
+		errorStr  string
+	}{
+		{nil, nil, true, errInvalidDistinctResult.Error()},
+		{[]interface{}{}, nil, true, errInvalidDistinctResult.Error()},
+		{
+			[]interface{}{
+				bson.NewDocument().Append(
+					bson.EC.String("City", "Batangas City"),
+					bson.EC.String("State", ""),
+					bson.EC.String("Province", "Batangas"),
+					bson.EC.String("Country", "Philippines"),
+				),
+				bson.NewDocument().Append(
+					bson.EC.String("City", "San Diego"),
+					bson.EC.String("State", "California"),
+					bson.EC.String("Province", ""),
+					bson.EC.String("Country", "USA"),
+				),
+			},
+			[]*pb.StudySite{
+				{City: "Batangas City", Province: "Batangas", Country: "Philippines"},
+				{City: "San Diego", State: "California", Country: "USA"},
+			},
+			false,
+			"",
+		},
+	}
+
+	for _, c := range cases {
+		ret, err := extractDistinctStudySites(c.input)
+		if !c.isExpErr {
+			assert.Equal(t, c.expOutput, ret)
+		} else {
+			assert.EqualError(t, err, c.errorStr)
+		}
+	}
+}
+
+func TestExtractDistinct(t *testing.T) {
+	cases := []struct {
+		input     []interface{}
+		expOutput []string
+		isExpErr  bool
+		errorStr  string
+	}{
+		{nil, nil, true, errInvalidDistinctResult.Error()},
+		{[]interface{}{}, nil, true, errInvalidDistinctResult.Error()},
+		{[]interface{}{"a", "b", "c"}, []string{"a", "b", "c"}, false, ""},
+	}
+
+	for _, c := range cases {
+		ret, err := extractDistinct(c.input)
+		if !c.isExpErr {
+			assert.Equal(t, c.expOutput, ret)
+		} else {
+			assert.EqualError(t, err, c.errorStr)
+		}
+	}
+}
+
+func TestAreSlicesEqual(t *testing.T) {
+	cases := []struct {
+		inputA    []string
+		inputB    []string
+		expOutput bool
+	}{
+		{nil, nil, true},
+		{[]string{}, []string{}, true},
+		{nil, []string{}, false},
+		{[]string{"a"}, []string{"a"}, true},
+		{[]string{"a"}, []string{"b"}, false},
+		{[]string{"a"}, []string{"a", "b"}, false},
+	}
+
+	for _, c := range cases {
+		assert.Equal(t, c.expOutput, areSlicesEqual(c.inputA, c.inputB))
+	}
 }
