@@ -626,7 +626,6 @@ func (s *Service) DeleteFileMetadata(ctx context.Context, req *pb.DocumentReques
 
 // ListDistinctFieldValues list all the unique fields values required for the front-end drop-down filter
 // Returns the QueryTransaction.
-//TODO Unit test
 func (s *Service) ListDistinctFieldValues(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
 	log.Println("[INFO] Requesting ListDistinctFieldValues service")
 	if ok := isStateAvailable(); !ok {

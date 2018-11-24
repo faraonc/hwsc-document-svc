@@ -644,7 +644,6 @@ func extractStudySitesFields(studySites []*pb.StudySite) ([]string, []string, []
 	return cities, states, provinces, countries
 }
 
-//TODO unit test
 func extractDistinctResults(queryResult *pb.QueryTransaction, fieldName string, distinctResult []interface{}) error {
 	if queryResult == nil {
 		return errNilQueryResult
@@ -675,7 +674,6 @@ func extractDistinctResults(queryResult *pb.QueryTransaction, fieldName string, 
 	return err
 }
 
-//TODO unit test
 func extractDistinctPublishers(distinctResult []interface{}) ([]*pb.Publisher, error) {
 	if distinctResult == nil || len(distinctResult) == 0 {
 		return nil, errInvalidDistinctResult
@@ -690,7 +688,6 @@ func extractDistinctPublishers(distinctResult []interface{}) ([]*pb.Publisher, e
 	return publishers, nil
 }
 
-//TODO unit test
 func extractDistinctStudySites(distinctResult []interface{}) ([]*pb.StudySite, error) {
 	if distinctResult == nil || len(distinctResult) == 0 {
 		return nil, errInvalidDistinctResult
@@ -707,7 +704,6 @@ func extractDistinctStudySites(distinctResult []interface{}) ([]*pb.StudySite, e
 	return studySites, nil
 }
 
-//TODO unit test
 func extractDistinct(distinctResult []interface{}) ([]string, error) {
 	if distinctResult == nil || len(distinctResult) == 0 {
 		return nil, errInvalidDistinctResult
@@ -717,4 +713,24 @@ func extractDistinct(distinctResult []interface{}) ([]string, error) {
 		distinct[i] = distinctResult[i].(string)
 	}
 	return distinct, nil
+}
+
+func areSlicesEqual(a, b []string) bool {
+
+	// If one is nil, the other must also be nil.
+	if (a == nil) != (b == nil) {
+		return false
+	}
+
+	if len(a) != len(b) {
+		return false
+	}
+
+	for i := range a {
+		if a[i] != b[i] {
+			return false
+		}
+	}
+
+	return true
 }
