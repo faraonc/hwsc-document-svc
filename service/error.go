@@ -44,4 +44,6 @@ var (
 	errInvalidDocumentCreateTimestamp = errors.New("invalid Document CreateTimestamp")
 	errInvalidUpdateTimestamp         = errors.New("invalid Document UpdateTimestamp")
 	errNilQueryTransaction            = errors.New("nil QueryTransaction")
+	errInvalidFileMetadataParameters  = errors.New("invalid FileMetadataParameters")
+	errUnreachableURI                 = errors.New("unreachable URI")
 )

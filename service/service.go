@@ -12,6 +12,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"log"
+	"net/url"
 	"reflect"
 	"sync"
 	"time"
@@ -610,8 +611,63 @@ func (s *Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (
 // Returns the updated Document.
 // TODO
 func (s *Service) AddFileMetadata(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
+	log.Println("[INFO] Requesting AddFileMetadata service")
 
-	return nil, nil
+	if ok := isStateAvailable(); !ok {
+		log.Printf("[ERROR] %s\n", errServiceUnavailable.Error())
+		return nil, status.Error(codes.Unavailable, errServiceUnavailable.Error())
+	}
+
+	if req == nil {
+		log.Printf("[ERROR] %s\n", errNilRequest.Error())
+		return nil, status.Error(codes.InvalidArgument, errNilRequest.Error())
+	}
+
+	if req.FileMetadataParameters == nil || req.FileMetadataParameters.GetUrl() == "" ||
+		req.FileMetadataParameters.GetUuid() == "" || req.FileMetadataParameters.GetDuid() == "" {
+
+		log.Printf("[ERROR] %s\n", errInvalidFileMetadataParameters.Error())
+		return nil, status.Error(codes.InvalidArgument, errInvalidFileMetadataParameters.Error())
+	}
+
+	if err := ValidateDUID(req.FileMetadataParameters.GetDuid()); err != nil {
+		log.Printf("[ERROR] %s\n", err.Error())
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	if err := ValidateUUID(req.FileMetadataParameters.GetUuid()); err != nil {
+		log.Printf("[ERROR] %s\n", err.Error())
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	switch req.FileMetadataParameters.Media {
+	case pb.FileType_AUDIO:
+		if !audioRegex.MatchString(req.FileMetadataParameters.GetUrl()) {
+			log.Printf("[ERROR] %s\n", errInvalidDocumentAudioURL.Error())
+			return nil, status.Error(codes.InvalidArgument, errInvalidDocumentAudioURL.Error())
+		}
+	case pb.FileType_IMAGE:
+		if !imageRegex.MatchString(req.FileMetadataParameters.GetUrl()) {
+			log.Printf("[ERROR] %s\n", errInvalidDocumentImageURL.Error())
+			return nil, status.Error(codes.InvalidArgument, errInvalidDocumentImageURL.Error())
+		}
+	case pb.FileType_VIDEO:
+		if !videoRegex.MatchString(req.FileMetadataParameters.GetUrl()) {
+			log.Printf("[ERROR] %s\n", errInvalidDocumentVideoURL.Error())
+			return nil, status.Error(codes.InvalidArgument, errInvalidDocumentVideoURL.Error())
+		}
+	}
+
+	if _, err := url.ParseRequestURI(req.FileMetadataParameters.GetUrl()); err != nil {
+		log.Printf("[ERROR] %s\n", errUnreachableURI.Error())
+		return nil, status.Error(codes.InvalidArgument, errUnreachableURI.Error())
+	}
+
+	return &pb.DocumentResponse{
+		Status:  &pb.DocumentResponse_Code{Code: uint32(codes.OK)},
+		Message: codes.OK.String(),
+		//Data:    document,
+	}, nil
 
 }
 
