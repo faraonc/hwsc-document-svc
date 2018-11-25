@@ -4,6 +4,7 @@ import (
 	pb "github.com/faraonc/hwsc-api-blocks/int/hwsc-document-svc/proto"
 	"github.com/faraonc/hwsc-document-svc/conf"
 	"github.com/google/uuid"
+	"github.com/kylelemons/godebug/pretty"
 	"github.com/mongodb/mongo-go-driver/bson"
 	"github.com/mongodb/mongo-go-driver/mongo/findopt"
 	"github.com/mongodb/mongo-go-driver/mongo/mongoopt"
@@ -12,6 +13,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"log"
+	"net/url"
 	"reflect"
 	"sync"
 	"time"
@@ -31,6 +33,11 @@ type duidLocker struct {
 	lock sync.Mutex
 }
 
+// fuidLocker synchronizes the generating of fuid
+type fuidLocker struct {
+	lock sync.Mutex
+}
+
 // Service implements services for managing document
 type Service struct{}
 
@@ -45,6 +52,7 @@ const (
 var (
 	serviceStateLocker stateLocker
 	duidGenerator      duidLocker
+	fuidGenerator      fuidLocker
 
 	// Converts State of the service to a string
 	serviceStateMap map[state]string
@@ -56,6 +64,7 @@ var (
 func init() {
 	serviceStateLocker = stateLocker{currentServiceState: available}
 	duidGenerator = duidLocker{}
+	fuidGenerator = fuidLocker{}
 
 	serviceStateMap = map[state]string{
 		available:   "Available",
@@ -68,11 +77,19 @@ func (s state) String() string {
 }
 
 // NewDUID generates a new document unique ID.
-func (d duidLocker) NewDUID() string {
+func (d *duidLocker) NewDUID() string {
 	d.lock.Lock()
 	defer d.lock.Unlock()
 	duid := ksuid.New().String()
 	return duid
+}
+
+// NewFUID generates a new file metadata unique ID.
+func (d *fuidLocker) NewFUID() string {
+	d.lock.Lock()
+	defer d.lock.Unlock()
+	uuid := uuid.New().String()
+	return uuid
 }
 
 // GetStatus gets the current status of the service.
@@ -153,7 +170,7 @@ func (s *Service) CreateDocument(ctx context.Context, req *pb.DocumentRequest) (
 	}
 	if req.GetImageUrls() != nil {
 		for _, url := range req.GetImageUrls() {
-			doc.ImageUrlsMap[uuid.New().String()] = url
+			doc.ImageUrlsMap[fuidGenerator.NewFUID()] = url
 		}
 	}
 
@@ -163,7 +180,7 @@ func (s *Service) CreateDocument(ctx context.Context, req *pb.DocumentRequest) (
 	}
 	if req.GetAudioUrls() != nil {
 		for _, url := range req.GetAudioUrls() {
-			doc.AudioUrlsMap[uuid.New().String()] = url
+			doc.AudioUrlsMap[fuidGenerator.NewFUID()] = url
 		}
 	}
 
@@ -173,7 +190,7 @@ func (s *Service) CreateDocument(ctx context.Context, req *pb.DocumentRequest) (
 	}
 	if req.GetVideoUrls() != nil {
 		for _, url := range req.GetVideoUrls() {
-			doc.VideoUrlsMap[uuid.New().String()] = url
+			doc.VideoUrlsMap[fuidGenerator.NewFUID()] = url
 		}
 	}
 
@@ -183,7 +200,7 @@ func (s *Service) CreateDocument(ctx context.Context, req *pb.DocumentRequest) (
 	}
 	if req.GetFileUrls() != nil {
 		for _, url := range req.GetFileUrls() {
-			doc.FileUrlsMap[uuid.New().String()] = url
+			doc.FileUrlsMap[fuidGenerator.NewFUID()] = url
 		}
 	}
 
@@ -194,7 +211,7 @@ func (s *Service) CreateDocument(ctx context.Context, req *pb.DocumentRequest) (
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	log.Printf("[INFO] Document contains:\n %s\n\n", doc)
+	log.Printf("[INFO] Document contains:\n %s\n\n", pretty.Sprint(doc))
 
 	log.Printf("[INFO] Connecting to mongodb://hwscmongodb duid: %s - uuid: %s\n", doc.GetDuid(), doc.GetUuid())
 	client, err := DialMongoDB(conf.DocumentDB.Writer)
@@ -298,7 +315,7 @@ func (s *Service) ListUserDocumentCollection(ctx context.Context, req *pb.Docume
 				doc.GetDuid(), doc.GetUuid(), err.Error())
 		}
 		documentCollection = append(documentCollection, document)
-		log.Printf("[DEBUG] document: \n%s\n\n", document)
+		log.Printf("[INFO] document: \n%s\n\n", pretty.Sprint(document))
 
 	}
 
@@ -416,7 +433,7 @@ func (s *Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	log.Printf("[INFO] Document contains:\n %s\n\n", doc)
+	log.Printf("[INFO] Document contains:\n %s\n\n", pretty.Sprint(doc))
 
 	log.Printf("[INFO] Connecting to mongodb://hwscmongodb duid: %s - uuid: %s\n",
 		doc.GetDuid(), doc.GetUuid())
@@ -461,7 +478,7 @@ func (s *Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (
 	if err := ValidateDocument(document); err != nil {
 		log.Printf("[ERROR] Success updating document, duid: %s - uuid: %s with validation error: %s\n",
 			doc.GetDuid(), doc.GetUuid(), err.Error())
-		log.Printf("[ERROR] Suspected document: \n%s\n\n", doc)
+		log.Printf("[ERROR] Suspected document: \n%s\n\n", pretty.Sprint(doc))
 		return &pb.DocumentResponse{
 			Status:  &pb.DocumentResponse_Code{Code: uint32(codes.Internal)},
 			Message: "Updated document with validation error",
@@ -469,7 +486,7 @@ func (s *Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (
 		}, nil
 	}
 
-	log.Printf("[DEBUG] Updated document: \n%s\n\n", document)
+	log.Printf("[INFO] Updated document: \n%s\n\n", pretty.Sprint(document))
 
 	if err := DisconnectMongoDBClient(client); err != nil {
 		log.Printf("[ERROR] Success updating document, duid: %s - uuid: %s with disconnection error: %s\n",
@@ -574,7 +591,7 @@ func (s *Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (
 	if err := ValidateDocument(document); err != nil {
 		log.Printf("[ERROR] Success deleting document, duid: %s - uuid: %s with validation error: %s\n",
 			doc.GetDuid(), doc.GetUuid(), err.Error())
-		log.Printf("[ERROR] Suspected document: \n%s\n\n", doc)
+		log.Printf("[ERROR] Suspected document: \n%s\n\n", pretty.Sprint(doc))
 		return &pb.DocumentResponse{
 			Status:  &pb.DocumentResponse_Code{Code: uint32(codes.Internal)},
 			Message: "Deleted document with validation error",
@@ -582,7 +599,7 @@ func (s *Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (
 		}, nil
 	}
 
-	log.Printf("[DEBUG] Deleted document: \n%s\n\n", document)
+	log.Printf("[INFO] Deleted document: \n%s\n\n", pretty.Sprint(document))
 
 	if err := DisconnectMongoDBClient(client); err != nil {
 		log.Printf("[ERROR] Success deleting document, duid: %s - uuid: %s with disconnection error: %s\n",
@@ -608,11 +625,180 @@ func (s *Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (
 
 // AddFileMetadata adds a new FileMetadata in a MongoDB document using a given url, UUID and DUID.
 // Returns the updated Document.
-// TODO
+// TODO unit test
 func (s *Service) AddFileMetadata(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
+	log.Println("[INFO] Requesting AddFileMetadata service")
 
-	return nil, nil
+	if ok := isStateAvailable(); !ok {
+		log.Printf("[ERROR] %s\n", errServiceUnavailable.Error())
+		return nil, status.Error(codes.Unavailable, errServiceUnavailable.Error())
+	}
 
+	if req == nil {
+		log.Printf("[ERROR] %s\n", errNilRequest.Error())
+		return nil, status.Error(codes.InvalidArgument, errNilRequest.Error())
+	}
+
+	fileMetadataParameters := req.GetFileMetadataParameters()
+	if fileMetadataParameters == nil || fileMetadataParameters.GetUrl() == "" ||
+		fileMetadataParameters.GetUuid() == "" || fileMetadataParameters.GetDuid() == "" {
+
+		log.Printf("[ERROR] %s\n", errInvalidFileMetadataParameters.Error())
+		return nil, status.Error(codes.InvalidArgument, errInvalidFileMetadataParameters.Error())
+	}
+
+	if err := ValidateDUID(fileMetadataParameters.GetDuid()); err != nil {
+		log.Printf("[ERROR] %s\n", err.Error())
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	if err := ValidateUUID(fileMetadataParameters.GetUuid()); err != nil {
+		log.Printf("[ERROR] %s\n", err.Error())
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	switch fileMetadataParameters.Media {
+	case pb.FileType_FILE:
+		break
+	case pb.FileType_AUDIO:
+		if !audioRegex.MatchString(fileMetadataParameters.GetUrl()) {
+			log.Printf("[ERROR] %s\n", errInvalidDocumentAudioURL.Error())
+			return nil, status.Error(codes.InvalidArgument, errInvalidDocumentAudioURL.Error())
+		}
+	case pb.FileType_IMAGE:
+		if !imageRegex.MatchString(fileMetadataParameters.GetUrl()) {
+			log.Printf("[ERROR] %s\n", errInvalidDocumentImageURL.Error())
+			return nil, status.Error(codes.InvalidArgument, errInvalidDocumentImageURL.Error())
+		}
+	case pb.FileType_VIDEO:
+		if !videoRegex.MatchString(fileMetadataParameters.GetUrl()) {
+			log.Printf("[ERROR] %s\n", errInvalidDocumentVideoURL.Error())
+			return nil, status.Error(codes.InvalidArgument, errInvalidDocumentVideoURL.Error())
+		}
+	default:
+		return nil, status.Error(codes.InvalidArgument, errMediaType.Error())
+	}
+
+	// Test if the URI is reachable
+	if _, err := url.ParseRequestURI(fileMetadataParameters.GetUrl()); err != nil {
+		log.Printf("[ERROR] %s\n", errUnreachableURI.Error())
+		return nil, status.Error(codes.InvalidArgument, errUnreachableURI.Error())
+	}
+
+	log.Printf("[INFO] FileMetadataParameters: \n%v\n\n", pretty.Sprint(req.GetFileMetadataParameters()))
+
+	// Get the specific lock if it already exists, else make the lock
+	lock, _ := serviceClientLocker.LoadOrStore(fileMetadataParameters.GetDuid(), &sync.RWMutex{})
+	// Lock
+	lock.(*sync.RWMutex).Lock()
+	// Unlock before the function exits
+	defer lock.(*sync.RWMutex).Unlock()
+
+	log.Printf("[INFO] Connecting to mongodb://hwscmongodb duid: %s - uuid: %s\n",
+		fileMetadataParameters.GetDuid(), fileMetadataParameters.GetUuid())
+	client, err := DialMongoDB(conf.DocumentDB.Writer)
+	if err != nil {
+		log.Printf("[ERROR] %s\n", err.Error())
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	collection := client.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
+
+	// Find all MongoDB documents for the specific uuid
+	filter := bson.NewDocument(
+		bson.EC.String("duid", fileMetadataParameters.GetDuid()),
+		bson.EC.String("uuid", fileMetadataParameters.GetUuid()),
+	)
+	bsonResult := collection.FindOne(context.Background(), filter)
+	if bsonResult == nil {
+		log.Printf("[ERROR] FindOne: %s\n", errNoDocumentFound.Error())
+		return nil, status.Error(codes.InvalidArgument, errNoDocumentFound.Error())
+	}
+	documentToUpdate := &pb.Document{}
+	if err := bsonResult.Decode(documentToUpdate); err != nil {
+		log.Printf("[ERROR] Document not found, duid: %s - uuid: %s - err: %s\n",
+			fileMetadataParameters.GetDuid(), fileMetadataParameters.GetUuid(), err.Error())
+
+		return nil, status.Errorf(codes.InvalidArgument,
+			"Document not found, duid: %s - uuid: %s",
+			fileMetadataParameters.GetDuid(), fileMetadataParameters.GetUuid())
+	}
+
+	if err := ValidateDocument(documentToUpdate); err != nil {
+		log.Printf("[ERROR] %s\n", err.Error())
+		return &pb.DocumentResponse{
+			Status:  &pb.DocumentResponse_Code{Code: uint32(codes.Internal)},
+			Message: err.Error(),
+		}, nil
+	}
+	log.Printf("[INFO] Document to update: \n%s\n\n", pretty.Sprint(documentToUpdate))
+
+	switch fileMetadataParameters.Media {
+	case pb.FileType_FILE:
+		documentToUpdate.FileUrlsMap[fuidGenerator.NewFUID()] = fileMetadataParameters.GetUrl()
+	case pb.FileType_AUDIO:
+		documentToUpdate.AudioUrlsMap[fuidGenerator.NewFUID()] = fileMetadataParameters.GetUrl()
+	case pb.FileType_IMAGE:
+		documentToUpdate.ImageUrlsMap[fuidGenerator.NewFUID()] = fileMetadataParameters.GetUrl()
+	case pb.FileType_VIDEO:
+		documentToUpdate.VideoUrlsMap[fuidGenerator.NewFUID()] = fileMetadataParameters.GetUrl()
+	default:
+		return nil, status.Error(codes.InvalidArgument, errMediaType.Error())
+	}
+	documentToUpdate.UpdateTimestamp = time.Now().UTC().Unix()
+
+	// option to return the the document after update
+	option := findopt.ReplaceOneBundle{}
+	result := collection.FindOneAndReplace(context.Background(), filter, documentToUpdate,
+		option.ReturnDocument(mongoopt.After))
+
+	// Extract the updated MongoDB document
+	if result == nil {
+		log.Printf("[ERROR] Extracting updated document, duid: %s - uuid: %s\n",
+			documentToUpdate.GetDuid(), documentToUpdate.GetUuid())
+
+		return nil, status.Errorf(codes.Internal,
+			"Extracting updated document duid: %s - uuid: %s",
+			documentToUpdate.GetDuid(), documentToUpdate.GetUuid())
+	}
+
+	document := &pb.Document{}
+	if err := result.Decode(document); err != nil {
+		log.Printf("[ERROR] %s\n", err.Error())
+		return nil, status.Errorf(codes.Internal, err.Error())
+	}
+
+	if err := ValidateDocument(document); err != nil {
+		log.Printf("[ERROR] Success adding file metadata in document, duid: %s - uuid: %s with validation error: %s\n",
+			documentToUpdate.GetDuid(), documentToUpdate.GetUuid(), err.Error())
+		log.Printf("[ERROR] Suspected document: \n%s\n\n", pretty.Sprint(documentToUpdate))
+		return &pb.DocumentResponse{
+			Status:  &pb.DocumentResponse_Code{Code: uint32(codes.Internal)},
+			Message: "Added file metadata in document with validation error",
+			Data:    document,
+		}, nil
+	}
+
+	log.Printf("[INFO] Updated document: \n%s\n\n", pretty.Sprint(document))
+
+	if err := DisconnectMongoDBClient(client); err != nil {
+		log.Printf("[ERROR] Success adding file metadata in document, duid: %s - uuid: %s with disconnection error: %s\n",
+			documentToUpdate.GetDuid(), documentToUpdate.GetUuid(), err.Error())
+		return &pb.DocumentResponse{
+			Status:  &pb.DocumentResponse_Code{Code: uint32(codes.Internal)},
+			Message: "Added file metadata in document with MongoDB disconnection error",
+			Data:    document,
+		}, nil
+	}
+
+	log.Printf("[INFO] Success adding file metadata in document, duid: %s - uuid: %s\n",
+		document.GetDuid(), document.GetUuid())
+
+	return &pb.DocumentResponse{
+		Status:  &pb.DocumentResponse_Code{Code: uint32(codes.OK)},
+		Message: codes.OK.String(),
+		Data:    document,
+	}, nil
 }
 
 // DeleteFileMetadata deletes a FileMetadata in a MongoDB document using a given FUID, UUID and DUID.
@@ -672,7 +858,7 @@ func (s *Service) ListDistinctFieldValues(ctx context.Context, req *pb.DocumentR
 		}
 	}
 
-	log.Printf("[DEBUG] distinct values: \n%v\n\n", queryResult)
+	log.Printf("[INFO] Distinct values: \n%v\n\n", pretty.Sprint(queryResult))
 
 	if err := DisconnectMongoDBClient(client); err != nil {
 		log.Printf("[ERROR] Success listing distinct field values with disconnection error: %s\n", err.Error())
@@ -722,7 +908,7 @@ func (s *Service) QueryDocument(ctx context.Context, req *pb.DocumentRequest) (*
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	log.Printf("[INFO] QueryParameters contains:\n %s\n", queryParams)
+	log.Printf("[INFO] QueryParameters contains:\n %s\n", pretty.Sprint(queryParams))
 
 	log.Println("[INFO] Connecting to mongodb://hwscmongodb")
 	client, err := DialMongoDB(conf.DocumentDB.Reader)
@@ -765,7 +951,7 @@ func (s *Service) QueryDocument(ctx context.Context, req *pb.DocumentRequest) (*
 			return nil, status.Errorf(codes.Internal, "Failed document validation: %s", err.Error())
 		}
 		documentCollection = append(documentCollection, document)
-		log.Printf("[DEBUG] document: \n%s\n\n", document)
+		log.Printf("[INFO] document: \n%s\n\n", pretty.Sprint(document))
 
 	}
 
