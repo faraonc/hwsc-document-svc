@@ -1537,7 +1537,7 @@ func TestValidateImageURLs(t *testing.T) {
 	}{
 		{map[string]string{
 			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/images/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.jpg",
-			"4ff30392-8ec8-45a4-ba94-5e22c4a686d1": "https://hwscdevstorage.blob.core.windows.net/imimagesage/hulkgif.png",
+			"4ff30392-8ec8-45a4-ba94-5e22c4a686d1": "https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png",
 			"4ff30392-8ec8-45a4-ba94-5e22c4a686d2": "https://hwscdevstorage.blob.core.windows.net/images/Rotating_earth_(large).gif",
 		}, false, ""},
 		{map[string]string{
@@ -2285,4 +2285,26 @@ func TestAreSlicesEqual(t *testing.T) {
 	for _, c := range cases {
 		assert.Equal(t, c.expOutput, areSlicesEqual(c.inputA, c.inputB))
 	}
+}
+
+func TestValidateURL(t *testing.T) {
+	cases := []struct {
+		input    string
+		isExpErr bool
+		errorStr string
+	}{
+		{"", true, errUnreachableURI.Error()},
+		{"https://hwscdevstorage.blob.core.windows.net/imag/Rotating_earth_(large).gif", true, errUnreachableURI.Error()},
+		{"https://hwscdevstorage.blob.core.windows.net/images/Rotating_earth_(large).gif", false, ""},
+	}
+
+	for _, c := range cases {
+		err := ValidateURL(c.input)
+		if !c.isExpErr {
+			assert.Nil(t, err)
+		} else {
+			assert.EqualError(t, err, c.errorStr)
+		}
+	}
+
 }
