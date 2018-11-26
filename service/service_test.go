@@ -13,6 +13,10 @@ import (
 var (
 	tempDUID      string
 	tempUUID      string
+	tempFileFUID  string
+	tempAudioFUID string
+	tempImageFUID string
+	tempVideoFUID string
 	imaginaryDUID string
 	imaginaryUUID string
 	randFirstName string
@@ -242,7 +246,7 @@ func TestUpdateDocument(t *testing.T) {
 					"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3"},
 				VideoUrlsMap: map[string]string{
 					"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
-					"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/video/videoplayback.mp4"},
+					"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 				FileUrlsMap: map[string]string{
 					"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
 					"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
@@ -393,7 +397,7 @@ func TestListDistinctFieldValues(t *testing.T) {
 			"rpc error: code = InvalidArgument desc = nil request", true, 0,
 		},
 		{&pb.DocumentRequest{}, available,
-			"rpc error: code = Unavailable desc = service unavailable", false, 0,
+			"", false, 0,
 		},
 	}
 
@@ -506,6 +510,342 @@ func TestQueryDocument(t *testing.T) {
 		if !c.isExpErr {
 			assert.Nil(t, err)
 			assert.Equal(t, c.expNumDocs, len(res.GetDocumentCollection()))
+		} else {
+			assert.Equal(t, c.expMsg, err.Error())
+			assert.EqualError(t, err, c.expMsg)
+		}
+
+	}
+}
+
+func TestAddFileMetadata(t *testing.T) {
+	cases := []struct {
+		req         *pb.DocumentRequest
+		serverState state
+		expMsg      string
+		isExpErr    bool
+		expNumDocs  int
+	}{
+		{&pb.DocumentRequest{}, unavailable,
+			"rpc error: code = Unavailable desc = service unavailable", true, 0,
+		},
+		{nil, available,
+			"rpc error: code = InvalidArgument desc = nil request", true, 0,
+		},
+		{&pb.DocumentRequest{}, available,
+			"rpc error: code = InvalidArgument desc = invalid FileMetadataParameters", true, 0,
+		},
+		{&pb.DocumentRequest{
+			FileMetadataParameters: &pb.FileMetadataTransaction{
+				Url: "",
+			},
+		}, available,
+			"rpc error: code = InvalidArgument desc = invalid FileMetadataParameters", true, 0,
+		},
+		{&pb.DocumentRequest{
+			FileMetadataParameters: &pb.FileMetadataTransaction{
+				Url:  "some url",
+				Duid: "",
+			},
+		}, available,
+			"rpc error: code = InvalidArgument desc = invalid FileMetadataParameters", true, 0,
+		},
+		{&pb.DocumentRequest{
+			FileMetadataParameters: &pb.FileMetadataTransaction{
+				Url:  "some url",
+				Duid: "some duid",
+			},
+		}, available,
+			"rpc error: code = InvalidArgument desc = invalid Document duid", true, 0,
+		},
+		{&pb.DocumentRequest{
+			FileMetadataParameters: &pb.FileMetadataTransaction{
+				Url:  "some url",
+				Duid: "1ChHfmKs8GX7D1XVf61lwVdisWf",
+			},
+		}, available,
+			"rpc error: code = InvalidArgument desc = invalid Document uuid", true, 0,
+		},
+		{&pb.DocumentRequest{
+			FileMetadataParameters: &pb.FileMetadataTransaction{
+				Url:  "some url",
+				Duid: "1ChHfmKs8GX7D1XVf61lwVdisWf",
+				Uuid: "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
+			},
+		}, available,
+			"rpc error: code = InvalidArgument desc = unreachable URI", true, 0,
+		},
+		{&pb.DocumentRequest{
+			FileMetadataParameters: &pb.FileMetadataTransaction{
+				Url:   "some url",
+				Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
+				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
+				Media: pb.FileType_AUDIO,
+			},
+		}, available,
+			"rpc error: code = InvalidArgument desc = invalid Document AudioURL", true, 0,
+		},
+		{&pb.DocumentRequest{
+			FileMetadataParameters: &pb.FileMetadataTransaction{
+				Url:   "some url",
+				Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
+				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
+				Media: pb.FileType_IMAGE,
+			},
+		}, available,
+			"rpc error: code = InvalidArgument desc = invalid Document ImageURL", true, 0,
+		},
+		{&pb.DocumentRequest{
+			FileMetadataParameters: &pb.FileMetadataTransaction{
+				Url:   "some url",
+				Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
+				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
+				Media: pb.FileType_VIDEO,
+			},
+		}, available,
+			"rpc error: code = InvalidArgument desc = invalid Document VideoURL", true, 0,
+		},
+		{&pb.DocumentRequest{
+			FileMetadataParameters: &pb.FileMetadataTransaction{
+				Url:   "some url",
+				Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
+				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
+				Media: 4,
+			},
+		}, available,
+			"rpc error: code = InvalidArgument desc = invalid media type", true, 0,
+		},
+		{&pb.DocumentRequest{
+			FileMetadataParameters: &pb.FileMetadataTransaction{
+				Url:   "https://hwscdevstorage.blob.core.windows.net/images/pusheen.mp3",
+				Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
+				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
+				Media: pb.FileType_AUDIO,
+			},
+		}, available,
+			"rpc error: code = InvalidArgument desc = unreachable URI", true, 0,
+		},
+		{&pb.DocumentRequest{
+			FileMetadataParameters: &pb.FileMetadataTransaction{
+				Url:   "https://hwscdevstorage.blob.core.windows.net/images/pusheen.jpg",
+				Duid:  "xxxHfmKs8GX7D1XVf61lwVdisWf",
+				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
+				Media: pb.FileType_IMAGE,
+			},
+		}, available,
+			"rpc error: code = InvalidArgument desc = Document not found, duid: xxxHfmKs8GX7D1XVf61lwVdisWf - uuid: 0XXXXSNJG0MQJHBF4QX1EFD6Y3", true, 0,
+		},
+		{&pb.DocumentRequest{
+			FileMetadataParameters: &pb.FileMetadataTransaction{
+				Url:   "https://hwscdevstorage.blob.core.windows.net/images/pusheen.jpg",
+				Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
+				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
+				Media: pb.FileType_IMAGE,
+			},
+		}, available,
+			"OK", false, 9,
+		},
+		{&pb.DocumentRequest{
+			FileMetadataParameters: &pb.FileMetadataTransaction{
+				Url:   "https://hwscdevstorage.blob.core.windows.net/videos/pusheen.mp4",
+				Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
+				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
+				Media: pb.FileType_VIDEO,
+			},
+		}, available,
+			"OK", false, 10,
+		},
+		{&pb.DocumentRequest{
+			FileMetadataParameters: &pb.FileMetadataTransaction{
+				Url:   "https://hwscdevstorage.blob.core.windows.net/audios/pusheen.mp3",
+				Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
+				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
+				Media: pb.FileType_AUDIO,
+			},
+		}, available,
+			"OK", false, 11,
+		},
+		{&pb.DocumentRequest{
+			FileMetadataParameters: &pb.FileMetadataTransaction{
+				Url:   "https://hwscdevstorage.blob.core.windows.net/videos/pusheen.mp4",
+				Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
+				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
+				Media: pb.FileType_FILE,
+			},
+		}, available,
+			"OK", false, 12,
+		},
+	}
+
+	for _, c := range cases {
+		serviceStateLocker.currentServiceState = c.serverState
+		s := Service{}
+		res, err := s.AddFileMetadata(context.TODO(), c.req)
+		if !c.isExpErr {
+			assert.Nil(t, err)
+			totalFiles := len(res.GetData().GetAudioUrlsMap()) + len(res.GetData().GetImageUrlsMap()) +
+				len(res.GetData().GetVideoUrlsMap()) + len(res.GetData().GetFileUrlsMap())
+			assert.Equal(t, c.expNumDocs, totalFiles)
+			switch c.req.FileMetadataParameters.GetMedia() {
+			case pb.FileType_FILE:
+				for k, v := range res.Data.GetFileUrlsMap() {
+					if v == c.req.FileMetadataParameters.GetUrl() {
+						tempFileFUID = k
+					}
+				}
+			case pb.FileType_AUDIO:
+				for k, v := range res.Data.GetAudioUrlsMap() {
+					if v == c.req.FileMetadataParameters.GetUrl() {
+						tempAudioFUID = k
+					}
+				}
+			case pb.FileType_IMAGE:
+				for k, v := range res.Data.GetImageUrlsMap() {
+					if v == c.req.FileMetadataParameters.GetUrl() {
+						tempImageFUID = k
+					}
+				}
+			case pb.FileType_VIDEO:
+				for k, v := range res.Data.GetVideoUrlsMap() {
+					if v == c.req.FileMetadataParameters.GetUrl() {
+						tempVideoFUID = k
+					}
+				}
+			}
+		} else {
+			assert.Equal(t, c.expMsg, err.Error())
+			assert.EqualError(t, err, c.expMsg)
+		}
+
+	}
+}
+
+func TestDeleteFileMetadata(t *testing.T) {
+	cases := []struct {
+		req         *pb.DocumentRequest
+		serverState state
+		expMsg      string
+		isExpErr    bool
+		expNumDocs  int
+	}{
+		{&pb.DocumentRequest{}, unavailable,
+			"rpc error: code = Unavailable desc = service unavailable", true, 0,
+		},
+		{nil, available,
+			"rpc error: code = InvalidArgument desc = nil request", true, 0,
+		},
+		{&pb.DocumentRequest{}, available,
+			"rpc error: code = InvalidArgument desc = invalid FileMetadataParameters", true, 0,
+		},
+		{&pb.DocumentRequest{
+			FileMetadataParameters: &pb.FileMetadataTransaction{
+				Duid: "",
+			},
+		}, available,
+			"rpc error: code = InvalidArgument desc = invalid FileMetadataParameters", true, 0,
+		},
+		{&pb.DocumentRequest{
+			FileMetadataParameters: &pb.FileMetadataTransaction{
+				Duid: "some duid",
+			},
+		}, available,
+			"rpc error: code = InvalidArgument desc = invalid Document duid", true, 0,
+		},
+		{&pb.DocumentRequest{
+			FileMetadataParameters: &pb.FileMetadataTransaction{
+				Duid: "some duid",
+			},
+		}, available,
+			"rpc error: code = InvalidArgument desc = invalid Document duid", true, 0,
+		},
+		{&pb.DocumentRequest{
+			FileMetadataParameters: &pb.FileMetadataTransaction{
+				Duid: "1ChHfmKs8GX7D1XVf61lwVdisWf",
+				Uuid: "some uuid",
+			},
+		}, available,
+			"rpc error: code = InvalidArgument desc = invalid Document uuid", true, 0,
+		},
+		{&pb.DocumentRequest{
+			FileMetadataParameters: &pb.FileMetadataTransaction{
+				Duid: "1ChHfmKs8GX7D1XVf61lwVdisWf",
+				Uuid: "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
+				Fuid: "some fuid",
+			},
+		}, available,
+			"rpc error: code = InvalidArgument desc = invalid Document fuid", true, 0,
+		},
+		{&pb.DocumentRequest{
+			FileMetadataParameters: &pb.FileMetadataTransaction{
+				Fuid:  tempFileFUID,
+				Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
+				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
+				Media: 4,
+			},
+		}, available,
+			"rpc error: code = InvalidArgument desc = invalid media type", true, 0,
+		},
+		{&pb.DocumentRequest{
+			FileMetadataParameters: &pb.FileMetadataTransaction{
+				Fuid:  tempFileFUID,
+				Duid:  "xxxHfmKs8GX7D1XVf61lwVdisWf",
+				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
+				Media: pb.FileType_FILE,
+			},
+		}, available,
+			"rpc error: code = InvalidArgument desc = Document not found, duid: xxxHfmKs8GX7D1XVf61lwVdisWf - uuid: 0XXXXSNJG0MQJHBF4QX1EFD6Y3", true, 0,
+		},
+		{&pb.DocumentRequest{
+			FileMetadataParameters: &pb.FileMetadataTransaction{
+				Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
+				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
+				Media: pb.FileType_IMAGE,
+				Fuid:  tempImageFUID,
+			},
+		}, available,
+			"OK", false, 11,
+		},
+		{&pb.DocumentRequest{
+			FileMetadataParameters: &pb.FileMetadataTransaction{
+				Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
+				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
+				Media: pb.FileType_VIDEO,
+				Fuid:  tempVideoFUID,
+			},
+		}, available,
+			"OK", false, 10,
+		},
+		{&pb.DocumentRequest{
+			FileMetadataParameters: &pb.FileMetadataTransaction{
+				Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
+				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
+				Media: pb.FileType_AUDIO,
+				Fuid:  tempAudioFUID,
+			},
+		}, available,
+			"OK", false, 9,
+		},
+		{&pb.DocumentRequest{
+			FileMetadataParameters: &pb.FileMetadataTransaction{
+				Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
+				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
+				Media: pb.FileType_FILE,
+				Fuid:  tempFileFUID,
+			},
+		}, available,
+			"OK", false, 8,
+		},
+	}
+
+	for _, c := range cases {
+		serviceStateLocker.currentServiceState = c.serverState
+		s := Service{}
+		res, err := s.DeleteFileMetadata(context.TODO(), c.req)
+		if !c.isExpErr {
+			assert.Nil(t, err)
+			totalFiles := len(res.GetData().GetAudioUrlsMap()) + len(res.GetData().GetImageUrlsMap()) +
+				len(res.GetData().GetVideoUrlsMap()) + len(res.GetData().GetFileUrlsMap())
+			assert.Equal(t, c.expNumDocs, totalFiles)
 		} else {
 			assert.Equal(t, c.expMsg, err.Error())
 			assert.EqualError(t, err, c.expMsg)

@@ -7,6 +7,7 @@ import (
 	"github.com/mongodb/mongo-go-driver/mongo"
 	"golang.org/x/net/context"
 	"log"
+	"net/http"
 	"net/url"
 	"regexp"
 	"strings"
@@ -395,7 +396,7 @@ func ValidateImageURLs(imageURLs map[string]string) error {
 		if !imageRegex.MatchString(strings.ToLower(v)) {
 			return fmt.Errorf("invalid Document image type ImageURL: %s", v)
 		}
-		if _, err := url.ParseRequestURI(v); err != nil {
+		if err := ValidateURL(v); err != nil {
 			return fmt.Errorf("invalid Document ImageURL: %s", v)
 		}
 	}
@@ -420,7 +421,7 @@ func ValidateAudioURLs(audioURLs map[string]string) error {
 		if !audioRegex.MatchString(strings.ToLower(v)) {
 			return fmt.Errorf("invalid Document audio type AudioURL: %s", v)
 		}
-		if _, err := url.ParseRequestURI(v); err != nil {
+		if err := ValidateURL(v); err != nil {
 			return fmt.Errorf("invalid Document AudioURL: %s", v)
 		}
 	}
@@ -445,7 +446,7 @@ func ValidateVideoURLs(videoURLs map[string]string) error {
 		if !videoRegex.MatchString(strings.ToLower(v)) {
 			return fmt.Errorf("invalid Document video type VideoURL: %s", v)
 		}
-		if _, err := url.ParseRequestURI(v); err != nil {
+		if err := ValidateURL(v); err != nil {
 			return fmt.Errorf("invalid Document VideoURL: %s", v)
 		}
 	}
@@ -467,7 +468,7 @@ func ValidateFileURLs(fileURLs map[string]string) error {
 		if strings.TrimSpace(v) == "" {
 			return errInvalidDocumentFileURL
 		}
-		if _, err := url.ParseRequestURI(v); err != nil {
+		if err := ValidateURL(v); err != nil {
 			return fmt.Errorf("invalid Document FileURL: %s", v)
 		}
 	}
@@ -733,4 +734,19 @@ func areSlicesEqual(a, b []string) bool {
 	}
 
 	return true
+}
+
+// ValidateURL confirms if the address is reachable and valid.
+// Return an error if the address is unreachable and invalid.
+func ValidateURL(addr string) error {
+	if _, err := url.ParseRequestURI(addr); err != nil {
+		return errUnreachableURI
+	}
+
+	resp, err := http.Get(addr)
+	if err != nil || resp.StatusCode >= 400 {
+		return errUnreachableURI
+	}
+
+	return nil
 }
