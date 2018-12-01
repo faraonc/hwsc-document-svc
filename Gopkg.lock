@@ -125,7 +125,7 @@
   revision = "d65d576e9348f5982d7f6d83682b694e731a45c6"
 
 [[projects]]
-  digest = "1:0d20f7f342b12cafa6d286b019ef4813c60c125d4f2c606dbb0bd10b6348bb7e"
+  digest = "1:173a0f9238af02b7516a11f27e556b3e2393b4ed15624bc00cc64892e9aa05dd"
   name = "github.com/micro/go-config"
   packages = [
     ".",
@@ -140,6 +140,7 @@
     "reader",
     "reader/json",
     "source",
+    "source/env",
     "source/file",
   ]
   pruneopts = "UT"
@@ -371,6 +372,7 @@
     "github.com/google/uuid",
     "github.com/kylelemons/godebug/pretty",
     "github.com/micro/go-config",
+    "github.com/micro/go-config/source/env",
     "github.com/micro/go-config/source/file",
     "github.com/mongodb/mongo-go-driver/bson",
     "github.com/mongodb/mongo-go-driver/mongo",
