@@ -49,8 +49,9 @@ Temporary Items
 # JetBrains
 .idea/*
 
-conf/json/*
+*.prod.json
+*.dev.json
 *.out
-
+env.list
 
 # End of https://www.gitignore.io/api/go,macos
