@@ -1,8 +1,8 @@
 package service
 
 import (
-	pb "github.com/faraonc/hwsc-api-blocks/int/hwsc-document-svc/proto"
-	"github.com/faraonc/hwsc-document-svc/conf"
+	pb "github.com/hwsc-org/hwsc-api-blocks/int/hwsc-document-svc/proto"
+	"github.com/hwsc-org/hwsc-document-svc/conf"
 	"github.com/google/uuid"
 	"github.com/kylelemons/godebug/pretty"
 	"github.com/mongodb/mongo-go-driver/bson"
