@@ -2,7 +2,7 @@ package service
 
 import (
 	"fmt"
-	pb "github.com/faraonc/hwsc-api-blocks/int/hwsc-document-svc/proto"
+	pb "github.com/hwsc-org/hwsc-api-blocks/int/hwsc-document-svc/proto"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/context"
 	"math/rand"

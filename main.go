@@ -1,13 +1,13 @@
 package main
 
 import (
-	"github.com/faraonc/hwsc-document-svc/conf"
+	"github.com/hwsc-org/hwsc-document-svc/conf"
 	"google.golang.org/grpc"
 	"log"
 	"net"
 
-	pb "github.com/faraonc/hwsc-api-blocks/int/hwsc-document-svc/proto"
-	svc "github.com/faraonc/hwsc-document-svc/service"
+	pb "github.com/hwsc-org/hwsc-api-blocks/int/hwsc-document-svc/proto"
+	svc "github.com/hwsc-org/hwsc-document-svc/service"
 )
 
 func main() {

@@ -26,14 +26,6 @@
   version = "v1.1.1"
 
 [[projects]]
-  branch = "master"
-  digest = "1:cf585f7d91a1288004515e46e0b528c231edaf91e730b0224e743897d416d910"
-  name = "github.com/faraonc/hwsc-api-blocks"
-  packages = ["int/hwsc-document-svc/proto"]
-  pruneopts = "UT"
-  revision = "5742ac0f93232f0a761d8c0b588c256c9d5b0685"
-
-[[projects]]
   digest = "1:abeb38ade3f32a92943e5be54f55ed6d6e3b6602761d74b4aab4c9dd45c18abd"
   name = "github.com/fsnotify/fsnotify"
   packages = ["."]
@@ -104,6 +96,14 @@
   pruneopts = "UT"
   revision = "8cb6e5b959231cc1119e43259c4a608f9c51a241"
   version = "v1.0.0"
+
+[[projects]]
+  branch = "master"
+  digest = "1:cf585f7d91a1288004515e46e0b528c231edaf91e730b0224e743897d416d910"
+  name = "github.com/hwsc-org/hwsc-api-blocks"
+  packages = ["int/hwsc-document-svc/proto"]
+  pruneopts = "UT"
+  revision = "0022c73f1e51189b1f3be61162bc3478fcaec316"
 
 [[projects]]
   digest = "1:8eb1de8112c9924d59bf1d3e5c26f5eaa2bfc2a5fcbb92dc1c2e4546d695f277"
@@ -368,8 +368,8 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
-    "github.com/faraonc/hwsc-api-blocks/int/hwsc-document-svc/proto",
     "github.com/google/uuid",
+    "github.com/hwsc-org/hwsc-api-blocks/int/hwsc-document-svc/proto",
     "github.com/kylelemons/godebug/pretty",
     "github.com/micro/go-config",
     "github.com/micro/go-config/source/env",

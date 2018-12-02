@@ -2,7 +2,7 @@ package service
 
 import (
 	"fmt"
-	pb "github.com/faraonc/hwsc-api-blocks/int/hwsc-document-svc/proto"
+	pb "github.com/hwsc-org/hwsc-api-blocks/int/hwsc-document-svc/proto"
 	"github.com/mongodb/mongo-go-driver/bson"
 	"github.com/mongodb/mongo-go-driver/mongo"
 	"golang.org/x/net/context"
