@@ -28,6 +28,8 @@ func init() {
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 	go func() {
 		<-c
+		_ := disconnectMongoDBClient(mongoDBReader)
+		_ := disconnectMongoDBClient(mongoDBWriter)
 		fmt.Println()
 		log.Fatalln("[FATAL] hwsc-document-svc terminated")
 	}()
