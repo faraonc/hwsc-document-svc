@@ -19,6 +19,9 @@ var (
 func init() {
 	var err error
 	mongoDBReader, err = dialMongoDB(conf.DocumentDB.Reader)
+	if err != nil {
+		log.Fatalf("[FATAL] %s\n", err.Error())
+	}
 	mongoDBWriter, err = dialMongoDB(conf.DocumentDB.Writer)
 	if err != nil {
 		log.Fatalf("[FATAL] %s\n", err.Error())
@@ -28,8 +31,8 @@ func init() {
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 	go func() {
 		<-c
-		_ := disconnectMongoDBClient(mongoDBReader)
-		_ := disconnectMongoDBClient(mongoDBWriter)
+		_ = disconnectMongoDBClient(mongoDBReader)
+		_ = disconnectMongoDBClient(mongoDBWriter)
 		fmt.Println()
 		log.Fatalln("[FATAL] hwsc-document-svc terminated")
 	}()
