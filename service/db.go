@@ -41,12 +41,8 @@ func init() {
 // dialMongoDB connects a client to MongoDB server.
 // Returns a MongoDB Client or any dialing error.
 func dialMongoDB(uri string) (*mongo.Client, error) {
-	client, err := mongo.Connect(context.TODO(), uri)
-	if err != nil {
-		return nil, err
-	}
+	return mongo.Connect(context.TODO(), uri)
 
-	return client, nil
 }
 
 // disconnectMongoDBClient disconnects a client from MongoDB server.
