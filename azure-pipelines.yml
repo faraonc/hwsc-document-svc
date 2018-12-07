@@ -8,7 +8,7 @@ pool:
 
 - task: DownloadSecureFile@1
   inputs:
-    secureFile: 
+    secureFile: hwscdevcontainer_pw.txt
 
 variables:
 - group: hwsc-dev-container-vars
