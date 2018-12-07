@@ -14,7 +14,7 @@ variables:
 steps:
 - script: |
     docker build --no-cache -f Dockerfile -t $(dockerId)/$(imageName) .
-    docker login -u $(group.hwscDevContainerUser) -p $(group.hwscDevContainerPassword) hwscdevcontainer.azurecr.io
+    docker login -u=$(hwscDevContainerUser) -p=$(hwscDevContainerPassword) hwscdevcontainer.azurecr.io
     docker tag $(imageName) $(dockerId)/$(imageName)
     docker push $(dockerId)/$(imageName)
   
