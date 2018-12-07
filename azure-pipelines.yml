@@ -10,11 +10,12 @@ pool:
 variables:
   dockerId: 'hwscdevcontainer.azurecr.io'
   imageName: 'dev-hwsc-document-svc:$(build.buildId)'
+    - group: hwsc-dev-container-vars
 
 steps:
 - script: |
     docker build --no-cache -f Dockerfile -t $(dockerId)/$(imageName) .
-    docker login hwscdevcontainer.azurecr.io
+    docker login -u $(hwscDevContainerUser) -p (hwscDevContainerPassword) hwscdevcontainer.azurecr.io
     docker tag $(imageName) $(dockerId)/$(imageName)
     docker push $(dockerId)/$(imageName)
   
