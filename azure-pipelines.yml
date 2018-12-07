@@ -12,7 +12,7 @@ variables:
 steps:
 - script: |
     docker build --no-cache -f Dockerfile -t $(hwscDevDockerId)/$(hwscDevImageName):$(build.buildId) .
-    docker login -u "$(hwscDevContainerUser)" -p "$(hwscDevContainerPassword)" hwscdevcontainer.azurecr.io
+    echo "$(hwscDevContainerPassword)" | docker login -u "$(hwscDevContainerUser)" --password-stdin
     docker tag $(hwscDevImageName) $(hwscDevDockerId)/$(hwscDevImageName):$(build.buildId)
     docker push $(hwscDevDockerId)/$(hwscDevImageName):$(build.buildId)
   
