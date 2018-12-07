@@ -9,7 +9,7 @@ pool:
 variables:
   dockerId: 'hwscdevcontainer.azurecr.io'
   imageName: 'dev-hwsc-document-svc:$(build.buildId)'
-- group: hwsc-dev-container-vars
+  - group: hwsc-dev-container-vars
 
 steps:
 - script: |
