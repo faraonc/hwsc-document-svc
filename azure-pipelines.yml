@@ -9,7 +9,7 @@ pool:
 
 variables:
   dockerId: 'hwsc'
-  imageName: 'dev-hwsc-document-svc:$(build.buildId)'
+  imageName: 'dev-hwsc-document-svc'
 
 steps:
 - script: |
