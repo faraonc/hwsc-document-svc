@@ -6,6 +6,10 @@
 pool:
   vmImage: 'Ubuntu 16.04'
 
+- task: DownloadSecureFile@1
+  inputs:
+    secureFile: 
+
 variables:
 - group: hwsc-dev-container-vars
 
