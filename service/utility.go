@@ -44,9 +44,9 @@ var (
 	//https://godoc.org/github.com/google/uuid
 	fuidRegex = regexp.MustCompile("^[[:digit:]a-f]{8}-[[:digit:]a-f]{4}-[[:digit:]a-f]{4}-[[:digit:]a-f]{4}-[[:digit:]a-f]{12}$")
 
-	imageRegex = regexp.MustCompile("^.*(jpg|jpeg|png|bmp|tif|gif|tiff).*$")
-	audioRegex = regexp.MustCompile("^.*(wav|wma|ogg|m4a|mp3).*$")
-	videoRegex = regexp.MustCompile("^.*(flv|wmv|mov|avi|mp4).*$")
+	imageRegex = regexp.MustCompile("^.*\\.(jpg|jpeg|png|bmp|tif|gif|tiff)$")
+	audioRegex = regexp.MustCompile("^.*\\.(wav|wma|ogg|m4a|mp3)$")
+	videoRegex = regexp.MustCompile("^.*\\.(flv|wmv|mov|avi|mp4)$")
 	oceanMap   = map[string]bool{
 		"pacific":  true,
 		"atlantic": true,
