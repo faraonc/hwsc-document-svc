@@ -15,10 +15,9 @@ steps:
     secureFile: hwscdevcontainer_pw.txt
 - script: |
     cat $(Agent.TempDirectory)/hwscdevcontainer_pw.txt | docker login -u "$(hwscDevContainerUser)" --password-stdin hwscdevcontainer.azurecr.io
-#    docker build --no-cache -f Dockerfile -t $(hwscDevDockerId)/$(hwscDevImageName):$(build.buildId) .
-#    docker login -u "$(hwscDevContainerUser)" --password-stdin < $(Agent.TempDirectory)/hwscdevcontainer_pw.txt
-#    docker tag $(hwscDevImageName) $(hwscDevDockerId)/$(hwscDevImageName):$(build.buildId)
-#    docker push $(hwscDevDockerId)/$(hwscDevImageName):$(build.buildId)
+    docker build --no-cache -f Dockerfile -t $(hwscDevDockerId)/$(hwscDevImageName):$(build.buildId) .
+    docker tag $(hwscDevImageName) $(hwscDevDockerId)/$(hwscDevImageName):$(build.buildId)
+    docker push $(hwscDevDockerId)/$(hwscDevImageName):$(build.buildId)
   
   displayName: 'docker build'
   
