@@ -7,14 +7,15 @@ pool:
   vmImage: 'Ubuntu 16.04'
 
 variables:
-- group: 'hwsc-dev-container-vars'
+- group: hwsc-dev-container-vars
 
 #  dockerId: 'hwscdevcontainer.azurecr.io'
 #  imageName: 'dev-hwsc-document-svc:$(build.buildId)'
 
 steps:
 - script: |
-    echo $(imageName)
+    echo $(group)
+    echo "$(group)"
     echo $(hwsc-dev-container-vars.hwscDevContainerUser)
     echo "$(hwscDevContainerUser)"
     echo $(group.hwscDevContainerUser)
