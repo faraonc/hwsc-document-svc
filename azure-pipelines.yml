@@ -13,13 +13,14 @@ variables:
 
 steps:
 - script: |
+    echo $(imageName)
     echo $(hwscDevContainerUser)
     echo "$(hwscDevContainerUser)"
     echo $(group.hwscDevContainerUser)
-    docker build --no-cache -f Dockerfile -t $(dockerId)/$(imageName) .
-    docker login -u="$(hwscDevContainerUser)" -p="$(hwscDevContainerPassword)" hwscdevcontainer.azurecr.io
-    docker tag $(imageName) $(dockerId)/$(imageName)
-    docker push $(dockerId)/$(imageName)
+#    docker build --no-cache -f Dockerfile -t $(dockerId)/$(imageName) .
+#    docker login -u="$(hwscDevContainerUser)" -p="$(hwscDevContainerPassword)" hwscdevcontainer.azurecr.io
+#    docker tag $(imageName) $(dockerId)/$(imageName)
+#    docker push $(dockerId)/$(imageName)
   
   displayName: 'docker build'
   
