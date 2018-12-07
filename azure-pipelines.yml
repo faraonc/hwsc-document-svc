@@ -11,10 +11,10 @@ variables:
 
 steps:
 - script: |
-    docker build --no-cache -f Dockerfile -t $(dockerId)/$(imageName):$(build.buildId) .
+    docker build --no-cache -f Dockerfile -t $(hwscDevDockerId)/$(hwscDevImageName):$(build.buildId) .
     docker login -u "$(hwscDevContainerUser)" -p "$(hwscDevContainerPassword)" hwscdevcontainer.azurecr.io
-    docker tag $(imageName) $(dockerId)/$(imageName):$(build.buildId)
-    docker push $(dockerId)/$(imageName):$(build.buildId)
+    docker tag $(hwscDevImageName) $(hwscDevDockerId)/$(hwscDevImageName):$(build.buildId)
+    docker push $(hwscDevDockerId)/$(hwscDevImageName):$(build.buildId)
   
   displayName: 'docker build'
   
