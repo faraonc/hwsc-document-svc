@@ -19,7 +19,6 @@ steps:
   
   displayName: 'Docker build'
   
-steps:
 - script: |
     docker tag $(hwscDevImageName) $(hwscDevDockerId)/$(hwscDevImageName):$(build.buildId)
     docker push $(hwscDevDockerId)/$(hwscDevImageName):$(build.buildId)
