@@ -16,9 +16,6 @@ steps:
 - script: |
     echo $(group)
     echo "$(group)"
-    echo $(hwsc-dev-container-vars.hwscDevContainerUser)
-    echo "$(hwscDevContainerUser)"
-    echo $(group.hwscDevContainerUser)
 #    docker build --no-cache -f Dockerfile -t $(dockerId)/$(imageName) .
 #    docker login -u="$(hwscDevContainerUser)" -p="$(hwscDevContainerPassword)" hwscdevcontainer.azurecr.io
 #    docker tag $(imageName) $(dockerId)/$(imageName)
