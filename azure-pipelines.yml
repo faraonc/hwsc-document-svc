@@ -14,7 +14,7 @@ steps:
   inputs:
     secureFile: hwscdevcontainer_pw.txt
 - script: |
-     docker login -u "$(hwscDevContainerUser)" --password-stdin < ~/hwscdevcontainer_pw.txt
+     docker login -u "$(hwscDevContainerUser)" --password-stdin < $(Agent.TempDirectory)/hwscdevcontainer_pw.txt
 #    docker build --no-cache -f Dockerfile -t $(hwscDevDockerId)/$(hwscDevImageName):$(build.buildId) .
 #    echo $(hwscDevContainerPassword) | docker login -u "$(hwscDevContainerUser)" --password-stdin
 #    docker tag $(hwscDevImageName) $(hwscDevDockerId)/$(hwscDevImageName):$(build.buildId)
