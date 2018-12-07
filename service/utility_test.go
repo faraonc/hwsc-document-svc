@@ -1515,6 +1515,10 @@ func TestValidateImageURLs(t *testing.T) {
 			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3",
 		}, true, "invalid Document image type ImageURL: https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3"},
 		{map[string]string{}, false, ""},
+		{map[string]string{
+			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/images/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigratingjpg",
+		}, true, "invalid Document image type ImageURL: https://hwscdevstorage.blob.core.windows.net/images/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigratingjpg"},
+
 	}
 
 	for _, c := range cases {
@@ -1556,6 +1560,10 @@ func TestValidateAudioURLs(t *testing.T) {
 			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png",
 		}, true, "invalid Document audio type AudioURL: https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png"},
 		{map[string]string{}, false, ""},
+		{map[string]string{
+			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128]mp3",
+		}, true, "invalid Document audio type AudioURL: https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128]mp3"},
+
 	}
 
 	for _, c := range cases {
@@ -1597,6 +1605,10 @@ func TestValidateVideoURLs(t *testing.T) {
 			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png",
 		}, true, "invalid Document video type VideoURL: https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png"},
 		{map[string]string{}, false, ""},
+		{map[string]string{
+			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplaybackwmv",
+		}, true, "invalid Document video type VideoURL: https://hwscdevstorage.blob.core.windows.net/videos/videoplaybackwmv"},
+
 	}
 
 	for _, c := range cases {
