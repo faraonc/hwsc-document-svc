@@ -6,14 +6,13 @@
 pool:
   vmImage: 'Ubuntu 16.04'
 
-- task: DownloadSecureFile@1
-  inputs:
-    secureFile: hwscdevcontainer_pw.txt
-
 variables:
 - group: hwsc-dev-container-vars
 
 steps:
+- task: DownloadSecureFile@1
+  inputs:
+    secureFile: hwscdevcontainer_pw.txt
 - script: |
      docker login -u "$(hwscDevContainerUser)" --password-stdin < ~/hwscdevcontainer_pw.txt
 #    docker build --no-cache -f Dockerfile -t $(hwscDevDockerId)/$(hwscDevImageName):$(build.buildId) .
