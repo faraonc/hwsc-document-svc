@@ -11,7 +11,7 @@ variables:
 
 steps:
 - script: |
-    echo $(hwscDevContainerPassword) | docker login -u "$(hwscDevContainerUser)" --password-stdin
+    echo "$(hwscDevContainerPassword)" | docker login -u "$(hwscDevContainerUser)" --password-stdin
 #    docker build --no-cache -f Dockerfile -t $(hwscDevDockerId)/$(hwscDevImageName):$(build.buildId) .
 #    echo $(hwscDevContainerPassword) | docker login -u "$(hwscDevContainerUser)" --password-stdin
 #    docker tag $(hwscDevImageName) $(hwscDevDockerId)/$(hwscDevImageName):$(build.buildId)
