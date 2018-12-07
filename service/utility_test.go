@@ -2,54 +2,11 @@ package service
 
 import (
 	pb "github.com/hwsc-org/hwsc-api-blocks/int/hwsc-document-svc/proto"
-	"github.com/hwsc-org/hwsc-document-svc/conf"
 	"github.com/mongodb/mongo-go-driver/bson"
 	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
 )
-
-func TestDialMongoDB(t *testing.T) {
-	cases := []struct {
-		uri      string
-		isExpErr bool
-		errorStr string
-	}{
-		{conf.DocumentDB.Reader, false, ""},
-		{"", true, "error parsing uri (): scheme must be \"mongodb\" or \"mongodb+srv\""},
-	}
-
-	for _, c := range cases {
-		client, err := DialMongoDB(c.uri)
-		if c.isExpErr {
-			assert.EqualError(t, err, c.errorStr)
-		} else {
-			assert.Nil(t, err)
-			assert.NotNil(t, client)
-		}
-	}
-}
-
-func TestDisconnectMongoDBClient(t *testing.T) {
-	cases := []struct {
-		uri      string
-		isExpErr bool
-		errorStr string
-	}{
-		{conf.DocumentDB.Reader, false, ""},
-		{"", true, errNilMongoDBClient.Error()},
-	}
-
-	for _, c := range cases {
-		client, _ := DialMongoDB(c.uri)
-		err := DisconnectMongoDBClient(client)
-		if c.isExpErr {
-			assert.EqualError(t, err, c.errorStr)
-		} else {
-			assert.Nil(t, err)
-		}
-	}
-}
 
 func TestValidateDocument(t *testing.T) {
 
