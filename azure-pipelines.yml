@@ -8,6 +8,7 @@ pool:
 
 variables:
 - group: hwsc-dev-container-vars
+
   dockerId: 'hwscdevcontainer.azurecr.io'
   imageName: 'dev-hwsc-document-svc:$(build.buildId)'
 
