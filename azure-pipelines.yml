@@ -12,7 +12,7 @@ variables:
 steps:
 - task: DownloadSecureFile@1
   inputs:
-    secureFile: 'hwscdevcontainer_pw.txt'
+    secureFile: hwscdevcontainer_pw.txt
 - script: |
      docker login -u "$(hwscDevContainerUser)" --password-stdin < ~/hwscdevcontainer_pw.txt
 #    docker build --no-cache -f Dockerfile -t $(hwscDevDockerId)/$(hwscDevImageName):$(build.buildId) .
