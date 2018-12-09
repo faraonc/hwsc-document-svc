@@ -41,13 +41,15 @@ The proto file and compiled proto buffers are located in [hwsc-api-blocks](https
 
 ## How to Run without Docker Container
 1. Install dependencies and generate vendor folder ``$ dep ensure -v``
-2. Run main ``$ go run main.go``
+2. Update ENV variables
+3. Run main ``$ go run main.go``
 
 ## How to Run with Docker Container
 1. Install dependencies and generate vendor folder ``$ dep ensure -v``
 2. ``$ generate_container.sh``
 3. Find your image ``$ docker images``
-4. ``$ docker run --env-file ./env.list -it -p 50051:50051 <imagename>``
+4. Acquire ``env.list`` configuration
+5. ``$ docker run --env-file ./env.list -it -p 50051:50051 <imagename>``
 
 ## How to Unit Test
 1. ``$ cd service``
