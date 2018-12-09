@@ -50,7 +50,11 @@ func disconnectMongoDBClient(client *mongo.Client) error {
 	if client == nil {
 		return errNilMongoDBClient
 	}
-	return client.Disconnect(context.TODO())
+	if err := client.Disconnect(context.TODO()); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // refreshMongoDBConnection refreshes a client's connection with MongoDB server.
