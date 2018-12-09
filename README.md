@@ -36,11 +36,18 @@ The proto file and compiled proto buffers are located in [hwsc-api-blocks](https
 - GoLang version [go 1.11.1](https://golang.org/dl/)
 - GoLang Dependency Management [dep](https://github.com/golang/dep)
 - Go Source Code Linter [golint](https://github.com/golang/lint)
+- Docker
+- [Optional] If a new proto file and compiled proto buffer exists in [hwsc-api-blocks](https://github.com/hwsc-org/hwsc-api-blocks/tree/master/int/hwsc-document-svc/proto), update dependency ``$dep ensure -update``
 
-## How to Run
+## How to Run without Docker Container
 1. Install dependencies and generate vendor folder ``$ dep ensure -v``
 2. Run main ``$ go run main.go``
-3. [Optional] If a new proto file and compiled proto buffer exists in [hwsc-api-blocks](https://github.com/hwsc-org/hwsc-api-blocks/tree/master/int/hwsc-document-svc/proto), update dependency ``$dep ensure -update``
+
+## How to Run with Docker Container
+1. Install dependencies and generate vendor folder ``$ dep ensure -v``
+2. ``$ generate_container.sh``
+3. Find your image ``$ docker images``
+4. ``$ docker run --env-file ./env.list -it -p 50051:50051 <imagename>``
 
 ## How to Unit Test
 1. ``$ cd service``
