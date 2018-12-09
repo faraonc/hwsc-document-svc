@@ -3,6 +3,7 @@ package service
 import (
 	"github.com/google/uuid"
 	pb "github.com/hwsc-org/hwsc-api-blocks/int/hwsc-document-svc/proto"
+	"github.com/hwsc-org/hwsc-document-svc/conf"
 	"github.com/kylelemons/godebug/pretty"
 	"github.com/mongodb/mongo-go-driver/bson"
 	"github.com/mongodb/mongo-go-driver/mongo/findopt"
@@ -213,7 +214,7 @@ func (s *Service) CreateDocument(ctx context.Context, req *pb.DocumentRequest) (
 	}
 
 	log.Printf("[INFO] Document contains:\n %s\n\n", pretty.Sprint(doc))
-	collection := mongoDBWriter.Database("dev-document").Collection("dev-document")
+	collection := mongoDBWriter.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
 
 	res, err := collection.InsertOne(context.Background(), doc)
 	if err != nil {
@@ -262,7 +263,7 @@ func (s *Service) ListUserDocumentCollection(ctx context.Context, req *pb.Docume
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	collection := mongoDBReader.Database("dev-document").Collection("dev-document")
+	collection := mongoDBReader.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
 
 	// Find all MongoDB documents for the specific uuid
 	filter := bson.NewDocument(bson.EC.String("uuid", doc.GetUuid()))
@@ -410,7 +411,7 @@ func (s *Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (
 	}
 
 	log.Printf("[INFO] Document contains:\n %s\n\n", pretty.Sprint(doc))
-	collection := mongoDBWriter.Database("dev-document").Collection("dev-document")
+	collection := mongoDBWriter.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
 
 	filter := bson.NewDocument(
 		bson.EC.String("duid", doc.GetDuid()),
@@ -513,7 +514,7 @@ func (s *Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (
 	// Unlock before the function exits
 	defer lock.(*sync.RWMutex).Unlock()
 
-	collection := mongoDBWriter.Database("dev-document").Collection("dev-document")
+	collection := mongoDBWriter.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
 
 	filter := bson.NewDocument(
 		bson.EC.String("duid", doc.GetDuid()),
@@ -640,7 +641,7 @@ func (s *Service) AddFileMetadata(ctx context.Context, req *pb.DocumentRequest) 
 	// Unlock before the function exits
 	defer lock.(*sync.RWMutex).Unlock()
 
-	collection := mongoDBWriter.Database("dev-document").Collection("dev-document")
+	collection := mongoDBWriter.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
 
 	// Find all MongoDB documents for the specific uuid
 	filter := bson.NewDocument(
@@ -783,7 +784,7 @@ func (s *Service) DeleteFileMetadata(ctx context.Context, req *pb.DocumentReques
 	// Unlock before the function exits
 	defer lock.(*sync.RWMutex).Unlock()
 
-	collection := mongoDBWriter.Database("dev-document").Collection("dev-document")
+	collection := mongoDBWriter.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
 
 	// Find all MongoDB documents for the specific uuid
 	filter := bson.NewDocument(
@@ -891,7 +892,7 @@ func (s *Service) ListDistinctFieldValues(ctx context.Context, req *pb.DocumentR
 		return nil, status.Error(codes.InvalidArgument, errNilRequest.Error())
 	}
 
-	collection := mongoDBReader.Database("dev-document").Collection("dev-document")
+	collection := mongoDBReader.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
 
 	// Get distinct using field names in distinctSearchFieldNames
 	distinctResult := make([][]interface{}, 6)
@@ -964,7 +965,7 @@ func (s *Service) QueryDocument(ctx context.Context, req *pb.DocumentRequest) (*
 	}
 
 	log.Printf("[INFO] QueryParameters contains:\n %s\n", pretty.Sprint(queryParams))
-	collection := mongoDBReader.Database("dev-document").Collection("dev-document")
+	collection := mongoDBReader.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
 
 	pipeline, err := buildAggregatePipeline(queryParams)
 	if err != nil {
