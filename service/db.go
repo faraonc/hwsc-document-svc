@@ -56,9 +56,16 @@ func disconnectMongoDBClient(client *mongo.Client) error {
 // refreshMongoDBConnection refreshes a client's connection with MongoDB server.
 // Returns if there is any connection error.
 func refreshMongoDBConnection(client *mongo.Client) error {
+	if client == nil {
+		return errNilMongoDBClient
+	}
+
 	if err := client.Ping(context.TODO(), nil); err != nil {
 		if err := client.Connect(context.TODO()); err != nil {
-			return err
+			// TODO this causes "server selection timeout"
+			if err := client.Ping(context.TODO(), nil); err != nil {
+				return err
+			}
 		}
 	}
 
