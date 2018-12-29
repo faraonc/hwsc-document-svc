@@ -17,7 +17,7 @@ func TestDialMongoDB(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		client, err := dialMongoDB(c.uri)
+		client, err := dialMongoDB(&c.uri)
 		if c.isExpErr {
 			assert.EqualError(t, err, c.errorStr)
 		} else {
@@ -38,7 +38,7 @@ func TestDisconnectMongoDBClient(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		client, _ := dialMongoDB(c.uri)
+		client, _ := dialMongoDB(&c.uri)
 		err := disconnectMongoDBClient(client)
 		if c.isExpErr {
 			assert.EqualError(t, err, c.errorStr)
@@ -49,16 +49,48 @@ func TestDisconnectMongoDBClient(t *testing.T) {
 }
 
 func TestRefreshMongoDBConnection(t *testing.T) {
-	err := refreshMongoDBConnection(nil)
-	assert.NotNil(t, err)
-	client, err := dialMongoDB(conf.DocumentDB.Reader)
+	mongoDBReader = nil
+	assert.Nil(t, mongoDBReader)
+	err := refreshMongoDBConnection(mongoDBReader, &conf.DocumentDB.Reader)
 	assert.Nil(t, err)
-	err = refreshMongoDBConnection(client)
+	assert.NotNil(t, mongoDBReader)
+	mongoDBWriter = nil
+	assert.Nil(t, mongoDBWriter)
+	err = refreshMongoDBConnection(mongoDBWriter, &conf.DocumentDB.Writer)
 	assert.Nil(t, err)
-	err = disconnectMongoDBClient(client)
+	assert.NotNil(t, mongoDBWriter)
+
+	mongoDBReader, err = dialMongoDB(&conf.DocumentDB.Reader)
 	assert.Nil(t, err)
-	err = refreshMongoDBConnection(client)
+	err = refreshMongoDBConnection(mongoDBReader, &conf.DocumentDB.Reader)
 	assert.Nil(t, err)
-	err = disconnectMongoDBClient(client)
+	err = disconnectMongoDBClient(mongoDBReader)
+	assert.Nil(t, err)
+	err = refreshMongoDBConnection(mongoDBReader, &conf.DocumentDB.Reader)
+	assert.Nil(t, err)
+	assert.NotNil(t, mongoDBReader)
+	err = disconnectMongoDBClient(mongoDBReader)
+	assert.Nil(t, err)
+	err = refreshMongoDBConnection(mongoDBReader, &conf.DocumentDB.Reader)
+	assert.Nil(t, err)
+	assert.NotNil(t, mongoDBReader)
+	err = disconnectMongoDBClient(mongoDBReader)
+	assert.Nil(t, err)
+
+	mongoDBWriter, err = dialMongoDB(&conf.DocumentDB.Writer)
+	assert.Nil(t, err)
+	err = refreshMongoDBConnection(mongoDBWriter, &conf.DocumentDB.Writer)
+	assert.Nil(t, err)
+	err = disconnectMongoDBClient(mongoDBWriter)
+	assert.Nil(t, err)
+	err = refreshMongoDBConnection(mongoDBWriter, &conf.DocumentDB.Writer)
+	assert.Nil(t, err)
+	assert.NotNil(t, mongoDBWriter)
+	err = disconnectMongoDBClient(mongoDBWriter)
+	assert.Nil(t, err)
+	err = refreshMongoDBConnection(mongoDBWriter, &conf.DocumentDB.Writer)
+	assert.Nil(t, err)
+	assert.NotNil(t, mongoDBWriter)
+	err = disconnectMongoDBClient(mongoDBWriter)
 	assert.Nil(t, err)
 }

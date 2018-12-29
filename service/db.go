@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 )
 
@@ -18,11 +19,11 @@ var (
 
 func init() {
 	var err error
-	mongoDBReader, err = dialMongoDB(conf.DocumentDB.Reader)
+	mongoDBReader, err = dialMongoDB(&conf.DocumentDB.Reader)
 	if err != nil {
 		log.Fatalf("[FATAL] %s\n", err.Error())
 	}
-	mongoDBWriter, err = dialMongoDB(conf.DocumentDB.Writer)
+	mongoDBWriter, err = dialMongoDB(&conf.DocumentDB.Writer)
 	if err != nil {
 		log.Fatalf("[FATAL] %s\n", err.Error())
 	}
@@ -40,8 +41,8 @@ func init() {
 
 // dialMongoDB connects a client to MongoDB server.
 // Returns a MongoDB Client or any dialing error.
-func dialMongoDB(uri string) (*mongo.Client, error) {
-	client, err := mongo.Connect(context.TODO(), uri)
+func dialMongoDB(uri *string) (*mongo.Client, error) {
+	client, err := mongo.Connect(context.TODO(), *uri)
 	if err != nil {
 		return nil, err
 	}
@@ -64,15 +65,35 @@ func disconnectMongoDBClient(client *mongo.Client) error {
 
 // refreshMongoDBConnection refreshes a client's connection with MongoDB server.
 // Returns if there is any connection error.
-func refreshMongoDBConnection(client *mongo.Client) error {
+func refreshMongoDBConnection(client *mongo.Client, uri *string) error {
 	if client == nil {
-		return errNilMongoDBClient
+		client, err := dialMongoDB(uri)
+		if err != nil {
+			return errMongoDBUnavailable
+		}
+		if strings.EqualFold(*uri, conf.DocumentDB.Reader) {
+			mongoDBReader = client
+		} else {
+			mongoDBWriter = client
+		}
+		return nil
 	}
 	if err := client.Ping(context.TODO(), nil); err != nil {
-		if err := client.Connect(context.TODO()); err != nil {
-			return err
+		client, err := dialMongoDB(uri)
+		if err != nil {
+			if strings.EqualFold(*uri, conf.DocumentDB.Reader) {
+				mongoDBReader = nil
+			} else {
+				mongoDBWriter = nil
+			}
+			return errMongoDBUnavailable
 		}
-		// TODO https://github.com/hwsc-org/hwsc-document-svc/issues/37
+		if strings.EqualFold(*uri, conf.DocumentDB.Reader) {
+			mongoDBReader = client
+		} else {
+			mongoDBWriter = client
+		}
+		return nil
 	}
 
 	return nil
