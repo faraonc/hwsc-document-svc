@@ -67,19 +67,19 @@ func disconnectMongoDBClient(client *mongo.Client) error {
 // Returns if there is any connection error.
 func refreshMongoDBConnection(client *mongo.Client, uri *string) error {
 	if client == nil {
-		client, err := dialMongoDB(uri)
+		newClient, err := dialMongoDB(uri)
 		if err != nil {
 			return errMongoDBUnavailable
 		}
 		if strings.EqualFold(*uri, conf.DocumentDB.Reader) {
-			mongoDBReader = client
+			mongoDBReader = newClient
 		} else {
-			mongoDBWriter = client
+			mongoDBWriter = newClient
 		}
 		return nil
 	}
 	if err := client.Ping(context.TODO(), nil); err != nil {
-		client, err := dialMongoDB(uri)
+		newClient, err := dialMongoDB(uri)
 		if err != nil {
 			if strings.EqualFold(*uri, conf.DocumentDB.Reader) {
 				mongoDBReader = nil
@@ -89,9 +89,9 @@ func refreshMongoDBConnection(client *mongo.Client, uri *string) error {
 			return errMongoDBUnavailable
 		}
 		if strings.EqualFold(*uri, conf.DocumentDB.Reader) {
-			mongoDBReader = client
+			mongoDBReader = newClient
 		} else {
-			mongoDBWriter = client
+			mongoDBWriter = newClient
 		}
 		return nil
 	}
