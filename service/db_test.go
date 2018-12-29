@@ -49,6 +49,8 @@ func TestDisconnectMongoDBClient(t *testing.T) {
 }
 
 func TestRefreshMongoDBConnection(t *testing.T) {
+	err := refreshMongoDBConnection(nil)
+	assert.NotNil(t, err)
 	client, err := dialMongoDB(conf.DocumentDB.Reader)
 	assert.Nil(t, err)
 	err = refreshMongoDBConnection(client)

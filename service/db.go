@@ -41,7 +41,16 @@ func init() {
 // dialMongoDB connects a client to MongoDB server.
 // Returns a MongoDB Client or any dialing error.
 func dialMongoDB(uri string) (*mongo.Client, error) {
-	return mongo.Connect(context.TODO(), uri)
+	client, err := mongo.Connect(context.TODO(), uri)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := client.Ping(context.TODO(), nil); err != nil {
+		return nil, err
+	}
+
+	return client, nil
 }
 
 // disconnectMongoDBClient disconnects a client from MongoDB server.
@@ -59,14 +68,11 @@ func refreshMongoDBConnection(client *mongo.Client) error {
 	if client == nil {
 		return errNilMongoDBClient
 	}
-
 	if err := client.Ping(context.TODO(), nil); err != nil {
 		if err := client.Connect(context.TODO()); err != nil {
-			// TODO this causes "server selection timeout"
-			if err := client.Ping(context.TODO(), nil); err != nil {
-				return err
-			}
+			return err
 		}
+		// TODO https://github.com/hwsc-org/hwsc-document-svc/issues/37
 	}
 
 	return nil
