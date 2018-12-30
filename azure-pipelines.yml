@@ -20,7 +20,7 @@ steps:
   inputs:
     secureFile: hwscdevcontainer_pw.txt
 - script: |
-    cat $(Agent.TempDirectory)/hwscdevcontainer_pw.txt | docker login -u "$(hwscDevContainerUser)" --email="$(hwscDevContainerUserEmail)" --password-stdin
+    cat $(Agent.TempDirectory)/hwscdevcontainer_pw.txt | docker login -u "$(hwscDevContainerUser)" --password-stdin
     docker build --no-cache -f Dockerfile -t hwsc/$(hwscDevImageName):$(build.buildId) .
   
   displayName: 'Build Docker Image'
