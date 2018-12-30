@@ -71,10 +71,8 @@ func refreshMongoDBConnection(client *mongo.Client, uri *string) error {
 		if err != nil {
 			return errMongoDBUnavailable
 		}
-		if strings.EqualFold(*uri, conf.DocumentDB.Reader) {
-			mongoDBReader = newClient
-		} else {
-			mongoDBWriter = newClient
+		if err := assignMongoDBClient(newClient, uri); err != nil {
+			return err
 		}
 		return nil
 	}
@@ -88,13 +86,30 @@ func refreshMongoDBConnection(client *mongo.Client, uri *string) error {
 			}
 			return errMongoDBUnavailable
 		}
-		if strings.EqualFold(*uri, conf.DocumentDB.Reader) {
-			mongoDBReader = newClient
-		} else {
-			mongoDBWriter = newClient
+		if err := assignMongoDBClient(newClient, uri); err != nil {
+			return err
 		}
 		return nil
 	}
 
+	return nil
+}
+
+// assignMongoDBClient assigns a new MongoDB client.
+// Returns an error if newClient is nil.
+func assignMongoDBClient(newClient *mongo.Client, uri *string) error {
+	if newClient == nil {
+		if strings.EqualFold(*uri, conf.DocumentDB.Reader) {
+			mongoDBReader = nil
+		} else {
+			mongoDBWriter = nil
+		}
+		return errNilMongoDBClient
+	}
+	if strings.EqualFold(*uri, conf.DocumentDB.Reader) {
+		mongoDBReader = newClient
+	} else {
+		mongoDBWriter = newClient
+	}
 	return nil
 }

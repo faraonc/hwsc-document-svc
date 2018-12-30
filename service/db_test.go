@@ -94,3 +94,24 @@ func TestRefreshMongoDBConnection(t *testing.T) {
 	err = disconnectMongoDBClient(mongoDBWriter)
 	assert.Nil(t, err)
 }
+
+func TestAssignMongoDBClient(t *testing.T) {
+	err := assignMongoDBClient(nil, &conf.DocumentDB.Reader)
+	assert.EqualError(t, err, errNilMongoDBClient.Error())
+	assert.Nil(t, mongoDBReader)
+	err = assignMongoDBClient(nil, &conf.DocumentDB.Writer)
+	assert.EqualError(t, err, errNilMongoDBClient.Error())
+	assert.Nil(t, mongoDBWriter)
+
+	newReader, err := dialMongoDB(&conf.DocumentDB.Reader)
+	assert.Nil(t, err)
+	err = assignMongoDBClient(newReader, &conf.DocumentDB.Reader)
+	assert.Nil(t, err)
+	assert.NotNil(t, mongoDBReader)
+
+	newWriter, err := dialMongoDB(&conf.DocumentDB.Writer)
+	assert.Nil(t, err)
+	err = assignMongoDBClient(newWriter, &conf.DocumentDB.Writer)
+	assert.Nil(t, err)
+	assert.NotNil(t, mongoDBWriter)
+}
