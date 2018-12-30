@@ -712,11 +712,10 @@ func ValidateURL(addr string) error {
 	if _, err := url.ParseRequestURI(addr); err != nil {
 		return errUnreachableURI
 	}
-
 	resp, err := http.Get(addr)
 	if err != nil || resp.StatusCode >= 400 {
 		return errUnreachableURI
 	}
-
+	_ = resp.Body.Close()
 	return nil
 }
