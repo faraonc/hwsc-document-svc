@@ -405,11 +405,7 @@ func (s *Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (
 	log.Printf("[INFO] Document contains:\n %s\n\n", pretty.Sprint(doc))
 	collection := mongoDBWriter.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
 
-	filter := bson.NewDocument(
-		bson.EC.String("duid", doc.GetDuid()),
-		bson.EC.String("uuid", doc.GetUuid()),
-	)
-
+	filter := bson.NewDocument(bson.EC.String("duid", doc.GetDuid()))
 	// option to return the the document after update
 	option := findopt.ReplaceOneBundle{}
 	result := collection.FindOneAndReplace(context.Background(), filter, doc,
@@ -613,11 +609,7 @@ func (s *Service) AddFileMetadata(ctx context.Context, req *pb.DocumentRequest) 
 
 	collection := mongoDBWriter.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
 
-	// Find all MongoDB documents for the specific uuid
-	filter := bson.NewDocument(
-		bson.EC.String("duid", fileMetadataParameters.GetDuid()),
-		bson.EC.String("uuid", fileMetadataParameters.GetUuid()),
-	)
+	filter := bson.NewDocument(bson.EC.String("duid", fileMetadataParameters.GetDuid()))
 	bsonResult := collection.FindOne(context.Background(), filter)
 	if bsonResult == nil {
 		log.Printf("[ERROR] FindOne: %s\n", errNoDocumentFound.Error())
@@ -738,11 +730,7 @@ func (s *Service) DeleteFileMetadata(ctx context.Context, req *pb.DocumentReques
 
 	collection := mongoDBWriter.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
 
-	// Find all MongoDB documents for the specific uuid
-	filter := bson.NewDocument(
-		bson.EC.String("duid", fileMetadataParameters.GetDuid()),
-		bson.EC.String("uuid", fileMetadataParameters.GetUuid()),
-	)
+	filter := bson.NewDocument(bson.EC.String("duid", fileMetadataParameters.GetDuid()))
 	bsonResult := collection.FindOne(context.Background(), filter)
 	if bsonResult == nil {
 		log.Printf("[ERROR] FindOne: %s\n", errNoDocumentFound.Error())
