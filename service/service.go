@@ -109,14 +109,14 @@ func (s *Service) GetStatus(ctx context.Context, req *pb.DocumentRequest) (*pb.D
 	}
 
 	// Check MongoDB Clients
-	if err := refreshMongoDBConnection(mongoDBReader); err != nil {
+	if err := refreshMongoDBConnection(mongoDBReader, &conf.DocumentDB.Reader); err != nil {
 		log.Printf("[ERROR] %s\n", err.Error())
 		return &pb.DocumentResponse{
 			Status:  &pb.DocumentResponse_Code{Code: uint32(codes.Unavailable)},
 			Message: codes.Unavailable.String(),
 		}, nil
 	}
-	if err := refreshMongoDBConnection(mongoDBWriter); err != nil {
+	if err := refreshMongoDBConnection(mongoDBWriter, &conf.DocumentDB.Writer); err != nil {
 		log.Printf("[ERROR] %s\n", err.Error())
 		return &pb.DocumentResponse{
 			Status:  &pb.DocumentResponse_Code{Code: uint32(codes.Unavailable)},
@@ -141,7 +141,7 @@ func (s *Service) CreateDocument(ctx context.Context, req *pb.DocumentRequest) (
 		return nil, status.Error(codes.Unavailable, errServiceUnavailable.Error())
 	}
 
-	if err := refreshMongoDBConnection(mongoDBWriter); err != nil {
+	if err := refreshMongoDBConnection(mongoDBWriter, &conf.DocumentDB.Writer); err != nil {
 		log.Printf("[ERROR] %s\n", err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
 	}
@@ -242,7 +242,7 @@ func (s *Service) ListUserDocumentCollection(ctx context.Context, req *pb.Docume
 		return nil, status.Error(codes.Unavailable, errServiceUnavailable.Error())
 	}
 
-	if err := refreshMongoDBConnection(mongoDBReader); err != nil {
+	if err := refreshMongoDBConnection(mongoDBReader, &conf.DocumentDB.Reader); err != nil {
 		log.Printf("[ERROR] %s\n", err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
 	}
@@ -335,7 +335,7 @@ func (s *Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (
 		return nil, status.Error(codes.Unavailable, errServiceUnavailable.Error())
 	}
 
-	if err := refreshMongoDBConnection(mongoDBWriter); err != nil {
+	if err := refreshMongoDBConnection(mongoDBWriter, &conf.DocumentDB.Writer); err != nil {
 		log.Printf("[ERROR] %s\n", err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
 	}
@@ -476,7 +476,7 @@ func (s *Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (
 		return nil, status.Error(codes.Unavailable, errServiceUnavailable.Error())
 	}
 
-	if err := refreshMongoDBConnection(mongoDBWriter); err != nil {
+	if err := refreshMongoDBConnection(mongoDBWriter, &conf.DocumentDB.Writer); err != nil {
 		log.Printf("[ERROR] %s\n", err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
 	}
@@ -576,7 +576,7 @@ func (s *Service) AddFileMetadata(ctx context.Context, req *pb.DocumentRequest) 
 		return nil, status.Error(codes.Unavailable, errServiceUnavailable.Error())
 	}
 
-	if err := refreshMongoDBConnection(mongoDBWriter); err != nil {
+	if err := refreshMongoDBConnection(mongoDBWriter, &conf.DocumentDB.Writer); err != nil {
 		log.Printf("[ERROR] %s\n", err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
 	}
@@ -739,7 +739,7 @@ func (s *Service) DeleteFileMetadata(ctx context.Context, req *pb.DocumentReques
 		return nil, status.Error(codes.Unavailable, errServiceUnavailable.Error())
 	}
 
-	if err := refreshMongoDBConnection(mongoDBWriter); err != nil {
+	if err := refreshMongoDBConnection(mongoDBWriter, &conf.DocumentDB.Writer); err != nil {
 		log.Printf("[ERROR] %s\n", err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
 	}
@@ -882,7 +882,7 @@ func (s *Service) ListDistinctFieldValues(ctx context.Context, req *pb.DocumentR
 		return nil, status.Error(codes.Unavailable, errServiceUnavailable.Error())
 	}
 
-	if err := refreshMongoDBConnection(mongoDBReader); err != nil {
+	if err := refreshMongoDBConnection(mongoDBReader, &conf.DocumentDB.Reader); err != nil {
 		log.Printf("[ERROR] %s\n", err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
 	}
@@ -938,7 +938,7 @@ func (s *Service) QueryDocument(ctx context.Context, req *pb.DocumentRequest) (*
 		return nil, status.Error(codes.Unavailable, errServiceUnavailable.Error())
 	}
 
-	if err := refreshMongoDBConnection(mongoDBReader); err != nil {
+	if err := refreshMongoDBConnection(mongoDBReader, &conf.DocumentDB.Reader); err != nil {
 		log.Printf("[ERROR] %s\n", err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
 	}
