@@ -643,7 +643,7 @@ func TestAddFileMetadata(t *testing.T) {
 				Media: pb.FileType_IMAGE,
 			},
 		}, available,
-			"OK", false, 9,
+			"OK", false, 3,
 		},
 		{&pb.DocumentRequest{
 			FileMetadataParameters: &pb.FileMetadataTransaction{
@@ -653,7 +653,7 @@ func TestAddFileMetadata(t *testing.T) {
 				Media: pb.FileType_VIDEO,
 			},
 		}, available,
-			"OK", false, 10,
+			"OK", false, 3,
 		},
 		{&pb.DocumentRequest{
 			FileMetadataParameters: &pb.FileMetadataTransaction{
@@ -663,7 +663,7 @@ func TestAddFileMetadata(t *testing.T) {
 				Media: pb.FileType_AUDIO,
 			},
 		}, available,
-			"OK", false, 11,
+			"OK", false, 3,
 		},
 		{&pb.DocumentRequest{
 			FileMetadataParameters: &pb.FileMetadataTransaction{
@@ -673,7 +673,7 @@ func TestAddFileMetadata(t *testing.T) {
 				Media: pb.FileType_FILE,
 			},
 		}, available,
-			"OK", false, 12,
+			"OK", false, 3,
 		},
 	}
 
@@ -683,9 +683,7 @@ func TestAddFileMetadata(t *testing.T) {
 		res, err := s.AddFileMetadata(context.TODO(), c.req)
 		if !c.isExpErr {
 			assert.Nil(t, err)
-			totalFiles := len(res.GetData().GetAudioUrlsMap()) + len(res.GetData().GetImageUrlsMap()) +
-				len(res.GetData().GetVideoUrlsMap()) + len(res.GetData().GetFileUrlsMap())
-			assert.Equal(t, c.expNumDocs, totalFiles)
+			assert.NotNil(t, res)
 			switch c.req.FileMetadataParameters.GetMedia() {
 			case pb.FileType_FILE:
 				for k, v := range res.Data.GetFileUrlsMap() {
@@ -693,11 +691,17 @@ func TestAddFileMetadata(t *testing.T) {
 						tempFileFUID = k
 					}
 				}
+				if !assert.Equal(t, c.expNumDocs, len(res.GetData().GetFileUrlsMap())) {
+					assert.Fail(t, c.req.FileMetadataParameters.GetUrl())
+				}
 			case pb.FileType_AUDIO:
 				for k, v := range res.Data.GetAudioUrlsMap() {
 					if v == c.req.FileMetadataParameters.GetUrl() {
 						tempAudioFUID = k
 					}
+				}
+				if !assert.Equal(t, c.expNumDocs, len(res.GetData().GetAudioUrlsMap())) {
+					assert.Fail(t, c.req.FileMetadataParameters.GetUrl())
 				}
 			case pb.FileType_IMAGE:
 				for k, v := range res.Data.GetImageUrlsMap() {
@@ -705,11 +709,17 @@ func TestAddFileMetadata(t *testing.T) {
 						tempImageFUID = k
 					}
 				}
+				if !assert.Equal(t, c.expNumDocs, len(res.GetData().GetImageUrlsMap())) {
+					assert.Fail(t, c.req.FileMetadataParameters.GetUrl())
+				}
 			case pb.FileType_VIDEO:
 				for k, v := range res.Data.GetVideoUrlsMap() {
 					if v == c.req.FileMetadataParameters.GetUrl() {
 						tempVideoFUID = k
 					}
+				}
+				if !assert.Equal(t, c.expNumDocs, len(res.GetData().GetVideoUrlsMap())) {
+					assert.Fail(t, c.req.FileMetadataParameters.GetUrl())
 				}
 			}
 		} else {
@@ -803,7 +813,7 @@ func TestDeleteFileMetadata(t *testing.T) {
 				Fuid:  tempImageFUID,
 			},
 		}, available,
-			"OK", false, 11,
+			"OK", false, 2,
 		},
 		{&pb.DocumentRequest{
 			FileMetadataParameters: &pb.FileMetadataTransaction{
@@ -813,7 +823,7 @@ func TestDeleteFileMetadata(t *testing.T) {
 				Fuid:  tempVideoFUID,
 			},
 		}, available,
-			"OK", false, 10,
+			"OK", false, 2,
 		},
 		{&pb.DocumentRequest{
 			FileMetadataParameters: &pb.FileMetadataTransaction{
@@ -823,7 +833,7 @@ func TestDeleteFileMetadata(t *testing.T) {
 				Fuid:  tempAudioFUID,
 			},
 		}, available,
-			"OK", false, 9,
+			"OK", false, 2,
 		},
 		{&pb.DocumentRequest{
 			FileMetadataParameters: &pb.FileMetadataTransaction{
@@ -833,7 +843,7 @@ func TestDeleteFileMetadata(t *testing.T) {
 				Fuid:  tempFileFUID,
 			},
 		}, available,
-			"OK", false, 8,
+			"OK", false, 2,
 		},
 	}
 
@@ -843,9 +853,25 @@ func TestDeleteFileMetadata(t *testing.T) {
 		res, err := s.DeleteFileMetadata(context.TODO(), c.req)
 		if !c.isExpErr {
 			assert.Nil(t, err)
-			totalFiles := len(res.GetData().GetAudioUrlsMap()) + len(res.GetData().GetImageUrlsMap()) +
-				len(res.GetData().GetVideoUrlsMap()) + len(res.GetData().GetFileUrlsMap())
-			assert.Equal(t, c.expNumDocs, totalFiles)
+			assert.NotNil(t, res)
+			switch c.req.FileMetadataParameters.GetMedia() {
+			case pb.FileType_FILE:
+				if !assert.Equal(t, c.expNumDocs, len(res.GetData().GetFileUrlsMap())) {
+					assert.Fail(t, c.req.FileMetadataParameters.GetFuid())
+				}
+			case pb.FileType_AUDIO:
+				if !assert.Equal(t, c.expNumDocs, len(res.GetData().GetAudioUrlsMap())) {
+					assert.Fail(t, c.req.FileMetadataParameters.GetFuid())
+				}
+			case pb.FileType_IMAGE:
+				if !assert.Equal(t, c.expNumDocs, len(res.GetData().GetImageUrlsMap())) {
+					assert.Fail(t, c.req.FileMetadataParameters.GetFuid())
+				}
+			case pb.FileType_VIDEO:
+				if !assert.Equal(t, c.expNumDocs, len(res.GetData().GetVideoUrlsMap())) {
+					assert.Fail(t, c.req.FileMetadataParameters.GetFuid())
+				}
+			}
 		} else {
 			assert.Equal(t, c.expMsg, err.Error())
 			assert.EqualError(t, err, c.expMsg)
