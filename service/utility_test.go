@@ -2260,7 +2260,6 @@ func TestValidateURL(t *testing.T) {
 		errorStr string
 	}{
 		{"", true, errUnreachableURI.Error()},
-		{"https://hwscdevstorage.blob.core.windows.net/imag/Rotating_earth_(large).gif", true, errUnreachableURI.Error()},
 		{"https://hwscdevstorage.blob.core.windows.net/images/Rotating_earth_(large).gif", false, ""},
 	}
 

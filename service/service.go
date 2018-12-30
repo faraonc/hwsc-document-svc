@@ -4,6 +4,7 @@ import (
 	"github.com/google/uuid"
 	pb "github.com/hwsc-org/hwsc-api-blocks/int/hwsc-document-svc/proto"
 	"github.com/hwsc-org/hwsc-document-svc/conf"
+	"github.com/kylelemons/godebug/pretty"
 	"github.com/mongodb/mongo-go-driver/bson"
 	"github.com/mongodb/mongo-go-driver/mongo/findopt"
 	"github.com/mongodb/mongo-go-driver/mongo/mongoopt"
@@ -55,8 +56,8 @@ var (
 	// Converts State of the service to a string
 	serviceStateMap map[state]string
 
-	// Stores the lock for each uuid
-	serviceClientLocker sync.Map
+	// Stores the lock for each duid
+	duidClientLocker sync.Map
 )
 
 func init() {
@@ -159,7 +160,7 @@ func (s *Service) CreateDocument(ctx context.Context, req *pb.DocumentRequest) (
 	doc.Duid = duidGenerator.NewDUID()
 
 	// Get the specific lock if it already exists, else make the lock
-	lock, _ := serviceClientLocker.LoadOrStore(doc.GetDuid(), &sync.RWMutex{})
+	lock, _ := duidClientLocker.LoadOrStore(doc.GetDuid(), &sync.RWMutex{})
 	// Lock
 	lock.(*sync.RWMutex).Lock()
 	// Unlock before the function exits
@@ -212,7 +213,7 @@ func (s *Service) CreateDocument(ctx context.Context, req *pb.DocumentRequest) (
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	log.Printf("[INFO] Document contains:\n %s\n\n", doc)
+	log.Printf("[INFO] Document contains:\n %s\n\n", pretty.Sprint(doc))
 	collection := mongoDBWriter.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
 
 	res, err := collection.InsertOne(context.Background(), doc)
@@ -296,7 +297,7 @@ func (s *Service) ListUserDocumentCollection(ctx context.Context, req *pb.Docume
 				doc.GetDuid(), doc.GetUuid(), err.Error())
 		}
 		documentCollection = append(documentCollection, document)
-		log.Printf("[INFO] document: \n%s\n\n", document)
+		log.Printf("[INFO] document: \n%s\n\n", pretty.Sprint(document))
 
 	}
 
@@ -356,7 +357,7 @@ func (s *Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (
 	}
 
 	// Get the specific lock if it already exists, else make the lock
-	lock, _ := serviceClientLocker.LoadOrStore(doc.GetDuid(), &sync.RWMutex{})
+	lock, _ := duidClientLocker.LoadOrStore(doc.GetDuid(), &sync.RWMutex{})
 	// Lock
 	lock.(*sync.RWMutex).Lock()
 	// Unlock before the function exits
@@ -409,7 +410,7 @@ func (s *Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	log.Printf("[INFO] Document contains:\n %s\n\n", doc)
+	log.Printf("[INFO] Document contains:\n %s\n\n", pretty.Sprint(doc))
 	collection := mongoDBWriter.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
 
 	filter := bson.NewDocument(
@@ -445,7 +446,7 @@ func (s *Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (
 	if err := ValidateDocument(document); err != nil {
 		log.Printf("[ERROR] Success updating document, duid: %s - uuid: %s with validation error: %s\n",
 			doc.GetDuid(), doc.GetUuid(), err.Error())
-		log.Printf("[ERROR] Suspected document: \n%s\n\n", doc)
+		log.Printf("[ERROR] Suspected document: \n%s\n\n", pretty.Sprint(doc))
 		return &pb.DocumentResponse{
 			Status:  &pb.DocumentResponse_Code{Code: uint32(codes.Internal)},
 			Message: "Updated document with validation error",
@@ -453,7 +454,7 @@ func (s *Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (
 		}, nil
 	}
 
-	log.Printf("[INFO] Updated document: \n%s\n\n", document)
+	log.Printf("[INFO] Updated document: \n%s\n\n", pretty.Sprint(document))
 	log.Printf("[INFO] Success updating document, duid: %s - uuid: %s\n",
 		doc.GetDuid(), doc.GetUuid())
 
@@ -507,7 +508,7 @@ func (s *Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (
 	}
 
 	// Get the specific lock if it already exists, else make the lock
-	lock, _ := serviceClientLocker.LoadOrStore(doc.GetDuid(), &sync.RWMutex{})
+	lock, _ := duidClientLocker.LoadOrStore(doc.GetDuid(), &sync.RWMutex{})
 	// Lock
 	lock.(*sync.RWMutex).Lock()
 	// Unlock before the function exits
@@ -544,7 +545,7 @@ func (s *Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (
 	if err := ValidateDocument(document); err != nil {
 		log.Printf("[ERROR] Success deleting document, duid: %s - uuid: %s with validation error: %s\n",
 			doc.GetDuid(), doc.GetUuid(), err.Error())
-		log.Printf("[ERROR] Suspected document: \n%s\n\n", doc)
+		log.Printf("[ERROR] Suspected document: \n%s\n\n", pretty.Sprint(doc))
 		return &pb.DocumentResponse{
 			Status:  &pb.DocumentResponse_Code{Code: uint32(codes.Internal)},
 			Message: "Deleted document with validation error",
@@ -552,7 +553,7 @@ func (s *Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (
 		}, nil
 	}
 
-	log.Printf("[INFO] Deleted document: \n%s\n\n", document)
+	log.Printf("[INFO] Deleted document: \n%s\n\n", pretty.Sprint(document))
 	// Log duid and uuid used for query
 	log.Printf("[INFO] Success deleting document, duid: %s - uuid: %s\n",
 		doc.GetDuid(), doc.GetUuid())
@@ -631,10 +632,10 @@ func (s *Service) AddFileMetadata(ctx context.Context, req *pb.DocumentRequest) 
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	log.Printf("[INFO] FileMetadataParameters: \n%v\n\n", req.GetFileMetadataParameters())
+	log.Printf("[INFO] FileMetadataParameters: \n%v\n\n", pretty.Sprint(req.GetFileMetadataParameters()))
 
 	// Get the specific lock if it already exists, else make the lock
-	lock, _ := serviceClientLocker.LoadOrStore(fileMetadataParameters.GetDuid(), &sync.RWMutex{})
+	lock, _ := duidClientLocker.LoadOrStore(fileMetadataParameters.GetDuid(), &sync.RWMutex{})
 	// Lock
 	lock.(*sync.RWMutex).Lock()
 	// Unlock before the function exits
@@ -669,17 +670,17 @@ func (s *Service) AddFileMetadata(ctx context.Context, req *pb.DocumentRequest) 
 			Message: err.Error(),
 		}, nil
 	}
-	log.Printf("[INFO] Document to update: \n%s\n\n", documentToUpdate)
-
+	log.Printf("[INFO] Document to update: \n%s\n\n", pretty.Sprint(documentToUpdate))
+	newFuid := fuidGenerator.NewFUID()
 	switch fileMetadataParameters.Media {
 	case pb.FileType_FILE:
-		documentToUpdate.GetFileUrlsMap()[fuidGenerator.NewFUID()] = fileMetadataParameters.GetUrl()
+		documentToUpdate.GetFileUrlsMap()[newFuid] = fileMetadataParameters.GetUrl()
 	case pb.FileType_AUDIO:
-		documentToUpdate.GetAudioUrlsMap()[fuidGenerator.NewFUID()] = fileMetadataParameters.GetUrl()
+		documentToUpdate.GetAudioUrlsMap()[newFuid] = fileMetadataParameters.GetUrl()
 	case pb.FileType_IMAGE:
-		documentToUpdate.GetImageUrlsMap()[fuidGenerator.NewFUID()] = fileMetadataParameters.GetUrl()
+		documentToUpdate.GetImageUrlsMap()[newFuid] = fileMetadataParameters.GetUrl()
 	case pb.FileType_VIDEO:
-		documentToUpdate.GetVideoUrlsMap()[fuidGenerator.NewFUID()] = fileMetadataParameters.GetUrl()
+		documentToUpdate.GetVideoUrlsMap()[newFuid] = fileMetadataParameters.GetUrl()
 	default:
 		return nil, status.Error(codes.InvalidArgument, errMediaType.Error())
 	}
@@ -709,7 +710,7 @@ func (s *Service) AddFileMetadata(ctx context.Context, req *pb.DocumentRequest) 
 	if err := ValidateDocument(document); err != nil {
 		log.Printf("[ERROR] Success adding file metadata in document, duid: %s - uuid: %s with validation error: %s\n",
 			documentToUpdate.GetDuid(), documentToUpdate.GetUuid(), err.Error())
-		log.Printf("[ERROR] Suspected document: \n%s\n\n", documentToUpdate)
+		log.Printf("[ERROR] Suspected document: \n%s\n\n", pretty.Sprint(documentToUpdate))
 		return &pb.DocumentResponse{
 			Status:  &pb.DocumentResponse_Code{Code: uint32(codes.Internal)},
 			Message: "Added file metadata in document with validation error",
@@ -717,9 +718,9 @@ func (s *Service) AddFileMetadata(ctx context.Context, req *pb.DocumentRequest) 
 		}, nil
 	}
 
-	log.Printf("[INFO] Updated document: \n%s\n\n", document)
-	log.Printf("[INFO] Success adding file metadata in document, duid: %s - uuid: %s\n",
-		document.GetDuid(), document.GetUuid())
+	log.Printf("[INFO] Updated document: \n%s\n\n", pretty.Sprint(document))
+	log.Printf("[INFO] Success adding file metadata in document, duid: %s - uuid: %s - fuid: %s\n",
+		document.GetDuid(), document.GetUuid(), newFuid)
 
 	return &pb.DocumentResponse{
 		Status:  &pb.DocumentResponse_Code{Code: uint32(codes.OK)},
@@ -774,10 +775,10 @@ func (s *Service) DeleteFileMetadata(ctx context.Context, req *pb.DocumentReques
 		return nil, status.Error(codes.InvalidArgument, errMediaType.Error())
 	}
 
-	log.Printf("[INFO] FileMetadataParameters: \n%v\n\n", req.GetFileMetadataParameters())
+	log.Printf("[INFO] FileMetadataParameters: \n%v\n\n", pretty.Sprint(req.GetFileMetadataParameters()))
 
 	// Get the specific lock if it already exists, else make the lock
-	lock, _ := serviceClientLocker.LoadOrStore(fileMetadataParameters.GetDuid(), &sync.RWMutex{})
+	lock, _ := duidClientLocker.LoadOrStore(fileMetadataParameters.GetDuid(), &sync.RWMutex{})
 	// Lock
 	lock.(*sync.RWMutex).Lock()
 	// Unlock before the function exits
@@ -812,7 +813,7 @@ func (s *Service) DeleteFileMetadata(ctx context.Context, req *pb.DocumentReques
 			Message: err.Error(),
 		}, nil
 	}
-	log.Printf("[INFO] Document to update: \n%s\n\n", documentToUpdate)
+	log.Printf("[INFO] Document to update: \n%s\n\n", pretty.Sprint(documentToUpdate))
 
 	switch fileMetadataParameters.Media {
 	case pb.FileType_FILE:
@@ -852,7 +853,7 @@ func (s *Service) DeleteFileMetadata(ctx context.Context, req *pb.DocumentReques
 	if err := ValidateDocument(document); err != nil {
 		log.Printf("[ERROR] Success deleting file metadata in document, duid: %s - uuid: %s with validation error: %s\n",
 			documentToUpdate.GetDuid(), documentToUpdate.GetUuid(), err.Error())
-		log.Printf("[ERROR] Suspected document: \n%s\n\n", documentToUpdate)
+		log.Printf("[ERROR] Suspected document: \n%s\n\n", pretty.Sprint(documentToUpdate))
 		return &pb.DocumentResponse{
 			Status:  &pb.DocumentResponse_Code{Code: uint32(codes.Internal)},
 			Message: "Added file metadata in document with validation error",
@@ -860,9 +861,9 @@ func (s *Service) DeleteFileMetadata(ctx context.Context, req *pb.DocumentReques
 		}, nil
 	}
 
-	log.Printf("[INFO] Updated document: \n%s\n\n", document)
-	log.Printf("[INFO] Success deleting file metadata in document, duid: %s - uuid: %s\n",
-		document.GetDuid(), document.GetUuid())
+	log.Printf("[INFO] Updated document: \n%s\n\n", pretty.Sprint(document))
+	log.Printf("[INFO] Success deleting file metadata in document, duid: %s - uuid: %s - fuid: %s\n",
+		document.GetDuid(), document.GetUuid(), fileMetadataParameters.GetFuid())
 
 	return &pb.DocumentResponse{
 		Status:  &pb.DocumentResponse_Code{Code: uint32(codes.OK)},
@@ -918,7 +919,7 @@ func (s *Service) ListDistinctFieldValues(ctx context.Context, req *pb.DocumentR
 		}
 	}
 
-	log.Printf("[INFO] Distinct values: \n%v\n\n", queryResult)
+	log.Printf("[INFO] Distinct values: \n%v\n\n", pretty.Sprint(queryResult))
 	log.Println("[INFO] Success listing distinct field values")
 	return &pb.DocumentResponse{
 		Status:       &pb.DocumentResponse_Code{Code: uint32(codes.OK)},
@@ -963,7 +964,7 @@ func (s *Service) QueryDocument(ctx context.Context, req *pb.DocumentRequest) (*
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	log.Printf("[INFO] QueryParameters contains:\n %s\n", queryParams)
+	log.Printf("[INFO] QueryParameters contains:\n %s\n", pretty.Sprint(queryParams))
 	collection := mongoDBReader.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
 
 	pipeline, err := buildAggregatePipeline(queryParams)
@@ -998,7 +999,7 @@ func (s *Service) QueryDocument(ctx context.Context, req *pb.DocumentRequest) (*
 			return nil, status.Errorf(codes.Internal, "Failed document validation: %s", err.Error())
 		}
 		documentCollection = append(documentCollection, document)
-		log.Printf("[INFO] document: \n%s\n\n", document)
+		log.Printf("[INFO] document: \n%s\n\n", pretty.Sprint(document))
 
 	}
 

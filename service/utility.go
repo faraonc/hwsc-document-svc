@@ -5,7 +5,6 @@ import (
 	pb "github.com/hwsc-org/hwsc-api-blocks/int/hwsc-document-svc/proto"
 	"github.com/mongodb/mongo-go-driver/bson"
 	"log"
-	"net/http"
 	"net/url"
 	"regexp"
 	"strings"
@@ -712,11 +711,5 @@ func ValidateURL(addr string) error {
 	if _, err := url.ParseRequestURI(addr); err != nil {
 		return errUnreachableURI
 	}
-
-	resp, err := http.Get(addr)
-	if err != nil || resp.StatusCode >= 400 {
-		return errUnreachableURI
-	}
-
 	return nil
 }
