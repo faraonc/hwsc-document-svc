@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	pb "github.com/hwsc-org/hwsc-api-blocks/int/hwsc-document-svc/proto"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/context"
@@ -62,89 +63,88 @@ func TestGetStatus(t *testing.T) {
 	}
 }
 
-//
-//func TestCreateDocument(t *testing.T) {
-//	cases := []struct {
-//		req         *pb.DocumentRequest
-//		serverState state
-//		expMsg      string
-//		isExpErr    bool
-//	}{
-//		{&pb.DocumentRequest{}, unavailable,
-//			"rpc error: code = Unavailable desc = service unavailable", true},
-//		{nil, available,
-//			"rpc error: code = InvalidArgument desc = nil request", true},
-//		{&pb.DocumentRequest{}, available,
-//			"rpc error: code = InvalidArgument desc = nil request data", true},
-//		{&pb.DocumentRequest{Data: &pb.Document{
-//			Uuid: "garbage",
-//		}}, available,
-//			fmt.Sprintf("rpc error: code = InvalidArgument desc = %s", errInvalidDocumentUUID.Error()),
-//			true},
-//		{&pb.DocumentRequest{
-//			Data: &pb.Document{
-//				Duid: "",
-//				Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
-//				PublisherName: &pb.Publisher{
-//					LastName:  "Test LastName",
-//					FirstName: "Test FirstName",
-//				},
-//				CallTypeName: "some call type name",
-//				GroundType:   "some ground type",
-//				StudySite: &pb.StudySite{
-//					City:    "Seattle",
-//					State:   "Washington",
-//					Country: "USA",
-//				},
-//				Ocean:           "Pacific Ocean",
-//				SensorType:      "some sensor type",
-//				SensorName:      "some sensor name",
-//				SamplingRate:    100,
-//				Latitude:        89.123,
-//				Longitude:       -100.123,
-//				ImageUrlsMap:    nil,
-//				AudioUrlsMap:    nil,
-//				VideoUrlsMap:    nil,
-//				FileUrlsMap:     nil,
-//				RecordTimestamp: 1514764800,
-//				CreateTimestamp: 1539831496,
-//				UpdateTimestamp: 0,
-//				IsPublic:        true,
-//			},
-//			ImageUrls: []string{
-//				"https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png",
-//				"https://hwscdevstorage.blob.core.windows.net/images/Rotating_earth_(large).gif"},
-//			AudioUrls: []string{
-//				"https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
-//				"https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3"},
-//			VideoUrls: []string{
-//				"https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
-//				"https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4",
-//			},
-//			FileUrls: []string{
-//				"https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
-//				"https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4",
-//			},
-//		}, available,
-//			"OK", false},
-//	}
-//
-//	for _, c := range cases {
-//		serviceStateLocker.currentServiceState = c.serverState
-//		s := Service{}
-//		res, err := s.CreateDocument(context.TODO(), c.req)
-//		if !c.isExpErr {
-//			assert.Equal(t, c.expMsg, res.GetMessage())
-//			tempDUID = res.Data.GetDuid()
-//			tempUUID = res.Data.GetUuid()
-//		} else {
-//			assert.Equal(t, c.expMsg, err.Error())
-//			assert.EqualError(t, err, c.expMsg)
-//		}
-//
-//	}
-//}
-//
+func TestCreateDocument(t *testing.T) {
+	cases := []struct {
+		req         *pb.DocumentRequest
+		serverState state
+		expMsg      string
+		isExpErr    bool
+	}{
+		{&pb.DocumentRequest{}, unavailable,
+			"rpc error: code = Unavailable desc = service unavailable", true},
+		{nil, available,
+			"rpc error: code = InvalidArgument desc = nil request", true},
+		{&pb.DocumentRequest{}, available,
+			"rpc error: code = InvalidArgument desc = nil request data", true},
+		{&pb.DocumentRequest{Data: &pb.Document{
+			Uuid: "garbage",
+		}}, available,
+			fmt.Sprintf("rpc error: code = InvalidArgument desc = %s", errInvalidDocumentUUID.Error()),
+			true},
+		{&pb.DocumentRequest{
+			Data: &pb.Document{
+				Duid: "",
+				Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
+				PublisherName: &pb.Publisher{
+					LastName:  "Test LastName",
+					FirstName: "Test FirstName",
+				},
+				CallTypeName: "some call type name",
+				GroundType:   "some ground type",
+				StudySite: &pb.StudySite{
+					City:    "Seattle",
+					State:   "Washington",
+					Country: "USA",
+				},
+				Ocean:           "Pacific Ocean",
+				SensorType:      "some sensor type",
+				SensorName:      "some sensor name",
+				SamplingRate:    100,
+				Latitude:        89.123,
+				Longitude:       -100.123,
+				ImageUrlsMap:    nil,
+				AudioUrlsMap:    nil,
+				VideoUrlsMap:    nil,
+				FileUrlsMap:     nil,
+				RecordTimestamp: 1514764800,
+				CreateTimestamp: 1539831496,
+				UpdateTimestamp: 0,
+				IsPublic:        true,
+			},
+			ImageUrls: []string{
+				"https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png",
+				"https://hwscdevstorage.blob.core.windows.net/images/Rotating_earth_(large).gif"},
+			AudioUrls: []string{
+				"https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
+				"https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3"},
+			VideoUrls: []string{
+				"https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4",
+			},
+			FileUrls: []string{
+				"https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4",
+			},
+		}, available,
+			"OK", false},
+	}
+
+	for _, c := range cases {
+		serviceStateLocker.currentServiceState = c.serverState
+		s := Service{}
+		res, err := s.CreateDocument(context.TODO(), c.req)
+		if !c.isExpErr {
+			assert.Equal(t, c.expMsg, res.GetMessage())
+			tempDUID = res.Data.GetDuid()
+			tempUUID = res.Data.GetUuid()
+		} else {
+			assert.Equal(t, c.expMsg, err.Error())
+			assert.EqualError(t, err, c.expMsg)
+		}
+
+	}
+}
+
 //func TestListUserDocumentCollection(t *testing.T) {
 //	cases := []struct {
 //		req         *pb.DocumentRequest

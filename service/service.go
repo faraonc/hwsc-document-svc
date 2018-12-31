@@ -4,11 +4,14 @@ import (
 	"github.com/google/uuid"
 	pb "github.com/hwsc-org/hwsc-api-blocks/int/hwsc-document-svc/proto"
 	"github.com/hwsc-org/hwsc-document-svc/conf"
+	"github.com/kylelemons/godebug/pretty"
 	"github.com/segmentio/ksuid"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"log"
 	"sync"
+	"time"
 )
 
 // state of the service
@@ -126,105 +129,105 @@ func (s *Service) GetStatus(ctx context.Context, req *pb.DocumentRequest) (*pb.D
 
 // CreateDocument creates a document in MongoDB.
 // Returns the Document.
-//func (s *Service) CreateDocument(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
-//	log.Println("[INFO] Requesting CreateDocument service")
-//
-//	if ok := isStateAvailable(); !ok {
-//		log.Printf("[INFO] %s\n", errServiceUnavailable.Error())
-//		return nil, status.Error(codes.Unavailable, errServiceUnavailable.Error())
-//	}
-//
-//	if err := refreshMongoDBConnection(mongoDBWriter, &conf.DocumentDB.Writer); err != nil {
-//		log.Printf("[ERROR] %s\n", err.Error())
-//		return nil, status.Error(codes.Internal, err.Error())
-//	}
-//
-//	if req == nil {
-//		log.Printf("[ERROR] %s\n", errNilRequest.Error())
-//		return nil, status.Error(codes.InvalidArgument, errNilRequest.Error())
-//	}
-//
-//	doc := req.GetData()
-//	if doc == nil {
-//		log.Printf("[ERROR] %s\n", errNilRequestData.Error())
-//		return nil, status.Error(codes.InvalidArgument, errNilRequestData.Error())
-//	}
-//
-//	doc.Duid = duidGenerator.NewDUID()
-//
-//	// Get the specific lock if it already exists, else make the lock
-//	lock, _ := duidClientLocker.LoadOrStore(doc.GetDuid(), &sync.RWMutex{})
-//	// Lock
-//	lock.(*sync.RWMutex).Lock()
-//	// Unlock before the function exits
-//	defer lock.(*sync.RWMutex).Unlock()
-//
-//	// Extract image URLS
-//	if doc.GetImageUrlsMap() == nil {
-//		doc.ImageUrlsMap = make(map[string]string)
-//	}
-//	if req.GetImageUrls() != nil {
-//		for _, url := range req.GetImageUrls() {
-//			doc.ImageUrlsMap[fuidGenerator.NewFUID()] = url
-//		}
-//	}
-//
-//	// Extract audio URLS
-//	if doc.GetAudioUrlsMap() == nil {
-//		doc.AudioUrlsMap = make(map[string]string)
-//	}
-//	if req.GetAudioUrls() != nil {
-//		for _, url := range req.GetAudioUrls() {
-//			doc.AudioUrlsMap[fuidGenerator.NewFUID()] = url
-//		}
-//	}
-//
-//	// Extract video URLS
-//	if doc.GetVideoUrlsMap() == nil {
-//		doc.VideoUrlsMap = make(map[string]string)
-//	}
-//	if req.GetVideoUrls() != nil {
-//		for _, url := range req.GetVideoUrls() {
-//			doc.VideoUrlsMap[fuidGenerator.NewFUID()] = url
-//		}
-//	}
-//
-//	// Extract file URLS
-//	if doc.GetFileUrlsMap() == nil {
-//		doc.FileUrlsMap = make(map[string]string)
-//	}
-//	if req.GetFileUrls() != nil {
-//		for _, url := range req.GetFileUrls() {
-//			doc.FileUrlsMap[fuidGenerator.NewFUID()] = url
-//		}
-//	}
-//
-//	doc.CreateTimestamp = time.Now().UTC().Unix()
-//
-//	if err := ValidateDocument(doc); err != nil {
-//		log.Printf("[ERROR] %s\n", err.Error())
-//		return nil, status.Error(codes.InvalidArgument, err.Error())
-//	}
-//
-//	log.Printf("[INFO] Document contains:\n %s\n\n", pretty.Sprint(doc))
-//	collection := mongoDBWriter.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
-//
-//	res, err := collection.InsertOne(context.Background(), doc)
-//	if err != nil {
-//		log.Printf("[ERROR] InsertOne: %s\n", err.Error())
-//		return nil, status.Error(codes.Internal, err.Error())
-//	}
-//
-//	log.Printf("[INFO] Success inserting document _id: %v\n", res.InsertedID)
-//
-//	return &pb.DocumentResponse{
-//		Status:  &pb.DocumentResponse_Code{Code: uint32(codes.OK)},
-//		Message: codes.OK.String(),
-//		Data:    doc,
-//	}, nil
-//
-//}
-//
+func (s *Service) CreateDocument(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
+	log.Println("[INFO] Requesting CreateDocument service")
+
+	if ok := isStateAvailable(); !ok {
+		log.Printf("[INFO] %s\n", errServiceUnavailable.Error())
+		return nil, status.Error(codes.Unavailable, errServiceUnavailable.Error())
+	}
+
+	if err := refreshMongoDBConnection(mongoDBWriter, &conf.DocumentDB.Writer); err != nil {
+		log.Printf("[ERROR] %s\n", err.Error())
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	if req == nil {
+		log.Printf("[ERROR] %s\n", errNilRequest.Error())
+		return nil, status.Error(codes.InvalidArgument, errNilRequest.Error())
+	}
+
+	doc := req.GetData()
+	if doc == nil {
+		log.Printf("[ERROR] %s\n", errNilRequestData.Error())
+		return nil, status.Error(codes.InvalidArgument, errNilRequestData.Error())
+	}
+
+	doc.Duid = duidGenerator.NewDUID()
+
+	// Get the specific lock if it already exists, else make the lock
+	lock, _ := duidClientLocker.LoadOrStore(doc.GetDuid(), &sync.RWMutex{})
+	// Lock
+	lock.(*sync.RWMutex).Lock()
+	// Unlock before the function exits
+	defer lock.(*sync.RWMutex).Unlock()
+
+	// Extract image URLS
+	if doc.GetImageUrlsMap() == nil {
+		doc.ImageUrlsMap = make(map[string]string)
+	}
+	if req.GetImageUrls() != nil {
+		for _, url := range req.GetImageUrls() {
+			doc.ImageUrlsMap[fuidGenerator.NewFUID()] = url
+		}
+	}
+
+	// Extract audio URLS
+	if doc.GetAudioUrlsMap() == nil {
+		doc.AudioUrlsMap = make(map[string]string)
+	}
+	if req.GetAudioUrls() != nil {
+		for _, url := range req.GetAudioUrls() {
+			doc.AudioUrlsMap[fuidGenerator.NewFUID()] = url
+		}
+	}
+
+	// Extract video URLS
+	if doc.GetVideoUrlsMap() == nil {
+		doc.VideoUrlsMap = make(map[string]string)
+	}
+	if req.GetVideoUrls() != nil {
+		for _, url := range req.GetVideoUrls() {
+			doc.VideoUrlsMap[fuidGenerator.NewFUID()] = url
+		}
+	}
+
+	// Extract file URLS
+	if doc.GetFileUrlsMap() == nil {
+		doc.FileUrlsMap = make(map[string]string)
+	}
+	if req.GetFileUrls() != nil {
+		for _, url := range req.GetFileUrls() {
+			doc.FileUrlsMap[fuidGenerator.NewFUID()] = url
+		}
+	}
+
+	doc.CreateTimestamp = time.Now().UTC().Unix()
+
+	if err := ValidateDocument(doc); err != nil {
+		log.Printf("[ERROR] %s\n", err.Error())
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	log.Printf("[INFO] Document contains:\n %s\n\n", pretty.Sprint(doc))
+	collection := mongoDBWriter.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
+
+	res, err := collection.InsertOne(context.Background(), doc)
+	if err != nil {
+		log.Printf("[ERROR] InsertOne: %s\n", err.Error())
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	log.Printf("[INFO] Success inserting document _id: %v\n", res.InsertedID)
+
+	return &pb.DocumentResponse{
+		Status:  &pb.DocumentResponse_Code{Code: uint32(codes.OK)},
+		Message: codes.OK.String(),
+		Data:    doc,
+	}, nil
+
+}
+
 //// ListUserDocumentCollection retrieves all the MongoDB documents for a specific user with the given UUID.
 //// Returns a collection of Documents.
 //func (s *Service) ListUserDocumentCollection(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
