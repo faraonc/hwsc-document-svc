@@ -46,11 +46,9 @@ func dialMongoDB(uri *string) (*mongo.Client, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	if err := client.Ping(context.TODO(), nil); err != nil {
 		return nil, err
 	}
-
 	return client, nil
 }
 

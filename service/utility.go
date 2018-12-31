@@ -3,7 +3,6 @@ package service
 import (
 	"fmt"
 	pb "github.com/hwsc-org/hwsc-api-blocks/int/hwsc-document-svc/proto"
-	"github.com/mongodb/mongo-go-driver/bson"
 	"log"
 	"net/http"
 	"net/url"
@@ -497,65 +496,65 @@ func isStateAvailable() bool {
 	return true
 }
 
-func buildAggregatePipeline(queryParams *pb.QueryTransaction) (*bson.Array, error) {
-	if queryParams == nil {
-		return nil, errNilQueryTransaction
-	}
-
-	lastNames, firstNames := extractPublishersFields(queryParams.GetPublishers())
-	cities, states, provinces, countries := extractStudySitesFields(queryParams.GetStudySites())
-
-	pipeline := bson.NewArray(
-		bson.VC.DocumentFromElements(
-			bson.EC.SubDocumentFromElements(
-				"$match",
-				bson.EC.SubDocumentFromElements("publisherName.lastName",
-					buildArrayFromElements(lastNames)),
-				bson.EC.SubDocumentFromElements("publisherName.firstName",
-					buildArrayFromElements(firstNames)),
-
-				bson.EC.SubDocumentFromElements("studySite.city",
-					buildArrayFromElements(cities)),
-				bson.EC.SubDocumentFromElements("studySite.state",
-					buildArrayFromElements(states)),
-				bson.EC.SubDocumentFromElements("studySite.province",
-					buildArrayFromElements(provinces)),
-				bson.EC.SubDocumentFromElements("studySite.country",
-					buildArrayFromElements(countries)),
-
-				bson.EC.SubDocumentFromElements("callTypeName",
-					buildArrayFromElements(queryParams.GetCallTypeNames())),
-
-				bson.EC.SubDocumentFromElements("groundType",
-					buildArrayFromElements(queryParams.GetGroundTypes())),
-
-				bson.EC.SubDocumentFromElements("sensorType",
-					buildArrayFromElements(queryParams.GetSensorTypes())),
-
-				bson.EC.SubDocumentFromElements("sensorName",
-					buildArrayFromElements(queryParams.GetSensorNames())),
-
-				bson.EC.SubDocumentFromElements("recordTimestamp",
-					bson.EC.Int64("$gte", queryParams.GetMinRecordTimestamp()),
-					bson.EC.Int64("$lte", queryParams.GetMaxRecordTimestamp())),
-			),
-		),
-	)
-
-	return pipeline, nil
-}
-
-func buildArrayFromElements(elems []string) *bson.Element {
-	if elems == nil || len(elems) == 0 {
-		return bson.EC.ArrayFromElements("$in", bson.VC.Regex(".*", ""))
-	}
-	elemVals := make([]*bson.Value, len(elems))
-	for i := 0; i < len(elems); i++ {
-		elemVals[i] = bson.VC.String(elems[i])
-	}
-
-	return bson.EC.ArrayFromElements("$in", elemVals...)
-}
+//func buildAggregatePipeline(queryParams *pb.QueryTransaction) (*bson.Array, error) {
+//	if queryParams == nil {
+//		return nil, errNilQueryTransaction
+//	}
+//
+//	lastNames, firstNames := extractPublishersFields(queryParams.GetPublishers())
+//	cities, states, provinces, countries := extractStudySitesFields(queryParams.GetStudySites())
+//
+//	pipeline := bson.NewArray(
+//		bson.VC.DocumentFromElements(
+//			bson.EC.SubDocumentFromElements(
+//				"$match",
+//				bson.EC.SubDocumentFromElements("publisherName.lastName",
+//					buildArrayFromElements(lastNames)),
+//				bson.EC.SubDocumentFromElements("publisherName.firstName",
+//					buildArrayFromElements(firstNames)),
+//
+//				bson.EC.SubDocumentFromElements("studySite.city",
+//					buildArrayFromElements(cities)),
+//				bson.EC.SubDocumentFromElements("studySite.state",
+//					buildArrayFromElements(states)),
+//				bson.EC.SubDocumentFromElements("studySite.province",
+//					buildArrayFromElements(provinces)),
+//				bson.EC.SubDocumentFromElements("studySite.country",
+//					buildArrayFromElements(countries)),
+//
+//				bson.EC.SubDocumentFromElements("callTypeName",
+//					buildArrayFromElements(queryParams.GetCallTypeNames())),
+//
+//				bson.EC.SubDocumentFromElements("groundType",
+//					buildArrayFromElements(queryParams.GetGroundTypes())),
+//
+//				bson.EC.SubDocumentFromElements("sensorType",
+//					buildArrayFromElements(queryParams.GetSensorTypes())),
+//
+//				bson.EC.SubDocumentFromElements("sensorName",
+//					buildArrayFromElements(queryParams.GetSensorNames())),
+//
+//				bson.EC.SubDocumentFromElements("recordTimestamp",
+//					bson.EC.Int64("$gte", queryParams.GetMinRecordTimestamp()),
+//					bson.EC.Int64("$lte", queryParams.GetMaxRecordTimestamp())),
+//			),
+//		),
+//	)
+//
+//	return pipeline, nil
+//}
+//
+//func buildArrayFromElements(elems []string) *bson.Element {
+//	if elems == nil || len(elems) == 0 {
+//		return bson.EC.ArrayFromElements("$in", bson.VC.Regex(".*", ""))
+//	}
+//	elemVals := make([]*bson.Value, len(elems))
+//	for i := 0; i < len(elems); i++ {
+//		elemVals[i] = bson.VC.String(elems[i])
+//	}
+//
+//	return bson.EC.ArrayFromElements("$in", elemVals...)
+//}
 
 func extractPublishersFields(publishers []*pb.Publisher) ([]string, []string) {
 	if publishers == nil || len(publishers) == 0 {
@@ -615,65 +614,65 @@ func extractStudySitesFields(studySites []*pb.StudySite) ([]string, []string, []
 	return cities, states, provinces, countries
 }
 
-func extractDistinctResults(queryResult *pb.QueryTransaction, fieldName string, distinctResult []interface{}) error {
-	if queryResult == nil {
-		return errNilQueryResult
-	}
+//func extractDistinctResults(queryResult *pb.QueryTransaction, fieldName string, distinctResult []interface{}) error {
+//	if queryResult == nil {
+//		return errNilQueryResult
+//	}
+//
+//	if distinctResult == nil || len(distinctResult) == 0 {
+//		return errInvalidDistinctResult
+//	}
+//
+//	var err error
+//	switch fieldName {
+//	case "Publishers":
+//		queryResult.Publishers, err = extractDistinctPublishers(distinctResult)
+//	case "StudySites":
+//		queryResult.StudySites, err = extractDistinctStudySites(distinctResult)
+//	case "CallTypeNames":
+//		queryResult.CallTypeNames, err = extractDistinct(distinctResult)
+//	case "GroundTypes":
+//		queryResult.GroundTypes, err = extractDistinct(distinctResult)
+//	case "SensorTypes":
+//		queryResult.SensorTypes, err = extractDistinct(distinctResult)
+//	case "SensorNames":
+//		queryResult.SensorNames, err = extractDistinct(distinctResult)
+//	default:
+//		err = errInvalidDistinctFieldName
+//	}
+//
+//	return err
+//}
 
-	if distinctResult == nil || len(distinctResult) == 0 {
-		return errInvalidDistinctResult
-	}
-
-	var err error
-	switch fieldName {
-	case "Publishers":
-		queryResult.Publishers, err = extractDistinctPublishers(distinctResult)
-	case "StudySites":
-		queryResult.StudySites, err = extractDistinctStudySites(distinctResult)
-	case "CallTypeNames":
-		queryResult.CallTypeNames, err = extractDistinct(distinctResult)
-	case "GroundTypes":
-		queryResult.GroundTypes, err = extractDistinct(distinctResult)
-	case "SensorTypes":
-		queryResult.SensorTypes, err = extractDistinct(distinctResult)
-	case "SensorNames":
-		queryResult.SensorNames, err = extractDistinct(distinctResult)
-	default:
-		err = errInvalidDistinctFieldName
-	}
-
-	return err
-}
-
-func extractDistinctPublishers(distinctResult []interface{}) ([]*pb.Publisher, error) {
-	if distinctResult == nil || len(distinctResult) == 0 {
-		return nil, errInvalidDistinctResult
-	}
-	publishers := make([]*pb.Publisher, 0)
-	for _, v := range distinctResult {
-		publishers = append(publishers, &pb.Publisher{
-			LastName:  v.(*bson.Document).ElementAt(0).Value().StringValue(),
-			FirstName: v.(*bson.Document).ElementAt(1).Value().StringValue(),
-		})
-	}
-	return publishers, nil
-}
-
-func extractDistinctStudySites(distinctResult []interface{}) ([]*pb.StudySite, error) {
-	if distinctResult == nil || len(distinctResult) == 0 {
-		return nil, errInvalidDistinctResult
-	}
-	studySites := make([]*pb.StudySite, 0)
-	for _, v := range distinctResult {
-		studySites = append(studySites, &pb.StudySite{
-			City:     v.(*bson.Document).ElementAt(0).Value().StringValue(),
-			State:    v.(*bson.Document).ElementAt(1).Value().StringValue(),
-			Province: v.(*bson.Document).ElementAt(2).Value().StringValue(),
-			Country:  v.(*bson.Document).ElementAt(3).Value().StringValue(),
-		})
-	}
-	return studySites, nil
-}
+//func extractDistinctPublishers(distinctResult []interface{}) ([]*pb.Publisher, error) {
+//	if distinctResult == nil || len(distinctResult) == 0 {
+//		return nil, errInvalidDistinctResult
+//	}
+//	publishers := make([]*pb.Publisher, 0)
+//	for _, v := range distinctResult {
+//		publishers = append(publishers, &pb.Publisher{
+//			LastName:  v.(*bson.Document).ElementAt(0).Value().StringValue(),
+//			FirstName: v.(*bson.Document).ElementAt(1).Value().StringValue(),
+//		})
+//	}
+//	return publishers, nil
+//}
+//
+//func extractDistinctStudySites(distinctResult []interface{}) ([]*pb.StudySite, error) {
+//	if distinctResult == nil || len(distinctResult) == 0 {
+//		return nil, errInvalidDistinctResult
+//	}
+//	studySites := make([]*pb.StudySite, 0)
+//	for _, v := range distinctResult {
+//		studySites = append(studySites, &pb.StudySite{
+//			City:     v.(*bson.Document).ElementAt(0).Value().StringValue(),
+//			State:    v.(*bson.Document).ElementAt(1).Value().StringValue(),
+//			Province: v.(*bson.Document).ElementAt(2).Value().StringValue(),
+//			Country:  v.(*bson.Document).ElementAt(3).Value().StringValue(),
+//		})
+//	}
+//	return studySites, nil
+//}
 
 func extractDistinct(distinctResult []interface{}) ([]string, error) {
 	if distinctResult == nil || len(distinctResult) == 0 {

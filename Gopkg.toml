@@ -38,3 +38,6 @@
 [[constraint]]
   name = "github.com/google/uuid"
   version = "1.0.0"
+[[constraint]]
+  name = "github.com/mongodb/mongo-go-driver"
+  version = "0.1.0"
