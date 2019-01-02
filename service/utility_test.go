@@ -2,6 +2,7 @@ package service
 
 import (
 	pb "github.com/hwsc-org/hwsc-api-blocks/int/hwsc-document-svc/proto"
+	"github.com/mongodb/mongo-go-driver/bson"
 	"github.com/stretchr/testify/assert"
 	"testing"
 	"time"
@@ -1863,9 +1864,9 @@ func TestIsStateAvailable(t *testing.T) {
 //func TestBuildArrayFromElements(t *testing.T) {
 //	cases := []struct {
 //		input     []string
-//		expOutput *bson.Element
+//		expOutput bson.E
 //	}{
-//		{nil, bson.EC.ArrayFromElements("$in", bson.VC.Regex(".*", ""))},
+//		{nil, bson.E{bson.A{"$in", bson.D{{".*", ""}}}},
 //		{[]string{}, bson.EC.ArrayFromElements("$in", bson.VC.Regex(".*", ""))},
 //
 //		{[]string{
@@ -1980,236 +1981,236 @@ func TestExtractStudySitesFields(t *testing.T) {
 	}
 }
 
-//func TestExtractDistinctResults(t *testing.T) {
-//	cases := []struct {
-//		input       []interface{}
-//		queryResult *pb.QueryTransaction
-//		expOutput   *pb.QueryTransaction
-//		fieldName   string
-//		isExpErr    bool
-//		errorStr    string
-//	}{
-//		{nil, nil, nil, "", true, errNilQueryResult.Error()},
-//		{nil, &pb.QueryTransaction{}, nil, "", true, errInvalidDistinctResult.Error()},
-//		{
-//			[]interface{}{
-//				bson.NewDocument().Append(
-//					bson.EC.String("LastName", "Seger"),
-//					bson.EC.String("FirstName", "Kerri"),
-//				),
-//				bson.NewDocument().Append(
-//					bson.EC.String("LastName", "Abadi"),
-//					bson.EC.String("FirstName", "Shima"),
-//				),
-//			},
-//			&pb.QueryTransaction{},
-//			&pb.QueryTransaction{
-//				Publishers: []*pb.Publisher{
-//					{LastName: "Seger", FirstName: "Kerri"},
-//					{LastName: "Abadi", FirstName: "Shima"},
-//				},
-//			},
-//			"Publishers",
-//			false,
-//			"",
-//		},
-//		{
-//			[]interface{}{
-//				bson.NewDocument().Append(
-//					bson.EC.String("City", "Batangas City"),
-//					bson.EC.String("State", ""),
-//					bson.EC.String("Province", "Batangas"),
-//					bson.EC.String("Country", "Philippines"),
-//				),
-//				bson.NewDocument().Append(
-//					bson.EC.String("City", "San Diego"),
-//					bson.EC.String("State", "California"),
-//					bson.EC.String("Province", ""),
-//					bson.EC.String("Country", "USA"),
-//				),
-//			},
-//			&pb.QueryTransaction{},
-//			&pb.QueryTransaction{
-//				StudySites: []*pb.StudySite{
-//					{City: "Batangas City", Province: "Batangas", Country: "Philippines"},
-//					{City: "San Diego", State: "California", Country: "USA"},
-//				},
-//			},
-//			"StudySites",
-//			false,
-//			"",
-//		},
-//		{
-//			[]interface{}{
-//				"ab",
-//				"cd",
-//			},
-//			&pb.QueryTransaction{},
-//			&pb.QueryTransaction{
-//				CallTypeNames: []string{
-//					"ab",
-//					"cd",
-//				},
-//			},
-//			"CallTypeNames",
-//			false,
-//			"",
-//		},
-//		{
-//			[]interface{}{
-//				"ef",
-//				"gh",
-//			},
-//			&pb.QueryTransaction{},
-//			&pb.QueryTransaction{
-//				GroundTypes: []string{
-//					"ef",
-//					"gh",
-//				},
-//			},
-//			"GroundTypes",
-//			false,
-//			"",
-//		},
-//		{
-//			[]interface{}{
-//				"ij",
-//				"kl",
-//			},
-//			&pb.QueryTransaction{},
-//			&pb.QueryTransaction{
-//				SensorTypes: []string{
-//					"ij",
-//					"kl",
-//				},
-//			},
-//			"SensorTypes",
-//			false,
-//			"",
-//		},
-//		{
-//			[]interface{}{
-//				"mn",
-//				"op",
-//			},
-//			&pb.QueryTransaction{},
-//			&pb.QueryTransaction{
-//				SensorNames: []string{
-//					"mn",
-//					"op",
-//				},
-//			},
-//			"SensorNames",
-//			false,
-//			"",
-//		},
-//		{
-//			[]interface{}{
-//				"mn",
-//			},
-//			&pb.QueryTransaction{},
-//			&pb.QueryTransaction{
-//				SensorNames: []string{
-//					"mn",
-//				},
-//			},
-//			"default",
-//			true,
-//			errInvalidDistinctFieldName.Error(),
-//		},
-//	}
-//
-//	for _, c := range cases {
-//		err := extractDistinctResults(c.queryResult, c.fieldName, c.input)
-//		if !c.isExpErr {
-//			assert.Equal(t, c.expOutput, c.queryResult)
-//		} else {
-//			assert.EqualError(t, err, c.errorStr)
-//		}
-//	}
-//}
-//
-//func TestExtractDistinctPublishers(t *testing.T) {
-//	cases := []struct {
-//		input     []interface{}
-//		expOutput []*pb.Publisher
-//		isExpErr  bool
-//		errorStr  string
-//	}{
-//		{nil, nil, true, errInvalidDistinctResult.Error()},
-//		{[]interface{}{}, nil, true, errInvalidDistinctResult.Error()},
-//		{
-//			[]interface{}{
-//				bson.NewDocument().Append(
-//					bson.EC.String("LastName", "Seger"),
-//					bson.EC.String("FirstName", "Kerri"),
-//				),
-//				bson.NewDocument().Append(
-//					bson.EC.String("LastName", "Abadi"),
-//					bson.EC.String("FirstName", "Shima"),
-//				),
-//			},
-//			[]*pb.Publisher{
-//				{LastName: "Seger", FirstName: "Kerri"},
-//				{LastName: "Abadi", FirstName: "Shima"},
-//			},
-//			false,
-//			"",
-//		},
-//	}
-//
-//	for _, c := range cases {
-//		ret, err := extractDistinctPublishers(c.input)
-//		if !c.isExpErr {
-//			assert.Equal(t, c.expOutput, ret)
-//		} else {
-//			assert.EqualError(t, err, c.errorStr)
-//		}
-//	}
-//}
-//
-//func TestExtractDistinctStudySites(t *testing.T) {
-//	cases := []struct {
-//		input     []interface{}
-//		expOutput []*pb.StudySite
-//		isExpErr  bool
-//		errorStr  string
-//	}{
-//		{nil, nil, true, errInvalidDistinctResult.Error()},
-//		{[]interface{}{}, nil, true, errInvalidDistinctResult.Error()},
-//		{
-//			[]interface{}{
-//				bson.NewDocument().Append(
-//					bson.EC.String("City", "Batangas City"),
-//					bson.EC.String("State", ""),
-//					bson.EC.String("Province", "Batangas"),
-//					bson.EC.String("Country", "Philippines"),
-//				),
-//				bson.NewDocument().Append(
-//					bson.EC.String("City", "San Diego"),
-//					bson.EC.String("State", "California"),
-//					bson.EC.String("Province", ""),
-//					bson.EC.String("Country", "USA"),
-//				),
-//			},
-//			[]*pb.StudySite{
-//				{City: "Batangas City", Province: "Batangas", Country: "Philippines"},
-//				{City: "San Diego", State: "California", Country: "USA"},
-//			},
-//			false,
-//			"",
-//		},
-//	}
-//
-//	for _, c := range cases {
-//		ret, err := extractDistinctStudySites(c.input)
-//		if !c.isExpErr {
-//			assert.Equal(t, c.expOutput, ret)
-//		} else {
-//			assert.EqualError(t, err, c.errorStr)
-//		}
-//	}
-//}
+func TestExtractDistinctResults(t *testing.T) {
+	cases := []struct {
+		input       []interface{}
+		queryResult *pb.QueryTransaction
+		expOutput   *pb.QueryTransaction
+		fieldName   string
+		isExpErr    bool
+		errorStr    string
+	}{
+		{nil, nil, nil, "", true, errNilQueryResult.Error()},
+		{nil, &pb.QueryTransaction{}, nil, "", true, errInvalidDistinctResult.Error()},
+		{
+			[]interface{}{
+				bson.D{
+					{"LastName", "Seger"},
+					{"FirstName", "Kerri"},
+				},
+				bson.D{
+					{"LastName", "Abadi"},
+					{"FirstName", "Shima"},
+				},
+			},
+			&pb.QueryTransaction{},
+			&pb.QueryTransaction{
+				Publishers: []*pb.Publisher{
+					{LastName: "Seger", FirstName: "Kerri"},
+					{LastName: "Abadi", FirstName: "Shima"},
+				},
+			},
+			"Publishers",
+			false,
+			"",
+		},
+		{
+			[]interface{}{
+				bson.D{
+					{"City", "Batangas City"},
+					{"State", ""},
+					{"Province", "Batangas"},
+					{"Country", "Philippines"},
+				},
+				bson.D{
+					{"City", "San Diego"},
+					{"State", "California"},
+					{"Province", ""},
+					{"Country", "USA"},
+				},
+			},
+			&pb.QueryTransaction{},
+			&pb.QueryTransaction{
+				StudySites: []*pb.StudySite{
+					{City: "Batangas City", Province: "Batangas", Country: "Philippines"},
+					{City: "San Diego", State: "California", Country: "USA"},
+				},
+			},
+			"StudySites",
+			false,
+			"",
+		},
+		{
+			[]interface{}{
+				"ab",
+				"cd",
+			},
+			&pb.QueryTransaction{},
+			&pb.QueryTransaction{
+				CallTypeNames: []string{
+					"ab",
+					"cd",
+				},
+			},
+			"CallTypeNames",
+			false,
+			"",
+		},
+		{
+			[]interface{}{
+				"ef",
+				"gh",
+			},
+			&pb.QueryTransaction{},
+			&pb.QueryTransaction{
+				GroundTypes: []string{
+					"ef",
+					"gh",
+				},
+			},
+			"GroundTypes",
+			false,
+			"",
+		},
+		{
+			[]interface{}{
+				"ij",
+				"kl",
+			},
+			&pb.QueryTransaction{},
+			&pb.QueryTransaction{
+				SensorTypes: []string{
+					"ij",
+					"kl",
+				},
+			},
+			"SensorTypes",
+			false,
+			"",
+		},
+		{
+			[]interface{}{
+				"mn",
+				"op",
+			},
+			&pb.QueryTransaction{},
+			&pb.QueryTransaction{
+				SensorNames: []string{
+					"mn",
+					"op",
+				},
+			},
+			"SensorNames",
+			false,
+			"",
+		},
+		{
+			[]interface{}{
+				"mn",
+			},
+			&pb.QueryTransaction{},
+			&pb.QueryTransaction{
+				SensorNames: []string{
+					"mn",
+				},
+			},
+			"default",
+			true,
+			errInvalidDistinctFieldName.Error(),
+		},
+	}
+
+	for _, c := range cases {
+		err := extractDistinctResults(c.queryResult, c.fieldName, c.input)
+		if !c.isExpErr {
+			assert.Equal(t, c.expOutput, c.queryResult)
+		} else {
+			assert.EqualError(t, err, c.errorStr)
+		}
+	}
+}
+
+func TestExtractDistinctPublishers(t *testing.T) {
+	cases := []struct {
+		input     []interface{}
+		expOutput []*pb.Publisher
+		isExpErr  bool
+		errorStr  string
+	}{
+		{nil, nil, true, errInvalidDistinctResult.Error()},
+		{[]interface{}{}, nil, true, errInvalidDistinctResult.Error()},
+		{
+			[]interface{}{
+				bson.D{
+					{"LastName", "Seger"},
+					{"FirstName", "Kerri"},
+				},
+				bson.D{
+					{"LastName", "Abadi"},
+					{"FirstName", "Shima"},
+				},
+			},
+			[]*pb.Publisher{
+				{LastName: "Seger", FirstName: "Kerri"},
+				{LastName: "Abadi", FirstName: "Shima"},
+			},
+			false,
+			"",
+		},
+	}
+
+	for _, c := range cases {
+		ret, err := extractDistinctPublishers(c.input)
+		if !c.isExpErr {
+			assert.Equal(t, c.expOutput, ret)
+		} else {
+			assert.EqualError(t, err, c.errorStr)
+		}
+	}
+}
+
+func TestExtractDistinctStudySites(t *testing.T) {
+	cases := []struct {
+		input     []interface{}
+		expOutput []*pb.StudySite
+		isExpErr  bool
+		errorStr  string
+	}{
+		{nil, nil, true, errInvalidDistinctResult.Error()},
+		{[]interface{}{}, nil, true, errInvalidDistinctResult.Error()},
+		{
+			[]interface{}{
+				bson.D{
+					{"City", "Batangas City"},
+					{"State", ""},
+					{"Province", "Batangas"},
+					{"Country", "Philippines"},
+				},
+				bson.D{
+					{"City", "San Diego"},
+					{"State", "California"},
+					{"Province", ""},
+					{"Country", "USA"},
+				},
+			},
+			[]*pb.StudySite{
+				{City: "Batangas City", Province: "Batangas", Country: "Philippines"},
+				{City: "San Diego", State: "California", Country: "USA"},
+			},
+			false,
+			"",
+		},
+	}
+
+	for _, c := range cases {
+		ret, err := extractDistinctStudySites(c.input)
+		if !c.isExpErr {
+			assert.Equal(t, c.expOutput, ret)
+		} else {
+			assert.EqualError(t, err, c.errorStr)
+		}
+	}
+}
 
 func TestExtractDistinct(t *testing.T) {
 	cases := []struct {

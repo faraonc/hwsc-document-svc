@@ -1,7 +1,7 @@
 # hwsc-document-svc
 
 ## Purpose
- Provides services to hwsc-app-gateway-svc for CRUD document, and file metadata in Azure CosmosDB
+ Provides services to hwsc-app-gateway-svc for CRUD document, and file metadata in MongoDB
 
 ## Contract
 The proto file and compiled proto buffers are located in [hwsc-api-blocks](https://github.com/hwsc-org/hwsc-api-blocks/tree/master/int/hwsc-document-svc/proto).

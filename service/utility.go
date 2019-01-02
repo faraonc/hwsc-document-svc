@@ -3,6 +3,7 @@ package service
 import (
 	"fmt"
 	pb "github.com/hwsc-org/hwsc-api-blocks/int/hwsc-document-svc/proto"
+	"github.com/mongodb/mongo-go-driver/bson"
 	"log"
 	"net/http"
 	"net/url"
@@ -614,65 +615,65 @@ func extractStudySitesFields(studySites []*pb.StudySite) ([]string, []string, []
 	return cities, states, provinces, countries
 }
 
-//func extractDistinctResults(queryResult *pb.QueryTransaction, fieldName string, distinctResult []interface{}) error {
-//	if queryResult == nil {
-//		return errNilQueryResult
-//	}
-//
-//	if distinctResult == nil || len(distinctResult) == 0 {
-//		return errInvalidDistinctResult
-//	}
-//
-//	var err error
-//	switch fieldName {
-//	case "Publishers":
-//		queryResult.Publishers, err = extractDistinctPublishers(distinctResult)
-//	case "StudySites":
-//		queryResult.StudySites, err = extractDistinctStudySites(distinctResult)
-//	case "CallTypeNames":
-//		queryResult.CallTypeNames, err = extractDistinct(distinctResult)
-//	case "GroundTypes":
-//		queryResult.GroundTypes, err = extractDistinct(distinctResult)
-//	case "SensorTypes":
-//		queryResult.SensorTypes, err = extractDistinct(distinctResult)
-//	case "SensorNames":
-//		queryResult.SensorNames, err = extractDistinct(distinctResult)
-//	default:
-//		err = errInvalidDistinctFieldName
-//	}
-//
-//	return err
-//}
+func extractDistinctResults(queryResult *pb.QueryTransaction, fieldName string, distinctResult []interface{}) error {
+	if queryResult == nil {
+		return errNilQueryResult
+	}
 
-//func extractDistinctPublishers(distinctResult []interface{}) ([]*pb.Publisher, error) {
-//	if distinctResult == nil || len(distinctResult) == 0 {
-//		return nil, errInvalidDistinctResult
-//	}
-//	publishers := make([]*pb.Publisher, 0)
-//	for _, v := range distinctResult {
-//		publishers = append(publishers, &pb.Publisher{
-//			LastName:  v.(*bson.Document).ElementAt(0).Value().StringValue(),
-//			FirstName: v.(*bson.Document).ElementAt(1).Value().StringValue(),
-//		})
-//	}
-//	return publishers, nil
-//}
-//
-//func extractDistinctStudySites(distinctResult []interface{}) ([]*pb.StudySite, error) {
-//	if distinctResult == nil || len(distinctResult) == 0 {
-//		return nil, errInvalidDistinctResult
-//	}
-//	studySites := make([]*pb.StudySite, 0)
-//	for _, v := range distinctResult {
-//		studySites = append(studySites, &pb.StudySite{
-//			City:     v.(*bson.Document).ElementAt(0).Value().StringValue(),
-//			State:    v.(*bson.Document).ElementAt(1).Value().StringValue(),
-//			Province: v.(*bson.Document).ElementAt(2).Value().StringValue(),
-//			Country:  v.(*bson.Document).ElementAt(3).Value().StringValue(),
-//		})
-//	}
-//	return studySites, nil
-//}
+	if distinctResult == nil || len(distinctResult) == 0 {
+		return errInvalidDistinctResult
+	}
+
+	var err error
+	switch fieldName {
+	case "Publishers":
+		queryResult.Publishers, err = extractDistinctPublishers(distinctResult)
+	case "StudySites":
+		queryResult.StudySites, err = extractDistinctStudySites(distinctResult)
+	case "CallTypeNames":
+		queryResult.CallTypeNames, err = extractDistinct(distinctResult)
+	case "GroundTypes":
+		queryResult.GroundTypes, err = extractDistinct(distinctResult)
+	case "SensorTypes":
+		queryResult.SensorTypes, err = extractDistinct(distinctResult)
+	case "SensorNames":
+		queryResult.SensorNames, err = extractDistinct(distinctResult)
+	default:
+		err = errInvalidDistinctFieldName
+	}
+
+	return err
+}
+
+func extractDistinctPublishers(distinctResult []interface{}) ([]*pb.Publisher, error) {
+	if distinctResult == nil || len(distinctResult) == 0 {
+		return nil, errInvalidDistinctResult
+	}
+	publishers := make([]*pb.Publisher, 0)
+	for _, v := range distinctResult {
+		publishers = append(publishers, &pb.Publisher{
+			LastName:  v.(bson.D).Map()["LastName"].(string),
+			FirstName: v.(bson.D).Map()["FirstName"].(string),
+		})
+	}
+	return publishers, nil
+}
+
+func extractDistinctStudySites(distinctResult []interface{}) ([]*pb.StudySite, error) {
+	if distinctResult == nil || len(distinctResult) == 0 {
+		return nil, errInvalidDistinctResult
+	}
+	studySites := make([]*pb.StudySite, 0)
+	for _, v := range distinctResult {
+		studySites = append(studySites, &pb.StudySite{
+			City:     v.(bson.D).Map()["City"].(string),
+			State:    v.(bson.D).Map()["State"].(string),
+			Province: v.(bson.D).Map()["Province"].(string),
+			Country:  v.(bson.D).Map()["Country"].(string),
+		})
+	}
+	return studySites, nil
+}
 
 func extractDistinct(distinctResult []interface{}) ([]string, error) {
 	if distinctResult == nil || len(distinctResult) == 0 {

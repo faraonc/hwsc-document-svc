@@ -12,6 +12,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"log"
+	"reflect"
 	"sync"
 	"time"
 )
@@ -85,8 +86,8 @@ func (d *duidLocker) NewDUID() string {
 func (d *fuidLocker) NewFUID() string {
 	d.lock.Lock()
 	defer d.lock.Unlock()
-	newUuid := uuid.New().String()
-	return newUuid
+	newUUID := uuid.New().String()
+	return newUUID
 }
 
 // GetStatus gets the current status of the service.
@@ -264,7 +265,7 @@ func (s *Service) ListUserDocumentCollection(ctx context.Context, req *pb.Docume
 	collection := mongoDBReader.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
 
 	// Find all MongoDB documents for the specific uuid
-	filter := bson.D{{"uuid", doc.GetUuid()}}
+	filter := bson.M{"uuid": doc.GetUuid()}
 	cur, err := collection.Find(context.Background(), filter)
 	if err != nil {
 		log.Printf("[ERROR] Find: %s\n", err.Error())
@@ -403,7 +404,7 @@ func (s *Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (
 	log.Printf("[INFO] Document contains:\n %s\n\n", pretty.Sprint(doc))
 	collection := mongoDBWriter.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
 
-	filter := bson.D{{"duid", doc.GetDuid()}}
+	filter := bson.M{"duid": doc.GetDuid()}
 	// option to return the the document after update
 	after := options.After
 	option := &options.FindOneAndReplaceOptions{ReturnDocument: &after}
@@ -486,7 +487,7 @@ func (s *Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (
 
 	collection := mongoDBWriter.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
 
-	filter := bson.D{{"duid", doc.GetDuid()}}
+	filter := bson.M{"duid": doc.GetDuid()}
 	result := collection.FindOneAndDelete(context.Background(), filter)
 
 	// Extract the deleted MongoDB document
@@ -589,7 +590,7 @@ func (s *Service) AddFileMetadata(ctx context.Context, req *pb.DocumentRequest) 
 
 	collection := mongoDBWriter.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
 
-	filter := bson.D{{"duid", fileMetadataParameters.GetDuid()}}
+	filter := bson.M{"duid": fileMetadataParameters.GetDuid()}
 	bsonResult := collection.FindOne(context.Background(), filter)
 	if bsonResult == nil {
 		log.Printf("[ERROR] FindOne: %s\n", errNoDocumentFound.Error())
@@ -702,7 +703,7 @@ func (s *Service) DeleteFileMetadata(ctx context.Context, req *pb.DocumentReques
 
 	collection := mongoDBWriter.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
 
-	filter := bson.D{{"duid", fileMetadataParameters.GetDuid()}}
+	filter := bson.M{"duid": fileMetadataParameters.GetDuid()}
 	bsonResult := collection.FindOne(context.Background(), filter)
 	if bsonResult == nil {
 		log.Printf("[ERROR] FindOne: %s\n", errNoDocumentFound.Error())
@@ -764,62 +765,62 @@ func (s *Service) DeleteFileMetadata(ctx context.Context, req *pb.DocumentReques
 
 }
 
-//// ListDistinctFieldValues list all the unique fields values required for the front-end drop-down filter
-//// Returns the QueryTransaction.
-//func (s *Service) ListDistinctFieldValues(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
-//	log.Println("[INFO] Requesting ListDistinctFieldValues service")
-//	if ok := isStateAvailable(); !ok {
-//		log.Printf("[ERROR] %s\n", errServiceUnavailable.Error())
-//		return nil, status.Error(codes.Unavailable, errServiceUnavailable.Error())
-//	}
-//
-//	if err := refreshMongoDBConnection(mongoDBReader, &conf.DocumentDB.Reader); err != nil {
-//		log.Printf("[ERROR] %s\n", err.Error())
-//		return nil, status.Error(codes.Internal, err.Error())
-//	}
-//
-//	if req == nil {
-//		log.Printf("[ERROR] %s\n", errNilRequest.Error())
-//		return nil, status.Error(codes.InvalidArgument, errNilRequest.Error())
-//	}
-//
-//	collection := mongoDBReader.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
-//
-//	// Get distinct using field names in distinctSearchFieldNames
-//	distinctResult := make([][]interface{}, 6)
-//	for i := 0; i < len(distinctSearchFieldNames); i++ {
-//		doc := &bson.Document{}
-//		result, err := collection.Distinct(context.Background(), distinctSearchFieldNames[i], doc)
-//		if err != nil {
-//			log.Printf("[ERROR] Distinct: %s\n", err.Error())
-//			return nil, status.Error(codes.Internal, err.Error())
-//		}
-//		distinctResult[i] = result
-//	}
-//
-//	// Extract distinct from distinctResult, and put them in queryResult
-//	queryResult := &pb.QueryTransaction{}
-//	val := reflect.ValueOf(*queryResult)
-//	for i := 0; i < len(distinctResultFieldIndices); i++ {
-//		fieldName := val.Type().Field(i).Name
-//		if err := extractDistinctResults(queryResult,
-//			fieldName, distinctResult[distinctResultFieldIndices[fieldName]]); err != nil {
-//
-//			log.Printf("[ERROR] %s\n", err.Error())
-//			return nil, status.Error(codes.Internal, err.Error())
-//		}
-//	}
-//
-//	log.Printf("[INFO] Distinct values: \n%v\n\n", pretty.Sprint(queryResult))
-//	log.Println("[INFO] Success listing distinct field values")
-//	return &pb.DocumentResponse{
-//		Status:       &pb.DocumentResponse_Code{Code: uint32(codes.OK)},
-//		Message:      codes.OK.String(),
-//		QueryResults: queryResult,
-//	}, nil
-//
-//}
-//
+// ListDistinctFieldValues list all the unique fields values required for the front-end drop-down filter
+// Returns the QueryTransaction.
+func (s *Service) ListDistinctFieldValues(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
+	log.Println("[INFO] Requesting ListDistinctFieldValues service")
+	if ok := isStateAvailable(); !ok {
+		log.Printf("[ERROR] %s\n", errServiceUnavailable.Error())
+		return nil, status.Error(codes.Unavailable, errServiceUnavailable.Error())
+	}
+
+	if err := refreshMongoDBConnection(mongoDBReader, &conf.DocumentDB.Reader); err != nil {
+		log.Printf("[ERROR] %s\n", err.Error())
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	if req == nil {
+		log.Printf("[ERROR] %s\n", errNilRequest.Error())
+		return nil, status.Error(codes.InvalidArgument, errNilRequest.Error())
+	}
+
+	collection := mongoDBReader.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
+
+	// Get distinct using field names in distinctSearchFieldNames
+	distinctResult := make([][]interface{}, 6)
+	for i := 0; i < len(distinctSearchFieldNames); i++ {
+		doc := &bson.D{}
+		result, err := collection.Distinct(context.Background(), distinctSearchFieldNames[i], doc)
+		if err != nil {
+			log.Printf("[ERROR] Distinct: %s\n", err.Error())
+			return nil, status.Error(codes.Internal, err.Error())
+		}
+		distinctResult[i] = result
+	}
+
+	// Extract distinct from distinctResult, and put them in queryResult
+	queryResult := &pb.QueryTransaction{}
+	val := reflect.ValueOf(*queryResult)
+	for i := 0; i < len(distinctResultFieldIndices); i++ {
+		fieldName := val.Type().Field(i).Name
+		if err := extractDistinctResults(queryResult,
+			fieldName, distinctResult[distinctResultFieldIndices[fieldName]]); err != nil {
+
+			log.Printf("[ERROR] %s\n", err.Error())
+			return nil, status.Error(codes.Internal, err.Error())
+		}
+	}
+
+	log.Printf("[INFO] Distinct values: \n%v\n\n", pretty.Sprint(queryResult))
+	log.Println("[INFO] Success listing distinct field values")
+	return &pb.DocumentResponse{
+		Status:       &pb.DocumentResponse_Code{Code: uint32(codes.OK)},
+		Message:      codes.OK.String(),
+		QueryResults: queryResult,
+	}, nil
+
+}
+
 //// QueryDocument queries the MongoDB server with the given query parameters.
 //// Returns a collection of Documents.
 //func (s *Service) QueryDocument(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
