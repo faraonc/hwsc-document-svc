@@ -85,8 +85,8 @@ func (d *duidLocker) NewDUID() string {
 func (d *fuidLocker) NewFUID() string {
 	d.lock.Lock()
 	defer d.lock.Unlock()
-	uuid := uuid.New().String()
-	return uuid
+	newUuid := uuid.New().String()
+	return newUuid
 }
 
 // GetStatus gets the current status of the service.
@@ -517,269 +517,253 @@ func (s *Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (
 	}, nil
 }
 
-//// AddFileMetadata adds a new FileMetadata in a MongoDB document using a given url, UUID and DUID.
-//// Returns the updated Document.
-//func (s *Service) AddFileMetadata(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
-//	log.Println("[INFO] Requesting AddFileMetadata service")
-//
-//	if ok := isStateAvailable(); !ok {
-//		log.Printf("[ERROR] %s\n", errServiceUnavailable.Error())
-//		return nil, status.Error(codes.Unavailable, errServiceUnavailable.Error())
-//	}
-//
-//	if err := refreshMongoDBConnection(mongoDBWriter, &conf.DocumentDB.Writer); err != nil {
-//		log.Printf("[ERROR] %s\n", err.Error())
-//		return nil, status.Error(codes.Internal, err.Error())
-//	}
-//
-//	if req == nil {
-//		log.Printf("[ERROR] %s\n", errNilRequest.Error())
-//		return nil, status.Error(codes.InvalidArgument, errNilRequest.Error())
-//	}
-//
-//	fileMetadataParameters := req.GetFileMetadataParameters()
-//	if fileMetadataParameters == nil || fileMetadataParameters.GetUrl() == "" ||
-//		fileMetadataParameters.GetDuid() == "" {
-//
-//		log.Printf("[ERROR] %s\n", errInvalidFileMetadataParameters.Error())
-//		return nil, status.Error(codes.InvalidArgument, errInvalidFileMetadataParameters.Error())
-//	}
-//
-//	if err := ValidateDUID(fileMetadataParameters.GetDuid()); err != nil {
-//		log.Printf("[ERROR] %s\n", err.Error())
-//		return nil, status.Error(codes.InvalidArgument, err.Error())
-//	}
-//
-//	if err := ValidateUUID(fileMetadataParameters.GetUuid()); err != nil {
-//		log.Printf("[ERROR] %s\n", err.Error())
-//		return nil, status.Error(codes.InvalidArgument, err.Error())
-//	}
-//
-//	switch fileMetadataParameters.Media {
-//	case pb.FileType_FILE:
-//		break
-//	case pb.FileType_AUDIO:
-//		if !audioRegex.MatchString(fileMetadataParameters.GetUrl()) {
-//			log.Printf("[ERROR] %s\n", errInvalidDocumentAudioURL.Error())
-//			return nil, status.Error(codes.InvalidArgument, errInvalidDocumentAudioURL.Error())
-//		}
-//	case pb.FileType_IMAGE:
-//		if !imageRegex.MatchString(fileMetadataParameters.GetUrl()) {
-//			log.Printf("[ERROR] %s\n", errInvalidDocumentImageURL.Error())
-//			return nil, status.Error(codes.InvalidArgument, errInvalidDocumentImageURL.Error())
-//		}
-//	case pb.FileType_VIDEO:
-//		if !videoRegex.MatchString(fileMetadataParameters.GetUrl()) {
-//			log.Printf("[ERROR] %s\n", errInvalidDocumentVideoURL.Error())
-//			return nil, status.Error(codes.InvalidArgument, errInvalidDocumentVideoURL.Error())
-//		}
-//	default:
-//		return nil, status.Error(codes.InvalidArgument, errMediaType.Error())
-//	}
-//
-//	// Test if the URI is reachable
-//	if err := ValidateURL(fileMetadataParameters.GetUrl()); err != nil {
-//		log.Printf("[ERROR] %s\n", err.Error())
-//		return nil, status.Error(codes.InvalidArgument, err.Error())
-//	}
-//
-//	log.Printf("[INFO] FileMetadataParameters: \n%v\n\n", pretty.Sprint(req.GetFileMetadataParameters()))
-//
-//	// Get the specific lock if it already exists, else make the lock
-//	lock, _ := duidClientLocker.LoadOrStore(fileMetadataParameters.GetDuid(), &sync.RWMutex{})
-//	// Lock
-//	lock.(*sync.RWMutex).Lock()
-//	// Unlock before the function exits
-//	defer lock.(*sync.RWMutex).Unlock()
-//
-//	collection := mongoDBWriter.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
-//
-//	filter := bson.NewDocument(bson.EC.String("duid", fileMetadataParameters.GetDuid()))
-//	bsonResult := collection.FindOne(context.Background(), filter)
-//	if bsonResult == nil {
-//		log.Printf("[ERROR] FindOne: %s\n", errNoDocumentFound.Error())
-//		return nil, status.Error(codes.InvalidArgument, errNoDocumentFound.Error())
-//	}
-//	documentToUpdate := &pb.Document{}
-//	if err := bsonResult.Decode(documentToUpdate); err != nil {
-//		log.Printf("[ERROR] Document not found, duid: %s - uuid: %s - err: %s\n",
-//			fileMetadataParameters.GetDuid(), fileMetadataParameters.GetUuid(), err.Error())
-//
-//		return nil, status.Errorf(codes.InvalidArgument,
-//			"Document not found, duid: %s - uuid: %s",
-//			fileMetadataParameters.GetDuid(), fileMetadataParameters.GetUuid())
-//	}
-//
-//	log.Printf("[INFO] Document to update: \n%s\n\n", pretty.Sprint(documentToUpdate))
-//	newFuid := fuidGenerator.NewFUID()
-//	switch fileMetadataParameters.Media {
-//	case pb.FileType_FILE:
-//		documentToUpdate.GetFileUrlsMap()[newFuid] = fileMetadataParameters.GetUrl()
-//	case pb.FileType_AUDIO:
-//		documentToUpdate.GetAudioUrlsMap()[newFuid] = fileMetadataParameters.GetUrl()
-//	case pb.FileType_IMAGE:
-//		documentToUpdate.GetImageUrlsMap()[newFuid] = fileMetadataParameters.GetUrl()
-//	case pb.FileType_VIDEO:
-//		documentToUpdate.GetVideoUrlsMap()[newFuid] = fileMetadataParameters.GetUrl()
-//	default:
-//		return nil, status.Error(codes.InvalidArgument, errMediaType.Error())
-//	}
-//	documentToUpdate.UpdateTimestamp = time.Now().UTC().Unix()
-//
-//	// option to return the the document after update
-//	option := findopt.ReplaceOneBundle{}
-//	result := collection.FindOneAndReplace(context.Background(), filter, documentToUpdate,
-//		option.ReturnDocument(mongoopt.After))
-//
-//	// Extract the updated MongoDB document
-//	if result == nil {
-//		log.Printf("[ERROR] Extracting updated document, duid: %s - uuid: %s\n",
-//			documentToUpdate.GetDuid(), documentToUpdate.GetUuid())
-//
-//		return nil, status.Errorf(codes.Internal,
-//			"Extracting updated document duid: %s - uuid: %s",
-//			documentToUpdate.GetDuid(), documentToUpdate.GetUuid())
-//	}
-//
-//	document := &pb.Document{}
-//	if err := result.Decode(document); err != nil {
-//		log.Printf("[ERROR] %s\n", err.Error())
-//		return nil, status.Errorf(codes.Internal, err.Error())
-//	}
-//
-//	log.Printf("[INFO] Updated document: \n%s\n\n", pretty.Sprint(document))
-//	log.Printf("[INFO] Success adding file metadata in document, duid: %s - uuid: %s - fuid: %s\n",
-//		document.GetDuid(), document.GetUuid(), newFuid)
-//
-//	return &pb.DocumentResponse{
-//		Status:  &pb.DocumentResponse_Code{Code: uint32(codes.OK)},
-//		Message: codes.OK.String(),
-//		Data:    document,
-//	}, nil
-//}
-//
-//// DeleteFileMetadata deletes a FileMetadata in a MongoDB document using a given FUID, UUID and DUID.
-//// Returns the updated Document.
-//func (s *Service) DeleteFileMetadata(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
-//	log.Println("[INFO] Requesting DeleteFileMetadata service")
-//
-//	if ok := isStateAvailable(); !ok {
-//		log.Printf("[ERROR] %s\n", errServiceUnavailable.Error())
-//		return nil, status.Error(codes.Unavailable, errServiceUnavailable.Error())
-//	}
-//
-//	if err := refreshMongoDBConnection(mongoDBWriter, &conf.DocumentDB.Writer); err != nil {
-//		log.Printf("[ERROR] %s\n", err.Error())
-//		return nil, status.Error(codes.Internal, err.Error())
-//	}
-//
-//	if req == nil {
-//		log.Printf("[ERROR] %s\n", errNilRequest.Error())
-//		return nil, status.Error(codes.InvalidArgument, errNilRequest.Error())
-//	}
-//
-//	fileMetadataParameters := req.GetFileMetadataParameters()
-//	if fileMetadataParameters == nil || fileMetadataParameters.GetDuid() == "" {
-//
-//		log.Printf("[ERROR] %s\n", errInvalidFileMetadataParameters.Error())
-//		return nil, status.Error(codes.InvalidArgument, errInvalidFileMetadataParameters.Error())
-//	}
-//
-//	if err := ValidateDUID(fileMetadataParameters.GetDuid()); err != nil {
-//		log.Printf("[ERROR] %s\n", err.Error())
-//		return nil, status.Error(codes.InvalidArgument, err.Error())
-//	}
-//
-//	if err := ValidateUUID(fileMetadataParameters.GetUuid()); err != nil {
-//		log.Printf("[ERROR] %s\n", err.Error())
-//		return nil, status.Error(codes.InvalidArgument, err.Error())
-//	}
-//
-//	if err := ValidateFUID(fileMetadataParameters.GetFuid()); err != nil {
-//		log.Printf("[ERROR] %s\n", err.Error())
-//		return nil, status.Error(codes.InvalidArgument, err.Error())
-//	}
-//
-//	if fileMetadataParameters.Media > pb.FileType_VIDEO {
-//		return nil, status.Error(codes.InvalidArgument, errMediaType.Error())
-//	}
-//
-//	log.Printf("[INFO] FileMetadataParameters: \n%v\n\n", pretty.Sprint(req.GetFileMetadataParameters()))
-//
-//	// Get the specific lock if it already exists, else make the lock
-//	lock, _ := duidClientLocker.LoadOrStore(fileMetadataParameters.GetDuid(), &sync.RWMutex{})
-//	// Lock
-//	lock.(*sync.RWMutex).Lock()
-//	// Unlock before the function exits
-//	defer lock.(*sync.RWMutex).Unlock()
-//
-//	collection := mongoDBWriter.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
-//
-//	filter := bson.NewDocument(bson.EC.String("duid", fileMetadataParameters.GetDuid()))
-//	bsonResult := collection.FindOne(context.Background(), filter)
-//	if bsonResult == nil {
-//		log.Printf("[ERROR] FindOne: %s\n", errNoDocumentFound.Error())
-//		return nil, status.Error(codes.InvalidArgument, errNoDocumentFound.Error())
-//	}
-//	documentToUpdate := &pb.Document{}
-//	if err := bsonResult.Decode(documentToUpdate); err != nil {
-//		log.Printf("[ERROR] Document not found, duid: %s - uuid: %s - err: %s\n",
-//			fileMetadataParameters.GetDuid(), fileMetadataParameters.GetUuid(), err.Error())
-//
-//		return nil, status.Errorf(codes.InvalidArgument,
-//			"Document not found, duid: %s - uuid: %s",
-//			fileMetadataParameters.GetDuid(), fileMetadataParameters.GetUuid())
-//	}
-//
-//	log.Printf("[INFO] Document to update: \n%s\n\n", pretty.Sprint(documentToUpdate))
-//
-//	switch fileMetadataParameters.Media {
-//	case pb.FileType_FILE:
-//		delete(documentToUpdate.GetFileUrlsMap(), fileMetadataParameters.GetFuid())
-//	case pb.FileType_AUDIO:
-//		delete(documentToUpdate.GetAudioUrlsMap(), fileMetadataParameters.GetFuid())
-//	case pb.FileType_IMAGE:
-//		delete(documentToUpdate.GetImageUrlsMap(), fileMetadataParameters.GetFuid())
-//	case pb.FileType_VIDEO:
-//		delete(documentToUpdate.GetVideoUrlsMap(), fileMetadataParameters.GetFuid())
-//	default:
-//		return nil, status.Error(codes.InvalidArgument, errMediaType.Error())
-//	}
-//	documentToUpdate.UpdateTimestamp = time.Now().UTC().Unix()
-//
-//	// option to return the the document after update
-//	option := findopt.ReplaceOneBundle{}
-//	result := collection.FindOneAndReplace(context.Background(), filter, documentToUpdate,
-//		option.ReturnDocument(mongoopt.After))
-//
-//	// Extract the updated MongoDB document
-//	if result == nil {
-//		log.Printf("[ERROR] Extracting updated document, duid: %s - uuid: %s\n",
-//			documentToUpdate.GetDuid(), documentToUpdate.GetUuid())
-//
-//		return nil, status.Errorf(codes.Internal,
-//			"Extracting updated document duid: %s - uuid: %s",
-//			documentToUpdate.GetDuid(), documentToUpdate.GetUuid())
-//	}
-//
-//	document := &pb.Document{}
-//	if err := result.Decode(document); err != nil {
-//		log.Printf("[ERROR] %s\n", err.Error())
-//		return nil, status.Errorf(codes.Internal, err.Error())
-//	}
-//
-//	log.Printf("[INFO] Updated document: \n%s\n\n", pretty.Sprint(document))
-//	log.Printf("[INFO] Success deleting file metadata in document, duid: %s - uuid: %s - fuid: %s\n",
-//		document.GetDuid(), document.GetUuid(), fileMetadataParameters.GetFuid())
-//
-//	return &pb.DocumentResponse{
-//		Status:  &pb.DocumentResponse_Code{Code: uint32(codes.OK)},
-//		Message: codes.OK.String(),
-//		Data:    document,
-//	}, nil
-//
-//}
-//
+// AddFileMetadata adds a new FileMetadata in a MongoDB document using a given url, and DUID.
+// Returns the updated Document.
+func (s *Service) AddFileMetadata(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
+	log.Println("[INFO] Requesting AddFileMetadata service")
+
+	if ok := isStateAvailable(); !ok {
+		log.Printf("[ERROR] %s\n", errServiceUnavailable.Error())
+		return nil, status.Error(codes.Unavailable, errServiceUnavailable.Error())
+	}
+
+	if err := refreshMongoDBConnection(mongoDBWriter, &conf.DocumentDB.Writer); err != nil {
+		log.Printf("[ERROR] %s\n", err.Error())
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	if req == nil {
+		log.Printf("[ERROR] %s\n", errNilRequest.Error())
+		return nil, status.Error(codes.InvalidArgument, errNilRequest.Error())
+	}
+
+	fileMetadataParameters := req.GetFileMetadataParameters()
+	if fileMetadataParameters == nil || fileMetadataParameters.GetUrl() == "" ||
+		fileMetadataParameters.GetDuid() == "" {
+
+		log.Printf("[ERROR] %s\n", errInvalidFileMetadataParameters.Error())
+		return nil, status.Error(codes.InvalidArgument, errInvalidFileMetadataParameters.Error())
+	}
+
+	if err := ValidateDUID(fileMetadataParameters.GetDuid()); err != nil {
+		log.Printf("[ERROR] %s\n", err.Error())
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	switch fileMetadataParameters.Media {
+	case pb.FileType_FILE:
+		break
+	case pb.FileType_AUDIO:
+		if !audioRegex.MatchString(fileMetadataParameters.GetUrl()) {
+			log.Printf("[ERROR] %s\n", errInvalidDocumentAudioURL.Error())
+			return nil, status.Error(codes.InvalidArgument, errInvalidDocumentAudioURL.Error())
+		}
+	case pb.FileType_IMAGE:
+		if !imageRegex.MatchString(fileMetadataParameters.GetUrl()) {
+			log.Printf("[ERROR] %s\n", errInvalidDocumentImageURL.Error())
+			return nil, status.Error(codes.InvalidArgument, errInvalidDocumentImageURL.Error())
+		}
+	case pb.FileType_VIDEO:
+		if !videoRegex.MatchString(fileMetadataParameters.GetUrl()) {
+			log.Printf("[ERROR] %s\n", errInvalidDocumentVideoURL.Error())
+			return nil, status.Error(codes.InvalidArgument, errInvalidDocumentVideoURL.Error())
+		}
+	default:
+		return nil, status.Error(codes.InvalidArgument, errMediaType.Error())
+	}
+
+	// Test if the URI is reachable
+	if err := ValidateURL(fileMetadataParameters.GetUrl()); err != nil {
+		log.Printf("[ERROR] %s\n", err.Error())
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	log.Printf("[INFO] FileMetadataParameters: \n%v\n\n", pretty.Sprint(req.GetFileMetadataParameters()))
+
+	// Get the specific lock if it already exists, else make the lock
+	lock, _ := duidClientLocker.LoadOrStore(fileMetadataParameters.GetDuid(), &sync.RWMutex{})
+	// Lock
+	lock.(*sync.RWMutex).Lock()
+	// Unlock before the function exits
+	defer lock.(*sync.RWMutex).Unlock()
+
+	collection := mongoDBWriter.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
+
+	filter := bson.D{{"duid", fileMetadataParameters.GetDuid()}}
+	bsonResult := collection.FindOne(context.Background(), filter)
+	if bsonResult == nil {
+		log.Printf("[ERROR] FindOne: %s\n", errNoDocumentFound.Error())
+		return nil, status.Error(codes.InvalidArgument, errNoDocumentFound.Error())
+	}
+	documentToUpdate := &pb.Document{}
+	if err := bsonResult.Decode(documentToUpdate); err != nil {
+		log.Printf("[ERROR] Document not found, duid: %s - err: %s\n",
+			fileMetadataParameters.GetDuid(), err.Error())
+
+		return nil, status.Errorf(codes.InvalidArgument, "Document not found, duid: %s",
+			fileMetadataParameters.GetDuid())
+	}
+
+	log.Printf("[INFO] Document to update: \n%s\n\n", pretty.Sprint(documentToUpdate))
+	newFuid := fuidGenerator.NewFUID()
+	switch fileMetadataParameters.Media {
+	case pb.FileType_FILE:
+		documentToUpdate.GetFileUrlsMap()[newFuid] = fileMetadataParameters.GetUrl()
+	case pb.FileType_AUDIO:
+		documentToUpdate.GetAudioUrlsMap()[newFuid] = fileMetadataParameters.GetUrl()
+	case pb.FileType_IMAGE:
+		documentToUpdate.GetImageUrlsMap()[newFuid] = fileMetadataParameters.GetUrl()
+	case pb.FileType_VIDEO:
+		documentToUpdate.GetVideoUrlsMap()[newFuid] = fileMetadataParameters.GetUrl()
+	default:
+		return nil, status.Error(codes.InvalidArgument, errMediaType.Error())
+	}
+	documentToUpdate.UpdateTimestamp = time.Now().UTC().Unix()
+
+	// option to return the the document after update
+	after := options.After
+	option := &options.FindOneAndReplaceOptions{ReturnDocument: &after}
+	result := collection.FindOneAndReplace(context.Background(), filter, documentToUpdate, option)
+
+	// Extract the updated MongoDB document
+	if result == nil {
+		log.Printf("[ERROR] Extracting updated document, duid: %s\n", documentToUpdate.GetDuid())
+
+		return nil, status.Errorf(codes.Internal,
+			"Extracting updated document duid: %s", documentToUpdate.GetDuid())
+	}
+
+	document := &pb.Document{}
+	if err := result.Decode(document); err != nil {
+		log.Printf("[ERROR] %s\n", err.Error())
+		return nil, status.Errorf(codes.Internal, err.Error())
+	}
+
+	log.Printf("[INFO] Updated document: \n%s\n\n", pretty.Sprint(document))
+	log.Printf("[INFO] Success adding file metadata in document, duid: %s - fuid: %s\n",
+		document.GetDuid(), newFuid)
+
+	return &pb.DocumentResponse{
+		Status:  &pb.DocumentResponse_Code{Code: uint32(codes.OK)},
+		Message: codes.OK.String(),
+		Data:    document,
+	}, nil
+}
+
+// DeleteFileMetadata deletes a FileMetadata in a MongoDB document using a given FUID, and DUID.
+// Returns the updated Document.
+func (s *Service) DeleteFileMetadata(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
+	log.Println("[INFO] Requesting DeleteFileMetadata service")
+
+	if ok := isStateAvailable(); !ok {
+		log.Printf("[ERROR] %s\n", errServiceUnavailable.Error())
+		return nil, status.Error(codes.Unavailable, errServiceUnavailable.Error())
+	}
+
+	if err := refreshMongoDBConnection(mongoDBWriter, &conf.DocumentDB.Writer); err != nil {
+		log.Printf("[ERROR] %s\n", err.Error())
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	if req == nil {
+		log.Printf("[ERROR] %s\n", errNilRequest.Error())
+		return nil, status.Error(codes.InvalidArgument, errNilRequest.Error())
+	}
+
+	fileMetadataParameters := req.GetFileMetadataParameters()
+	if fileMetadataParameters == nil || fileMetadataParameters.GetDuid() == "" {
+
+		log.Printf("[ERROR] %s\n", errInvalidFileMetadataParameters.Error())
+		return nil, status.Error(codes.InvalidArgument, errInvalidFileMetadataParameters.Error())
+	}
+
+	if err := ValidateDUID(fileMetadataParameters.GetDuid()); err != nil {
+		log.Printf("[ERROR] %s\n", err.Error())
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	if err := ValidateFUID(fileMetadataParameters.GetFuid()); err != nil {
+		log.Printf("[ERROR] %s\n", err.Error())
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	if fileMetadataParameters.Media > pb.FileType_VIDEO {
+		return nil, status.Error(codes.InvalidArgument, errMediaType.Error())
+	}
+
+	log.Printf("[INFO] FileMetadataParameters: \n%v\n\n", pretty.Sprint(req.GetFileMetadataParameters()))
+
+	// Get the specific lock if it already exists, else make the lock
+	lock, _ := duidClientLocker.LoadOrStore(fileMetadataParameters.GetDuid(), &sync.RWMutex{})
+	// Lock
+	lock.(*sync.RWMutex).Lock()
+	// Unlock before the function exits
+	defer lock.(*sync.RWMutex).Unlock()
+
+	collection := mongoDBWriter.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
+
+	filter := bson.D{{"duid", fileMetadataParameters.GetDuid()}}
+	bsonResult := collection.FindOne(context.Background(), filter)
+	if bsonResult == nil {
+		log.Printf("[ERROR] FindOne: %s\n", errNoDocumentFound.Error())
+		return nil, status.Error(codes.InvalidArgument, errNoDocumentFound.Error())
+	}
+	documentToUpdate := &pb.Document{}
+	if err := bsonResult.Decode(documentToUpdate); err != nil {
+		log.Printf("[ERROR] Document not found, duid: %s - err: %s\n",
+			fileMetadataParameters.GetDuid(), err.Error())
+
+		return nil, status.Errorf(codes.InvalidArgument,
+			"Document not found, duid: %s", fileMetadataParameters.GetDuid())
+	}
+
+	log.Printf("[INFO] Document to update: \n%s\n\n", pretty.Sprint(documentToUpdate))
+
+	switch fileMetadataParameters.Media {
+	case pb.FileType_FILE:
+		delete(documentToUpdate.GetFileUrlsMap(), fileMetadataParameters.GetFuid())
+	case pb.FileType_AUDIO:
+		delete(documentToUpdate.GetAudioUrlsMap(), fileMetadataParameters.GetFuid())
+	case pb.FileType_IMAGE:
+		delete(documentToUpdate.GetImageUrlsMap(), fileMetadataParameters.GetFuid())
+	case pb.FileType_VIDEO:
+		delete(documentToUpdate.GetVideoUrlsMap(), fileMetadataParameters.GetFuid())
+	default:
+		return nil, status.Error(codes.InvalidArgument, errMediaType.Error())
+	}
+	documentToUpdate.UpdateTimestamp = time.Now().UTC().Unix()
+
+	// option to return the the document after update
+	after := options.After
+	option := &options.FindOneAndReplaceOptions{ReturnDocument: &after}
+	result := collection.FindOneAndReplace(context.Background(), filter, documentToUpdate, option)
+
+	// Extract the updated MongoDB document
+	if result == nil {
+		log.Printf("[ERROR] Extracting updated document, duid: %s\n", documentToUpdate.GetDuid())
+
+		return nil, status.Errorf(codes.Internal,
+			"Extracting updated document duid: %s", documentToUpdate.GetDuid())
+	}
+
+	document := &pb.Document{}
+	if err := result.Decode(document); err != nil {
+		log.Printf("[ERROR] %s\n", err.Error())
+		return nil, status.Errorf(codes.Internal, err.Error())
+	}
+
+	log.Printf("[INFO] Updated document: \n%s\n\n", pretty.Sprint(document))
+	log.Printf("[INFO] Success deleting file metadata in document, duid: %s - fuid: %s\n",
+		document.GetDuid(), fileMetadataParameters.GetFuid())
+
+	return &pb.DocumentResponse{
+		Status:  &pb.DocumentResponse_Code{Code: uint32(codes.OK)},
+		Message: codes.OK.String(),
+		Data:    document,
+	}, nil
+
+}
+
 //// ListDistinctFieldValues list all the unique fields values required for the front-end drop-down filter
 //// Returns the QueryTransaction.
 //func (s *Service) ListDistinctFieldValues(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
