@@ -36,6 +36,7 @@ The proto file and compiled proto buffers are located in [hwsc-api-blocks](https
 - GoLang version [go 1.11.4](https://golang.org/dl/)
 - GoLang Dependency Management [dep](https://github.com/golang/dep)
 - Go Source Code Linter [golint](https://github.com/golang/lint)
+- mongo-go-driver beta [0.1.0](https://github.com/mongodb/mongo-go-driver)
 - Docker
 - [Optional] If a new proto file and compiled proto buffer exists in [hwsc-api-blocks](https://github.com/hwsc-org/hwsc-api-blocks/tree/master/int/hwsc-document-svc/proto), update dependency ``$dep ensure -update``
 
