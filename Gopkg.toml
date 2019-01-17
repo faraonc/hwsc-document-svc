@@ -40,4 +40,4 @@
   version = "1.0.0"
 [[constraint]]
   name = "github.com/mongodb/mongo-go-driver"
-  version = "0.1.0"
+  version = "0.2.0"
