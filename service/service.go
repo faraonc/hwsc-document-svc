@@ -787,7 +787,7 @@ func (s *Service) ListDistinctFieldValues(ctx context.Context, req *pb.DocumentR
 	collection := mongoDBReader.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
 
 	// Get distinct using field names in distinctSearchFieldNames
-	distinctResult := make([][]interface{}, 6)
+	distinctResult := make([][]interface{}, len(distinctSearchFieldNames))
 	for i := 0; i < len(distinctSearchFieldNames); i++ {
 		doc := &bson.D{}
 		result, err := collection.Distinct(context.Background(), distinctSearchFieldNames[i], doc)

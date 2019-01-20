@@ -1995,12 +1995,12 @@ func TestExtractDistinctResults(t *testing.T) {
 		{
 			[]interface{}{
 				bson.D{
-					{"LastName", "Seger"},
-					{"FirstName", "Kerri"},
+					{"lastName", "Seger"},
+					{"firstName", "Kerri"},
 				},
 				bson.D{
-					{"LastName", "Abadi"},
-					{"FirstName", "Shima"},
+					{"lastName", "Abadi"},
+					{"firstName", "Shima"},
 				},
 			},
 			&pb.QueryTransaction{},
@@ -2017,16 +2017,16 @@ func TestExtractDistinctResults(t *testing.T) {
 		{
 			[]interface{}{
 				bson.D{
-					{"City", "Batangas City"},
-					{"State", ""},
-					{"Province", "Batangas"},
-					{"Country", "Philippines"},
+					{"city", "Batangas City"},
+					{"state", ""},
+					{"province", "Batangas"},
+					{"country", "Philippines"},
 				},
 				bson.D{
-					{"City", "San Diego"},
-					{"State", "California"},
-					{"Province", ""},
-					{"Country", "USA"},
+					{"city", "San Diego"},
+					{"state", "California"},
+					{"province", ""},
+					{"country", "USA"},
 				},
 			},
 			&pb.QueryTransaction{},
@@ -2142,12 +2142,12 @@ func TestExtractDistinctPublishers(t *testing.T) {
 		{
 			[]interface{}{
 				bson.D{
-					{"LastName", "Seger"},
-					{"FirstName", "Kerri"},
+					{"lastName", "Seger"},
+					{"firstName", "Kerri"},
 				},
 				bson.D{
-					{"LastName", "Abadi"},
-					{"FirstName", "Shima"},
+					{"lastName", "Abadi"},
+					{"firstName", "Shima"},
 				},
 			},
 			[]*pb.Publisher{
@@ -2181,16 +2181,16 @@ func TestExtractDistinctStudySites(t *testing.T) {
 		{
 			[]interface{}{
 				bson.D{
-					{"City", "Batangas City"},
-					{"State", ""},
-					{"Province", "Batangas"},
-					{"Country", "Philippines"},
+					{"city", "Batangas City"},
+					{"state", ""},
+					{"province", "Batangas"},
+					{"country", "Philippines"},
 				},
 				bson.D{
-					{"City", "San Diego"},
-					{"State", "California"},
-					{"Province", ""},
-					{"Country", "USA"},
+					{"city", "San Diego"},
+					{"state", "California"},
+					{"province", ""},
+					{"country", "USA"},
 				},
 			},
 			[]*pb.StudySite{

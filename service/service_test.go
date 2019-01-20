@@ -364,45 +364,45 @@ func TestDeleteDocument(t *testing.T) {
 	}
 }
 
-//func TestListDistinctFieldValues(t *testing.T) {
-//	cases := []struct {
-//		req         *pb.DocumentRequest
-//		serverState state
-//		expMsg      string
-//		isExpErr    bool
-//		expNumDocs  int
-//	}{
-//		{&pb.DocumentRequest{}, unavailable,
-//			"rpc error: code = Unavailable desc = service unavailable", true, 0,
-//		},
-//		{nil, available,
-//			"rpc error: code = InvalidArgument desc = nil request", true, 0,
-//		},
-//		{&pb.DocumentRequest{}, available,
-//			"", false, 0,
-//		},
-//	}
-//
-//	for _, c := range cases {
-//		serviceStateLocker.currentServiceState = c.serverState
-//		s := Service{}
-//		res, err := s.ListDistinctFieldValues(context.TODO(), c.req)
-//		if !c.isExpErr {
-//			assert.Nil(t, err)
-//			assert.Equal(t, 6, len(res.QueryResults.Publishers))
-//			assert.Equal(t, 20, len(res.QueryResults.StudySites))
-//			assert.Equal(t, 18, len(res.QueryResults.CallTypeNames))
-//			assert.Equal(t, 8, len(res.QueryResults.GroundTypes))
-//			assert.Equal(t, 9, len(res.QueryResults.SensorNames))
-//			assert.Equal(t, 6, len(res.QueryResults.SensorTypes))
-//		} else {
-//			assert.Equal(t, c.expMsg, err.Error())
-//			assert.EqualError(t, err, c.expMsg)
-//		}
-//
-//	}
-//}
-//
+func TestListDistinctFieldValues(t *testing.T) {
+	cases := []struct {
+		req         *pb.DocumentRequest
+		serverState state
+		expMsg      string
+		isExpErr    bool
+		expNumDocs  int
+	}{
+		{&pb.DocumentRequest{}, unavailable,
+			"rpc error: code = Unavailable desc = service unavailable", true, 0,
+		},
+		{nil, available,
+			"rpc error: code = InvalidArgument desc = nil request", true, 0,
+		},
+		{&pb.DocumentRequest{}, available,
+			"", false, 0,
+		},
+	}
+
+	for _, c := range cases {
+		serviceStateLocker.currentServiceState = c.serverState
+		s := Service{}
+		res, err := s.ListDistinctFieldValues(context.TODO(), c.req)
+		if !c.isExpErr {
+			assert.Nil(t, err)
+			assert.Equal(t, 6, len(res.QueryResults.Publishers))
+			assert.Equal(t, 20, len(res.QueryResults.StudySites))
+			assert.Equal(t, 18, len(res.QueryResults.CallTypeNames))
+			assert.Equal(t, 8, len(res.QueryResults.GroundTypes))
+			assert.Equal(t, 9, len(res.QueryResults.SensorNames))
+			assert.Equal(t, 6, len(res.QueryResults.SensorTypes))
+		} else {
+			assert.Equal(t, c.expMsg, err.Error())
+			assert.EqualError(t, err, c.expMsg)
+		}
+
+	}
+}
+
 //func TestQueryDocument(t *testing.T) {
 //	cases := []struct {
 //		req         *pb.DocumentRequest

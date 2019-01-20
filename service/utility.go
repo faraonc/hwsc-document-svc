@@ -652,8 +652,8 @@ func extractDistinctPublishers(distinctResult []interface{}) ([]*pb.Publisher, e
 	publishers := make([]*pb.Publisher, 0)
 	for _, v := range distinctResult {
 		publishers = append(publishers, &pb.Publisher{
-			LastName:  v.(bson.D).Map()["LastName"].(string),
-			FirstName: v.(bson.D).Map()["FirstName"].(string),
+			LastName:  v.(bson.D).Map()["lastName"].(string),
+			FirstName: v.(bson.D).Map()["firstName"].(string),
 		})
 	}
 	return publishers, nil
@@ -666,10 +666,10 @@ func extractDistinctStudySites(distinctResult []interface{}) ([]*pb.StudySite, e
 	studySites := make([]*pb.StudySite, 0)
 	for _, v := range distinctResult {
 		studySites = append(studySites, &pb.StudySite{
-			City:     v.(bson.D).Map()["City"].(string),
-			State:    v.(bson.D).Map()["State"].(string),
-			Province: v.(bson.D).Map()["Province"].(string),
-			Country:  v.(bson.D).Map()["Country"].(string),
+			City:     v.(bson.D).Map()["city"].(string),
+			State:    v.(bson.D).Map()["state"].(string),
+			Province: v.(bson.D).Map()["province"].(string),
+			Country:  v.(bson.D).Map()["country"].(string),
 		})
 	}
 	return studySites, nil
