@@ -823,87 +823,87 @@ func (s *Service) ListDistinctFieldValues(ctx context.Context, req *pb.DocumentR
 
 //// QueryDocument queries the MongoDB server with the given query parameters.
 //// Returns a collection of Documents.
-//func (s *Service) QueryDocument(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
-//	log.Println("[INFO] Requesting QueryDocument service")
-//	if ok := isStateAvailable(); !ok {
-//		log.Printf("[ERROR] %s\n", errServiceUnavailable.Error())
-//		return nil, status.Error(codes.Unavailable, errServiceUnavailable.Error())
-//	}
-//
-//	if err := refreshMongoDBConnection(mongoDBReader, &conf.DocumentDB.Reader); err != nil {
-//		log.Printf("[ERROR] %s\n", err.Error())
-//		return nil, status.Error(codes.Internal, err.Error())
-//	}
-//
-//	if req == nil {
-//		log.Printf("[ERROR] %s\n", errNilRequest.Error())
-//		return nil, status.Error(codes.InvalidArgument, errNilRequest.Error())
-//	}
-//
-//	queryParams := req.GetQueryParameters()
-//	if queryParams == nil {
-//		log.Printf("[ERROR] %s\n", errNilQueryArgs.Error())
-//		return nil, status.Error(codes.InvalidArgument, errNilQueryArgs.Error())
-//	}
-//
-//	if err := ValidateRecordTimestamp(queryParams.MinRecordTimestamp); err != nil {
-//		log.Printf("[ERROR] %s\n", err)
-//		return nil, status.Error(codes.InvalidArgument, err.Error())
-//	}
-//
-//	if err := ValidateRecordTimestamp(queryParams.MaxRecordTimestamp); err != nil {
-//		log.Printf("[ERROR] %s\n", err)
-//		return nil, status.Error(codes.InvalidArgument, err.Error())
-//	}
-//
-//	log.Printf("[INFO] QueryParameters contains:\n %s\n", pretty.Sprint(queryParams))
-//	collection := mongoDBReader.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
-//
-//	pipeline, err := buildAggregatePipeline(queryParams)
-//	if err != nil {
-//		log.Printf("[ERROR] %s\n", err.Error())
-//		return nil, status.Error(codes.Internal, err.Error())
-//	}
-//	cur, err := collection.Aggregate(context.Background(), pipeline)
-//	if err != nil {
-//		log.Printf("[ERROR] Find: %s\n", err.Error())
-//		return nil, status.Error(codes.Internal, err.Error())
-//	}
-//
-//	// Extract the documents
-//	documentCollection := make([]*pb.Document, 0)
-//	for cur.Next(context.Background()) {
-//		if err := cur.Err(); err != nil {
-//			log.Printf("[ERROR] Cursor Err: %s\n", err.Error())
-//			return nil, status.Error(codes.Internal, err.Error())
-//		}
-//
-//		// Mutate and retrieve Document
-//		document := &pb.Document{}
-//		if err := cur.Decode(document); err != nil {
-//			log.Printf("[ERROR] Cursor Decode: %s\n", err.Error())
-//			return nil, status.Error(codes.Internal, err.Error())
-//		}
-//
-//		documentCollection = append(documentCollection, document)
-//		log.Printf("[INFO] document: \n%s\n\n", pretty.Sprint(document))
-//
-//	}
-//
-//	if err := cur.Err(); err != nil {
-//		log.Printf("[ERROR] Cursor Err: %s\n", err.Error())
-//		return nil, status.Error(codes.Internal, err.Error())
-//	}
-//
-//	if err := cur.Close(context.Background()); err != nil {
-//		log.Printf("[ERROR] Cursor Err: %s\n", err.Error())
-//	}
-//
-//	log.Println("[INFO] Success querying documents")
-//	return &pb.DocumentResponse{
-//		Status:             &pb.DocumentResponse_Code{Code: uint32(codes.OK)},
-//		Message:            codes.OK.String(),
-//		DocumentCollection: documentCollection,
-//	}, nil
-//
-//}
+func (s *Service) QueryDocument(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
+	log.Println("[INFO] Requesting QueryDocument service")
+	if ok := isStateAvailable(); !ok {
+		log.Printf("[ERROR] %s\n", errServiceUnavailable.Error())
+		return nil, status.Error(codes.Unavailable, errServiceUnavailable.Error())
+	}
+
+	if err := refreshMongoDBConnection(mongoDBReader, &conf.DocumentDB.Reader); err != nil {
+		log.Printf("[ERROR] %s\n", err.Error())
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	if req == nil {
+		log.Printf("[ERROR] %s\n", errNilRequest.Error())
+		return nil, status.Error(codes.InvalidArgument, errNilRequest.Error())
+	}
+
+	queryParams := req.GetQueryParameters()
+	if queryParams == nil {
+		log.Printf("[ERROR] %s\n", errNilQueryArgs.Error())
+		return nil, status.Error(codes.InvalidArgument, errNilQueryArgs.Error())
+	}
+
+	if err := ValidateRecordTimestamp(queryParams.MinRecordTimestamp); err != nil {
+		log.Printf("[ERROR] %s\n", err)
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	if err := ValidateRecordTimestamp(queryParams.MaxRecordTimestamp); err != nil {
+		log.Printf("[ERROR] %s\n", err)
+		return nil, status.Error(codes.InvalidArgument, err.Error())
+	}
+
+	log.Printf("[INFO] QueryParameters contains:\n %s\n", pretty.Sprint(queryParams))
+	collection := mongoDBReader.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
+
+	pipeline, err := buildAggregatePipeline(queryParams)
+	if err != nil {
+		log.Printf("[ERROR] %s\n", err.Error())
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+	cur, err := collection.Aggregate(context.Background(), pipeline)
+	if err != nil {
+		log.Printf("[ERROR] Find: %s\n", err.Error())
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	// Extract the documents
+	documentCollection := make([]*pb.Document, 0)
+	for cur.Next(context.Background()) {
+		if err := cur.Err(); err != nil {
+			log.Printf("[ERROR] Cursor Err: %s\n", err.Error())
+			return nil, status.Error(codes.Internal, err.Error())
+		}
+
+		// Mutate and retrieve Document
+		document := &pb.Document{}
+		if err := cur.Decode(document); err != nil {
+			log.Printf("[ERROR] Cursor Decode: %s\n", err.Error())
+			return nil, status.Error(codes.Internal, err.Error())
+		}
+
+		documentCollection = append(documentCollection, document)
+		log.Printf("[INFO] document: \n%s\n\n", pretty.Sprint(document))
+
+	}
+
+	if err := cur.Err(); err != nil {
+		log.Printf("[ERROR] Cursor Err: %s\n", err.Error())
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	if err := cur.Close(context.Background()); err != nil {
+		log.Printf("[ERROR] Cursor Err: %s\n", err.Error())
+	}
+
+	log.Println("[INFO] Success querying documents")
+	return &pb.DocumentResponse{
+		Status:             &pb.DocumentResponse_Code{Code: uint32(codes.OK)},
+		Message:            codes.OK.String(),
+		DocumentCollection: documentCollection,
+	}, nil
+
+}

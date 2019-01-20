@@ -1750,140 +1750,142 @@ func TestIsStateAvailable(t *testing.T) {
 
 }
 
-//func TestBuildAggregatePipeline(t *testing.T) {
-//	cases := []struct {
-//		input     *pb.QueryTransaction
-//		expOutput *bson.Array
-//		isExpErr  bool
-//		errorStr  string
-//	}{
-//		{nil, nil, true, errNilQueryTransaction.Error()},
-//		{
-//			&pb.QueryTransaction{
-//				Publishers: []*pb.Publisher{
-//					{
-//						LastName:  "Seger",
-//						FirstName: "Kerri",
-//					},
-//					{
-//						LastName:  "Abadi",
-//						FirstName: "Shima",
-//					},
-//				},
-//				StudySites: []*pb.StudySite{
-//					{
-//						City:     "San Diego",
-//						State:    "California",
-//						Province: "",
-//						Country:  "USA",
-//					},
-//					{
-//						City:     "Batangas City",
-//						State:    "",
-//						Province: "Batangas",
-//						Country:  "Philippines",
-//					},
-//					{
-//						City:     "Some City",
-//						State:    "",
-//						Province: "",
-//						Country:  "Some Country",
-//					},
-//				},
-//				CallTypeNames: []string{},
-//				GroundTypes:   []string{"Wookie"},
-//				SensorTypes:   []string{"BProbe"},
-//				SensorNames:   []string{"Moto"},
-//			},
-//			bson.NewArray(
-//				bson.VC.DocumentFromElements(
-//					bson.EC.SubDocumentFromElements(
-//						"$match",
-//						bson.EC.SubDocumentFromElements("publisherName.lastName",
-//							bson.EC.ArrayFromElements("$in",
-//								bson.VC.String("Seger"),
-//								bson.VC.String("Abadi"),
-//							)),
-//						bson.EC.SubDocumentFromElements("publisherName.firstName",
-//							bson.EC.ArrayFromElements("$in",
-//								bson.VC.String("Kerri"),
-//								bson.VC.String("Shima"),
-//							)),
-//						bson.EC.SubDocumentFromElements("studySite.city",
-//							bson.EC.ArrayFromElements("$in",
-//								bson.VC.String("San Diego"),
-//								bson.VC.String("Batangas City"),
-//								bson.VC.String("Some City"),
-//							)),
-//						bson.EC.SubDocumentFromElements("studySite.state",
-//							bson.EC.ArrayFromElements("$in",
-//								bson.VC.String("California"),
-//							)),
-//						bson.EC.SubDocumentFromElements("studySite.province",
-//							bson.EC.ArrayFromElements("$in",
-//								bson.VC.String("Batangas"),
-//							)),
-//						bson.EC.SubDocumentFromElements("studySite.country",
-//							bson.EC.ArrayFromElements("$in",
-//								bson.VC.String("USA"),
-//								bson.VC.String("Philippines"),
-//								bson.VC.String("Some Country"),
-//							)),
-//						bson.EC.SubDocumentFromElements("callTypeName",
-//							bson.EC.ArrayFromElements("$in", bson.VC.Regex(".*", ""))),
-//						bson.EC.SubDocumentFromElements("groundType",
-//							bson.EC.ArrayFromElements("$in",
-//								bson.VC.String("Wookie"),
-//							)),
-//						bson.EC.SubDocumentFromElements("sensorType",
-//							bson.EC.ArrayFromElements("$in",
-//								bson.VC.String("BProbe"),
-//							)),
-//						bson.EC.SubDocumentFromElements("sensorName",
-//							bson.EC.ArrayFromElements("$in",
-//								bson.VC.String("Moto"),
-//							)),
-//					),
-//				),
-//			),
-//			false,
-//			"",
-//		},
-//	}
-//
-//	for _, c := range cases {
-//		_, err := buildAggregatePipeline(c.input)
-//		if c.isExpErr {
-//			assert.EqualError(t, err, c.errorStr)
-//		} else {
-//			assert.Nil(t, err)
-//		}
-//	}
-//}
-//
-//func TestBuildArrayFromElements(t *testing.T) {
-//	cases := []struct {
-//		input     []string
-//		expOutput bson.E
-//	}{
-//		{nil, bson.E{bson.A{"$in", bson.D{{".*", ""}}}},
-//		{[]string{}, bson.EC.ArrayFromElements("$in", bson.VC.Regex(".*", ""))},
-//
-//		{[]string{
-//			"Seger",
-//			"Abadi",
-//		},
-//			bson.EC.ArrayFromElements("$in",
-//				bson.VC.String("Seger"),
-//				bson.VC.String("Abadi")),
-//		},
-//	}
-//
-//	for _, c := range cases {
-//		elems := buildArrayFromElements(c.input)
-//		assert.True(t, elems.Equal(c.expOutput))
-//	}
-//}
+//TODO
+func TestBuildAggregatePipeline(t *testing.T) {
+	cases := []struct {
+		input     *pb.QueryTransaction
+		expOutput *bson.Array
+		isExpErr  bool
+		errorStr  string
+	}{
+		{nil, nil, true, errNilQueryTransaction.Error()},
+		{
+			&pb.QueryTransaction{
+				Publishers: []*pb.Publisher{
+					{
+						LastName:  "Seger",
+						FirstName: "Kerri",
+					},
+					{
+						LastName:  "Abadi",
+						FirstName: "Shima",
+					},
+				},
+				StudySites: []*pb.StudySite{
+					{
+						City:     "San Diego",
+						State:    "California",
+						Province: "",
+						Country:  "USA",
+					},
+					{
+						City:     "Batangas City",
+						State:    "",
+						Province: "Batangas",
+						Country:  "Philippines",
+					},
+					{
+						City:     "Some City",
+						State:    "",
+						Province: "",
+						Country:  "Some Country",
+					},
+				},
+				CallTypeNames: []string{},
+				GroundTypes:   []string{"Wookie"},
+				SensorTypes:   []string{"BProbe"},
+				SensorNames:   []string{"Moto"},
+			},
+			bson.NewArray(
+				bson.VC.DocumentFromElements(
+					bson.EC.SubDocumentFromElements(
+						"$match",
+						bson.EC.SubDocumentFromElements("publisherName.lastName",
+							bson.EC.ArrayFromElements("$in",
+								bson.VC.String("Seger"),
+								bson.VC.String("Abadi"),
+							)),
+						bson.EC.SubDocumentFromElements("publisherName.firstName",
+							bson.EC.ArrayFromElements("$in",
+								bson.VC.String("Kerri"),
+								bson.VC.String("Shima"),
+							)),
+						bson.EC.SubDocumentFromElements("studySite.city",
+							bson.EC.ArrayFromElements("$in",
+								bson.VC.String("San Diego"),
+								bson.VC.String("Batangas City"),
+								bson.VC.String("Some City"),
+							)),
+						bson.EC.SubDocumentFromElements("studySite.state",
+							bson.EC.ArrayFromElements("$in",
+								bson.VC.String("California"),
+							)),
+						bson.EC.SubDocumentFromElements("studySite.province",
+							bson.EC.ArrayFromElements("$in",
+								bson.VC.String("Batangas"),
+							)),
+						bson.EC.SubDocumentFromElements("studySite.country",
+							bson.EC.ArrayFromElements("$in",
+								bson.VC.String("USA"),
+								bson.VC.String("Philippines"),
+								bson.VC.String("Some Country"),
+							)),
+						bson.EC.SubDocumentFromElements("callTypeName",
+							bson.EC.ArrayFromElements("$in", bson.VC.Regex(".*", ""))),
+						bson.EC.SubDocumentFromElements("groundType",
+							bson.EC.ArrayFromElements("$in",
+								bson.VC.String("Wookie"),
+							)),
+						bson.EC.SubDocumentFromElements("sensorType",
+							bson.EC.ArrayFromElements("$in",
+								bson.VC.String("BProbe"),
+							)),
+						bson.EC.SubDocumentFromElements("sensorName",
+							bson.EC.ArrayFromElements("$in",
+								bson.VC.String("Moto"),
+							)),
+					),
+				),
+			),
+			false,
+			"",
+		},
+	}
+
+	for _, c := range cases {
+		_, err := buildAggregatePipeline(c.input)
+		if c.isExpErr {
+			assert.EqualError(t, err, c.errorStr)
+		} else {
+			assert.Nil(t, err)
+		}
+	}
+}
+
+//TODO
+func TestBuildArrayFromElements(t *testing.T) {
+	cases := []struct {
+		input     []string
+		expOutput bson.E
+	}{
+		{nil, bson.E{bson.A{"$in", bson.D{{".*", ""}}}},
+		{[]string{}, bson.EC.ArrayFromElements("$in", bson.VC.Regex(".*", ""))},
+
+		{[]string{
+			"Seger",
+			"Abadi",
+		},
+			bson.EC.ArrayFromElements("$in",
+				bson.VC.String("Seger"),
+				bson.VC.String("Abadi")),
+		},
+	}
+
+	for _, c := range cases {
+		elems := buildArrayFromElements(c.input)
+		assert.True(t, elems.Equal(c.expOutput))
+	}
+}
 
 func TestExtractPublishersFields(t *testing.T) {
 	cases := []struct {

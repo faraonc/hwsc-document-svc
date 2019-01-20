@@ -497,65 +497,61 @@ func isStateAvailable() bool {
 	return true
 }
 
-//func buildAggregatePipeline(queryParams *pb.QueryTransaction) (*bson.Array, error) {
-//	if queryParams == nil {
-//		return nil, errNilQueryTransaction
-//	}
-//
-//	lastNames, firstNames := extractPublishersFields(queryParams.GetPublishers())
-//	cities, states, provinces, countries := extractStudySitesFields(queryParams.GetStudySites())
-//
-//	pipeline := bson.NewArray(
-//		bson.VC.DocumentFromElements(
-//			bson.EC.SubDocumentFromElements(
-//				"$match",
-//				bson.EC.SubDocumentFromElements("publisherName.lastName",
-//					buildArrayFromElements(lastNames)),
-//				bson.EC.SubDocumentFromElements("publisherName.firstName",
-//					buildArrayFromElements(firstNames)),
-//
-//				bson.EC.SubDocumentFromElements("studySite.city",
-//					buildArrayFromElements(cities)),
-//				bson.EC.SubDocumentFromElements("studySite.state",
-//					buildArrayFromElements(states)),
-//				bson.EC.SubDocumentFromElements("studySite.province",
-//					buildArrayFromElements(provinces)),
-//				bson.EC.SubDocumentFromElements("studySite.country",
-//					buildArrayFromElements(countries)),
-//
-//				bson.EC.SubDocumentFromElements("callTypeName",
-//					buildArrayFromElements(queryParams.GetCallTypeNames())),
-//
-//				bson.EC.SubDocumentFromElements("groundType",
-//					buildArrayFromElements(queryParams.GetGroundTypes())),
-//
-//				bson.EC.SubDocumentFromElements("sensorType",
-//					buildArrayFromElements(queryParams.GetSensorTypes())),
-//
-//				bson.EC.SubDocumentFromElements("sensorName",
-//					buildArrayFromElements(queryParams.GetSensorNames())),
-//
-//				bson.EC.SubDocumentFromElements("recordTimestamp",
-//					bson.EC.Int64("$gte", queryParams.GetMinRecordTimestamp()),
-//					bson.EC.Int64("$lte", queryParams.GetMaxRecordTimestamp())),
-//			),
-//		),
-//	)
-//
-//	return pipeline, nil
-//}
-//
-//func buildArrayFromElements(elems []string) *bson.Element {
-//	if elems == nil || len(elems) == 0 {
-//		return bson.EC.ArrayFromElements("$in", bson.VC.Regex(".*", ""))
-//	}
-//	elemVals := make([]*bson.Value, len(elems))
-//	for i := 0; i < len(elems); i++ {
-//		elemVals[i] = bson.VC.String(elems[i])
-//	}
-//
-//	return bson.EC.ArrayFromElements("$in", elemVals...)
-//}
+//TODO
+func buildAggregatePipeline(queryParams *pb.QueryTransaction) (bson.A, error) {
+	if queryParams == nil {
+		return nil, errNilQueryTransaction
+	}
+
+	lastNames, firstNames := extractPublishersFields(queryParams.GetPublishers())
+	cities, states, provinces, countries := extractStudySitesFields(queryParams.GetStudySites())
+	pipeline := bson.A{
+		bson.M{"$match":
+			bson.M{
+				"$and": bson.A{
+					bson.M{"publisherName.lastName":  bson.M{"$in": buildArrayFromElements(lastNames)}},
+					bson.M{"publisherName.firstName": bson.M{"$in": buildArrayFromElements(firstNames)}},
+
+					bson.M{"studySite.city":     bson.M{"$in": buildArrayFromElements(cities)}},
+					bson.M{"studySite.state":    bson.M{"$in": buildArrayFromElements(states)}},
+					bson.M{"studySite.province": bson.M{"$in": buildArrayFromElements(provinces)}},
+					bson.M{"studySite.country":  bson.M{"$in": buildArrayFromElements(countries)}},
+
+					bson.M{"callTypeName": bson.M{"$in": buildArrayFromElements(queryParams.GetCallTypeNames())}},
+					bson.M{"groundType":   bson.M{"$in": buildArrayFromElements(queryParams.GetGroundTypes())}},
+					bson.M{"sensorType":   bson.M{"$in": buildArrayFromElements(queryParams.GetSensorTypes())}},
+					bson.M{"sensorName":   bson.M{"$in": buildArrayFromElements(queryParams.GetSensorNames())}},
+					bson.M{"recordTimestamp": bson.M{"gte": queryParams.GetMinRecordTimestamp(),
+						"$lte": queryParams.GetMaxRecordTimestamp()}},
+				},
+			},
+		},
+	}
+
+	return pipeline, nil
+}
+
+//TODO
+func buildArrayFromElements(elems []string) bson.A {
+	if elems == nil || len(elems) == 0 {
+		regex := bson.RawValue{
+			Type: bson.TypeRegex,
+			Value: []byte(".*"),
+		}
+		return bson.A{regex}
+	}
+
+	arrayElements, err := bson.Marshal(elems)
+	if err != nil {
+
+	}
+	result := bson.RawValue{
+		Type: bson.TypeArray,
+		Value: arrayElements,
+	}
+
+	return bson.A{result}
+}
 
 func extractPublishersFields(publishers []*pb.Publisher) ([]string, []string) {
 	if publishers == nil || len(publishers) == 0 {

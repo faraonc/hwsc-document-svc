@@ -7,6 +7,7 @@ import (
 	"golang.org/x/net/context"
 	"math/rand"
 	"testing"
+	"time"
 )
 
 var (
@@ -403,102 +404,102 @@ func TestListDistinctFieldValues(t *testing.T) {
 	}
 }
 
-//func TestQueryDocument(t *testing.T) {
-//	cases := []struct {
-//		req         *pb.DocumentRequest
-//		serverState state
-//		expMsg      string
-//		isExpErr    bool
-//		expNumDocs  int
-//	}{
-//		{&pb.DocumentRequest{}, unavailable,
-//			"rpc error: code = Unavailable desc = service unavailable", true, 0,
-//		},
-//		{nil, available,
-//			"rpc error: code = InvalidArgument desc = nil request", true, 0,
-//		},
-//		{&pb.DocumentRequest{}, available,
-//			"rpc error: code = InvalidArgument desc = nil query arguments", true, 0,
-//		},
-//		{
-//			&pb.DocumentRequest{QueryParameters: &pb.QueryTransaction{
-//				MinRecordTimestamp: minTimestamp,
-//				MaxRecordTimestamp: time.Now().UTC().Unix() - 1,
-//			}}, available,
-//			"OK", false, 32,
-//		},
-//		{
-//			&pb.DocumentRequest{QueryParameters: &pb.QueryTransaction{
-//				Publishers: []*pb.Publisher{
-//					{
-//						LastName:  "Seger",
-//						FirstName: "Kerri",
-//					},
-//					{
-//						LastName:  "Abadi",
-//						FirstName: "Shima",
-//					},
-//				},
-//				MinRecordTimestamp: minTimestamp,
-//				MaxRecordTimestamp: time.Now().UTC().Unix() - 1,
-//			}}, available,
-//			"OK", false, 11,
-//		},
-//		{
-//			&pb.DocumentRequest{QueryParameters: &pb.QueryTransaction{
-//				Publishers: []*pb.Publisher{
-//					{
-//						LastName:  "Seger",
-//						FirstName: "Kerri",
-//					},
-//				},
-//				CallTypeNames: []string{
-//					"Wookie",
-//				},
-//				MinRecordTimestamp: minTimestamp,
-//				MaxRecordTimestamp: time.Now().UTC().Unix() - 1,
-//			}}, available,
-//			"OK", false, 1,
-//		},
-//		{
-//			&pb.DocumentRequest{QueryParameters: &pb.QueryTransaction{
-//				MinRecordTimestamp: 1446744336,
-//				MaxRecordTimestamp: 1510287809,
-//			}}, available,
-//			"OK", false, 12,
-//		},
-//		{
-//			&pb.DocumentRequest{QueryParameters: &pb.QueryTransaction{
-//				MinRecordTimestamp: 0,
-//				MaxRecordTimestamp: 1510287809,
-//			}}, available,
-//			"rpc error: code = InvalidArgument desc = invalid Document RecordTimestamp",
-//			true, 0,
-//		},
-//		{
-//			&pb.DocumentRequest{QueryParameters: &pb.QueryTransaction{
-//				MinRecordTimestamp: 1446744336,
-//				MaxRecordTimestamp: 0,
-//			}}, available,
-//			"rpc error: code = InvalidArgument desc = invalid Document RecordTimestamp",
-//			true, 0,
-//		},
-//	}
-//
-//	for _, c := range cases {
-//		serviceStateLocker.currentServiceState = c.serverState
-//		s := Service{}
-//		res, err := s.QueryDocument(context.TODO(), c.req)
-//		if !c.isExpErr {
-//			assert.Nil(t, err)
-//			assert.Equal(t, c.expNumDocs, len(res.GetDocumentCollection()))
-//		} else {
-//			assert.Equal(t, c.expMsg, err.Error())
-//			assert.EqualError(t, err, c.expMsg)
-//		}
-//
-//	}
-//}
+func TestQueryDocument(t *testing.T) {
+	cases := []struct {
+		req         *pb.DocumentRequest
+		serverState state
+		expMsg      string
+		isExpErr    bool
+		expNumDocs  int
+	}{
+		{&pb.DocumentRequest{}, unavailable,
+			"rpc error: code = Unavailable desc = service unavailable", true, 0,
+		},
+		{nil, available,
+			"rpc error: code = InvalidArgument desc = nil request", true, 0,
+		},
+		{&pb.DocumentRequest{}, available,
+			"rpc error: code = InvalidArgument desc = nil query arguments", true, 0,
+		},
+		{
+			&pb.DocumentRequest{QueryParameters: &pb.QueryTransaction{
+				MinRecordTimestamp: minTimestamp,
+				MaxRecordTimestamp: time.Now().UTC().Unix() - 1,
+			}}, available,
+			"OK", false, 32,
+		},
+		{
+			&pb.DocumentRequest{QueryParameters: &pb.QueryTransaction{
+				Publishers: []*pb.Publisher{
+					{
+						LastName:  "Seger",
+						FirstName: "Kerri",
+					},
+					{
+						LastName:  "Abadi",
+						FirstName: "Shima",
+					},
+				},
+				MinRecordTimestamp: minTimestamp,
+				MaxRecordTimestamp: time.Now().UTC().Unix() - 1,
+			}}, available,
+			"OK", false, 11,
+		},
+		{
+			&pb.DocumentRequest{QueryParameters: &pb.QueryTransaction{
+				Publishers: []*pb.Publisher{
+					{
+						LastName:  "Seger",
+						FirstName: "Kerri",
+					},
+				},
+				CallTypeNames: []string{
+					"Wookie",
+				},
+				MinRecordTimestamp: minTimestamp,
+				MaxRecordTimestamp: time.Now().UTC().Unix() - 1,
+			}}, available,
+			"OK", false, 1,
+		},
+		{
+			&pb.DocumentRequest{QueryParameters: &pb.QueryTransaction{
+				MinRecordTimestamp: 1446744336,
+				MaxRecordTimestamp: 1510287809,
+			}}, available,
+			"OK", false, 12,
+		},
+		{
+			&pb.DocumentRequest{QueryParameters: &pb.QueryTransaction{
+				MinRecordTimestamp: 0,
+				MaxRecordTimestamp: 1510287809,
+			}}, available,
+			"rpc error: code = InvalidArgument desc = invalid Document RecordTimestamp",
+			true, 0,
+		},
+		{
+			&pb.DocumentRequest{QueryParameters: &pb.QueryTransaction{
+				MinRecordTimestamp: 1446744336,
+				MaxRecordTimestamp: 0,
+			}}, available,
+			"rpc error: code = InvalidArgument desc = invalid Document RecordTimestamp",
+			true, 0,
+		},
+	}
+
+	for _, c := range cases {
+		serviceStateLocker.currentServiceState = c.serverState
+		s := Service{}
+		res, err := s.QueryDocument(context.TODO(), c.req)
+		if !c.isExpErr {
+			assert.Nil(t, err)
+			assert.Equal(t, c.expNumDocs, len(res.GetDocumentCollection()))
+		} else {
+			assert.Equal(t, c.expMsg, err.Error())
+			assert.EqualError(t, err, c.expMsg)
+		}
+
+	}
+}
 
 func TestAddFileMetadata(t *testing.T) {
 	cases := []struct {
