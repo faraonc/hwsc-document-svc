@@ -6,8 +6,7 @@ import (
 	"github.com/hwsc-org/hwsc-document-svc/conf"
 	"github.com/kylelemons/godebug/pretty"
 	"github.com/mongodb/mongo-go-driver/bson"
-	"github.com/mongodb/mongo-go-driver/mongo/findopt"
-	"github.com/mongodb/mongo-go-driver/mongo/mongoopt"
+	"github.com/mongodb/mongo-go-driver/mongo/options"
 	"github.com/segmentio/ksuid"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc/codes"
@@ -87,8 +86,8 @@ func (d *duidLocker) NewDUID() string {
 func (d *fuidLocker) NewFUID() string {
 	d.lock.Lock()
 	defer d.lock.Unlock()
-	uuid := uuid.New().String()
-	return uuid
+	newUUID := uuid.New().String()
+	return newUUID
 }
 
 // GetStatus gets the current status of the service.
@@ -266,7 +265,7 @@ func (s *Service) ListUserDocumentCollection(ctx context.Context, req *pb.Docume
 	collection := mongoDBReader.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
 
 	// Find all MongoDB documents for the specific uuid
-	filter := bson.NewDocument(bson.EC.String("uuid", doc.GetUuid()))
+	filter := bson.M{"uuid": doc.GetUuid()}
 	cur, err := collection.Find(context.Background(), filter)
 	if err != nil {
 		log.Printf("[ERROR] Find: %s\n", err.Error())
@@ -405,11 +404,11 @@ func (s *Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (
 	log.Printf("[INFO] Document contains:\n %s\n\n", pretty.Sprint(doc))
 	collection := mongoDBWriter.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
 
-	filter := bson.NewDocument(bson.EC.String("duid", doc.GetDuid()))
+	filter := bson.M{"duid": doc.GetDuid()}
 	// option to return the the document after update
-	option := findopt.ReplaceOneBundle{}
-	result := collection.FindOneAndReplace(context.Background(), filter, doc,
-		option.ReturnDocument(mongoopt.After))
+	after := options.After
+	option := &options.FindOneAndReplaceOptions{ReturnDocument: &after}
+	result := collection.FindOneAndReplace(context.Background(), filter, doc, option)
 
 	// Extract the updated MongoDB document
 	if result == nil {
@@ -443,7 +442,7 @@ func (s *Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (
 
 }
 
-// DeleteDocument deletes a MongoDB document using UUID and DUID.
+// DeleteDocument deletes a MongoDB document using DUID.
 // Returns the deleted Document.
 func (s *Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
 	log.Println("[INFO] Requesting DeleteDocument service")
@@ -479,11 +478,6 @@ func (s *Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	if err := ValidateUUID(doc.GetUuid()); err != nil {
-		log.Printf("[ERROR] %s\n", err.Error())
-		return nil, status.Error(codes.InvalidArgument, err.Error())
-	}
-
 	// Get the specific lock if it already exists, else make the lock
 	lock, _ := duidClientLocker.LoadOrStore(doc.GetDuid(), &sync.RWMutex{})
 	// Lock
@@ -493,43 +487,38 @@ func (s *Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (
 
 	collection := mongoDBWriter.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
 
-	filter := bson.NewDocument(bson.EC.String("duid", doc.GetDuid()))
+	filter := bson.M{"duid": doc.GetDuid()}
 	result := collection.FindOneAndDelete(context.Background(), filter)
 
 	// Extract the deleted MongoDB document
 	if result == nil {
-		log.Printf("[INFO] Document not found, duid: %s - uuid: %s\n",
-			doc.GetDuid(), doc.GetUuid())
+		log.Printf("[INFO] Document not found, duid: %s\n", doc.GetDuid())
 
 		return nil, status.Errorf(codes.InvalidArgument,
-			"Document not found, duid: %s - uuid: %s",
-			doc.GetDuid(), doc.GetUuid())
+			"Document not found, duid: %s", doc.GetDuid())
 	}
 
 	document := &pb.Document{}
 	if err := result.Decode(document); err != nil {
-		log.Printf("[ERROR] Document not found, duid: %s - uuid: %s - err: %s\n",
-			doc.GetDuid(), doc.GetUuid(), err.Error())
+		log.Printf("[ERROR] Document not found, duid: %s - err: %s\n", doc.GetDuid(), err.Error())
 
 		return nil, status.Errorf(codes.InvalidArgument,
-			"Document not found, duid: %s - uuid: %s",
-			doc.GetDuid(), doc.GetUuid())
+			"Document not found, duid: %s", doc.GetDuid())
 	}
 
 	log.Printf("[INFO] Deleted document: \n%s\n\n", pretty.Sprint(document))
 	// Log duid and uuid used for query
 	log.Printf("[INFO] Success deleting document, duid: %s - uuid: %s\n",
-		doc.GetDuid(), doc.GetUuid())
+		document.GetDuid(), document.GetUuid())
 
 	return &pb.DocumentResponse{
 		Status:  &pb.DocumentResponse_Code{Code: uint32(codes.OK)},
 		Message: codes.OK.String(),
 		Data:    document,
 	}, nil
-
 }
 
-// AddFileMetadata adds a new FileMetadata in a MongoDB document using a given url, UUID and DUID.
+// AddFileMetadata adds a new FileMetadata in a MongoDB document using a given url, and DUID.
 // Returns the updated Document.
 func (s *Service) AddFileMetadata(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
 	log.Println("[INFO] Requesting AddFileMetadata service")
@@ -558,11 +547,6 @@ func (s *Service) AddFileMetadata(ctx context.Context, req *pb.DocumentRequest) 
 	}
 
 	if err := ValidateDUID(fileMetadataParameters.GetDuid()); err != nil {
-		log.Printf("[ERROR] %s\n", err.Error())
-		return nil, status.Error(codes.InvalidArgument, err.Error())
-	}
-
-	if err := ValidateUUID(fileMetadataParameters.GetUuid()); err != nil {
 		log.Printf("[ERROR] %s\n", err.Error())
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
@@ -606,7 +590,7 @@ func (s *Service) AddFileMetadata(ctx context.Context, req *pb.DocumentRequest) 
 
 	collection := mongoDBWriter.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
 
-	filter := bson.NewDocument(bson.EC.String("duid", fileMetadataParameters.GetDuid()))
+	filter := bson.M{"duid": fileMetadataParameters.GetDuid()}
 	bsonResult := collection.FindOne(context.Background(), filter)
 	if bsonResult == nil {
 		log.Printf("[ERROR] FindOne: %s\n", errNoDocumentFound.Error())
@@ -614,12 +598,11 @@ func (s *Service) AddFileMetadata(ctx context.Context, req *pb.DocumentRequest) 
 	}
 	documentToUpdate := &pb.Document{}
 	if err := bsonResult.Decode(documentToUpdate); err != nil {
-		log.Printf("[ERROR] Document not found, duid: %s - uuid: %s - err: %s\n",
-			fileMetadataParameters.GetDuid(), fileMetadataParameters.GetUuid(), err.Error())
+		log.Printf("[ERROR] Document not found, duid: %s - err: %s\n",
+			fileMetadataParameters.GetDuid(), err.Error())
 
-		return nil, status.Errorf(codes.InvalidArgument,
-			"Document not found, duid: %s - uuid: %s",
-			fileMetadataParameters.GetDuid(), fileMetadataParameters.GetUuid())
+		return nil, status.Errorf(codes.InvalidArgument, "Document not found, duid: %s",
+			fileMetadataParameters.GetDuid())
 	}
 
 	log.Printf("[INFO] Document to update: \n%s\n\n", pretty.Sprint(documentToUpdate))
@@ -639,18 +622,16 @@ func (s *Service) AddFileMetadata(ctx context.Context, req *pb.DocumentRequest) 
 	documentToUpdate.UpdateTimestamp = time.Now().UTC().Unix()
 
 	// option to return the the document after update
-	option := findopt.ReplaceOneBundle{}
-	result := collection.FindOneAndReplace(context.Background(), filter, documentToUpdate,
-		option.ReturnDocument(mongoopt.After))
+	after := options.After
+	option := &options.FindOneAndReplaceOptions{ReturnDocument: &after}
+	result := collection.FindOneAndReplace(context.Background(), filter, documentToUpdate, option)
 
 	// Extract the updated MongoDB document
 	if result == nil {
-		log.Printf("[ERROR] Extracting updated document, duid: %s - uuid: %s\n",
-			documentToUpdate.GetDuid(), documentToUpdate.GetUuid())
+		log.Printf("[ERROR] Extracting updated document, duid: %s\n", documentToUpdate.GetDuid())
 
 		return nil, status.Errorf(codes.Internal,
-			"Extracting updated document duid: %s - uuid: %s",
-			documentToUpdate.GetDuid(), documentToUpdate.GetUuid())
+			"Extracting updated document duid: %s", documentToUpdate.GetDuid())
 	}
 
 	document := &pb.Document{}
@@ -660,8 +641,8 @@ func (s *Service) AddFileMetadata(ctx context.Context, req *pb.DocumentRequest) 
 	}
 
 	log.Printf("[INFO] Updated document: \n%s\n\n", pretty.Sprint(document))
-	log.Printf("[INFO] Success adding file metadata in document, duid: %s - uuid: %s - fuid: %s\n",
-		document.GetDuid(), document.GetUuid(), newFuid)
+	log.Printf("[INFO] Success adding file metadata in document, duid: %s - fuid: %s\n",
+		document.GetDuid(), newFuid)
 
 	return &pb.DocumentResponse{
 		Status:  &pb.DocumentResponse_Code{Code: uint32(codes.OK)},
@@ -670,7 +651,7 @@ func (s *Service) AddFileMetadata(ctx context.Context, req *pb.DocumentRequest) 
 	}, nil
 }
 
-// DeleteFileMetadata deletes a FileMetadata in a MongoDB document using a given FUID, UUID and DUID.
+// DeleteFileMetadata deletes a FileMetadata in a MongoDB document using a given FUID, and DUID.
 // Returns the updated Document.
 func (s *Service) DeleteFileMetadata(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
 	log.Println("[INFO] Requesting DeleteFileMetadata service")
@@ -702,11 +683,6 @@ func (s *Service) DeleteFileMetadata(ctx context.Context, req *pb.DocumentReques
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	if err := ValidateUUID(fileMetadataParameters.GetUuid()); err != nil {
-		log.Printf("[ERROR] %s\n", err.Error())
-		return nil, status.Error(codes.InvalidArgument, err.Error())
-	}
-
 	if err := ValidateFUID(fileMetadataParameters.GetFuid()); err != nil {
 		log.Printf("[ERROR] %s\n", err.Error())
 		return nil, status.Error(codes.InvalidArgument, err.Error())
@@ -727,7 +703,7 @@ func (s *Service) DeleteFileMetadata(ctx context.Context, req *pb.DocumentReques
 
 	collection := mongoDBWriter.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
 
-	filter := bson.NewDocument(bson.EC.String("duid", fileMetadataParameters.GetDuid()))
+	filter := bson.M{"duid": fileMetadataParameters.GetDuid()}
 	bsonResult := collection.FindOne(context.Background(), filter)
 	if bsonResult == nil {
 		log.Printf("[ERROR] FindOne: %s\n", errNoDocumentFound.Error())
@@ -735,12 +711,11 @@ func (s *Service) DeleteFileMetadata(ctx context.Context, req *pb.DocumentReques
 	}
 	documentToUpdate := &pb.Document{}
 	if err := bsonResult.Decode(documentToUpdate); err != nil {
-		log.Printf("[ERROR] Document not found, duid: %s - uuid: %s - err: %s\n",
-			fileMetadataParameters.GetDuid(), fileMetadataParameters.GetUuid(), err.Error())
+		log.Printf("[ERROR] Document not found, duid: %s - err: %s\n",
+			fileMetadataParameters.GetDuid(), err.Error())
 
 		return nil, status.Errorf(codes.InvalidArgument,
-			"Document not found, duid: %s - uuid: %s",
-			fileMetadataParameters.GetDuid(), fileMetadataParameters.GetUuid())
+			"Document not found, duid: %s", fileMetadataParameters.GetDuid())
 	}
 
 	log.Printf("[INFO] Document to update: \n%s\n\n", pretty.Sprint(documentToUpdate))
@@ -760,18 +735,16 @@ func (s *Service) DeleteFileMetadata(ctx context.Context, req *pb.DocumentReques
 	documentToUpdate.UpdateTimestamp = time.Now().UTC().Unix()
 
 	// option to return the the document after update
-	option := findopt.ReplaceOneBundle{}
-	result := collection.FindOneAndReplace(context.Background(), filter, documentToUpdate,
-		option.ReturnDocument(mongoopt.After))
+	after := options.After
+	option := &options.FindOneAndReplaceOptions{ReturnDocument: &after}
+	result := collection.FindOneAndReplace(context.Background(), filter, documentToUpdate, option)
 
 	// Extract the updated MongoDB document
 	if result == nil {
-		log.Printf("[ERROR] Extracting updated document, duid: %s - uuid: %s\n",
-			documentToUpdate.GetDuid(), documentToUpdate.GetUuid())
+		log.Printf("[ERROR] Extracting updated document, duid: %s\n", documentToUpdate.GetDuid())
 
 		return nil, status.Errorf(codes.Internal,
-			"Extracting updated document duid: %s - uuid: %s",
-			documentToUpdate.GetDuid(), documentToUpdate.GetUuid())
+			"Extracting updated document duid: %s", documentToUpdate.GetDuid())
 	}
 
 	document := &pb.Document{}
@@ -781,8 +754,8 @@ func (s *Service) DeleteFileMetadata(ctx context.Context, req *pb.DocumentReques
 	}
 
 	log.Printf("[INFO] Updated document: \n%s\n\n", pretty.Sprint(document))
-	log.Printf("[INFO] Success deleting file metadata in document, duid: %s - uuid: %s - fuid: %s\n",
-		document.GetDuid(), document.GetUuid(), fileMetadataParameters.GetFuid())
+	log.Printf("[INFO] Success deleting file metadata in document, duid: %s - fuid: %s\n",
+		document.GetDuid(), fileMetadataParameters.GetFuid())
 
 	return &pb.DocumentResponse{
 		Status:  &pb.DocumentResponse_Code{Code: uint32(codes.OK)},
@@ -814,9 +787,9 @@ func (s *Service) ListDistinctFieldValues(ctx context.Context, req *pb.DocumentR
 	collection := mongoDBReader.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
 
 	// Get distinct using field names in distinctSearchFieldNames
-	distinctResult := make([][]interface{}, 6)
+	distinctResult := make([][]interface{}, len(distinctSearchFieldNames))
 	for i := 0; i < len(distinctSearchFieldNames); i++ {
-		doc := &bson.Document{}
+		doc := &bson.D{}
 		result, err := collection.Distinct(context.Background(), distinctSearchFieldNames[i], doc)
 		if err != nil {
 			log.Printf("[ERROR] Distinct: %s\n", err.Error())
@@ -893,7 +866,7 @@ func (s *Service) QueryDocument(ctx context.Context, req *pb.DocumentRequest) (*
 	}
 	cur, err := collection.Aggregate(context.Background(), pipeline)
 	if err != nil {
-		log.Printf("[ERROR] Find: %s\n", err.Error())
+		log.Printf("[ERROR] Aggregate: %s\n", err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 

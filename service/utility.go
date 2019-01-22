@@ -4,6 +4,7 @@ import (
 	"fmt"
 	pb "github.com/hwsc-org/hwsc-api-blocks/int/hwsc-document-svc/proto"
 	"github.com/mongodb/mongo-go-driver/bson"
+	"github.com/mongodb/mongo-go-driver/bson/primitive"
 	"log"
 	"net/http"
 	"net/url"
@@ -70,6 +71,7 @@ var (
 		"SensorTypes":   4,
 		"SensorNames":   5,
 	}
+	mongoDBPatternAll = primitive.Regex{Pattern: ".*", Options: ""}
 )
 
 // ValidateDocument validates the Document.
@@ -497,64 +499,49 @@ func isStateAvailable() bool {
 	return true
 }
 
-func buildAggregatePipeline(queryParams *pb.QueryTransaction) (*bson.Array, error) {
+func buildAggregatePipeline(queryParams *pb.QueryTransaction) (bson.A, error) {
 	if queryParams == nil {
 		return nil, errNilQueryTransaction
 	}
 
 	lastNames, firstNames := extractPublishersFields(queryParams.GetPublishers())
 	cities, states, provinces, countries := extractStudySitesFields(queryParams.GetStudySites())
+	pipeline := bson.A{
+		bson.M{"$match": bson.M{
+			"$and": bson.A{
+				bson.M{"publisherName.lastName": bson.M{"$in": buildArrayFromElements(lastNames)}},
+				bson.M{"publisherName.firstName": bson.M{"$in": buildArrayFromElements(firstNames)}},
 
-	pipeline := bson.NewArray(
-		bson.VC.DocumentFromElements(
-			bson.EC.SubDocumentFromElements(
-				"$match",
-				bson.EC.SubDocumentFromElements("publisherName.lastName",
-					buildArrayFromElements(lastNames)),
-				bson.EC.SubDocumentFromElements("publisherName.firstName",
-					buildArrayFromElements(firstNames)),
+				bson.M{"studySite.city": bson.M{"$in": buildArrayFromElements(cities)}},
+				bson.M{"studySite.state": bson.M{"$in": buildArrayFromElements(states)}},
+				bson.M{"studySite.province": bson.M{"$in": buildArrayFromElements(provinces)}},
+				bson.M{"studySite.country": bson.M{"$in": buildArrayFromElements(countries)}},
 
-				bson.EC.SubDocumentFromElements("studySite.city",
-					buildArrayFromElements(cities)),
-				bson.EC.SubDocumentFromElements("studySite.state",
-					buildArrayFromElements(states)),
-				bson.EC.SubDocumentFromElements("studySite.province",
-					buildArrayFromElements(provinces)),
-				bson.EC.SubDocumentFromElements("studySite.country",
-					buildArrayFromElements(countries)),
-
-				bson.EC.SubDocumentFromElements("callTypeName",
-					buildArrayFromElements(queryParams.GetCallTypeNames())),
-
-				bson.EC.SubDocumentFromElements("groundType",
-					buildArrayFromElements(queryParams.GetGroundTypes())),
-
-				bson.EC.SubDocumentFromElements("sensorType",
-					buildArrayFromElements(queryParams.GetSensorTypes())),
-
-				bson.EC.SubDocumentFromElements("sensorName",
-					buildArrayFromElements(queryParams.GetSensorNames())),
-
-				bson.EC.SubDocumentFromElements("recordTimestamp",
-					bson.EC.Int64("$gte", queryParams.GetMinRecordTimestamp()),
-					bson.EC.Int64("$lte", queryParams.GetMaxRecordTimestamp())),
-			),
-		),
-	)
+				bson.M{"callTypeName": bson.M{"$in": buildArrayFromElements(queryParams.GetCallTypeNames())}},
+				bson.M{"groundType": bson.M{"$in": buildArrayFromElements(queryParams.GetGroundTypes())}},
+				bson.M{"sensorType": bson.M{"$in": buildArrayFromElements(queryParams.GetSensorTypes())}},
+				bson.M{"sensorName": bson.M{"$in": buildArrayFromElements(queryParams.GetSensorNames())}},
+				bson.M{"recordTimestamp": bson.M{"$gte": queryParams.GetMinRecordTimestamp(),
+					"$lte": queryParams.GetMaxRecordTimestamp()}},
+			},
+		},
+		},
+	}
 
 	return pipeline, nil
 }
 
-func buildArrayFromElements(elems []string) *bson.Element {
+func buildArrayFromElements(elems []string) bson.A {
 	if elems == nil || len(elems) == 0 {
-		return bson.EC.ArrayFromElements("$in", bson.VC.Regex(".*", ""))
-	}
-	elemVals := make([]*bson.Value, len(elems))
-	for i := 0; i < len(elems); i++ {
-		elemVals[i] = bson.VC.String(elems[i])
+		return bson.A{mongoDBPatternAll}
 	}
 
-	return bson.EC.ArrayFromElements("$in", elemVals...)
+	result := bson.A{}
+	for _, e := range elems {
+		result = append(result, e)
+	}
+
+	return result
 }
 
 func extractPublishersFields(publishers []*pb.Publisher) ([]string, []string) {
@@ -652,8 +639,8 @@ func extractDistinctPublishers(distinctResult []interface{}) ([]*pb.Publisher, e
 	publishers := make([]*pb.Publisher, 0)
 	for _, v := range distinctResult {
 		publishers = append(publishers, &pb.Publisher{
-			LastName:  v.(*bson.Document).ElementAt(0).Value().StringValue(),
-			FirstName: v.(*bson.Document).ElementAt(1).Value().StringValue(),
+			LastName:  v.(bson.D).Map()["lastName"].(string),
+			FirstName: v.(bson.D).Map()["firstName"].(string),
 		})
 	}
 	return publishers, nil
@@ -666,10 +653,10 @@ func extractDistinctStudySites(distinctResult []interface{}) ([]*pb.StudySite, e
 	studySites := make([]*pb.StudySite, 0)
 	for _, v := range distinctResult {
 		studySites = append(studySites, &pb.StudySite{
-			City:     v.(*bson.Document).ElementAt(0).Value().StringValue(),
-			State:    v.(*bson.Document).ElementAt(1).Value().StringValue(),
-			Province: v.(*bson.Document).ElementAt(2).Value().StringValue(),
-			Country:  v.(*bson.Document).ElementAt(3).Value().StringValue(),
+			City:     v.(bson.D).Map()["city"].(string),
+			State:    v.(bson.D).Map()["state"].(string),
+			Province: v.(bson.D).Map()["province"].(string),
+			Country:  v.(bson.D).Map()["country"].(string),
 		})
 	}
 	return studySites, nil

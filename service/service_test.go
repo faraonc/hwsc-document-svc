@@ -331,28 +331,11 @@ func TestDeleteDocument(t *testing.T) {
 		{&pb.DocumentRequest{Data: &pb.Document{}}, available,
 			"rpc error: code = InvalidArgument desc = missing DUID", true},
 		{&pb.DocumentRequest{Data: &pb.Document{
-			Duid: "1CMjlaqHYNJhnVvWiGus3EiOno8",
-		}}, available,
-			fmt.Sprintf("rpc error: code = InvalidArgument desc = %s", errInvalidDocumentUUID.Error()),
-			true},
-		{&pb.DocumentRequest{Data: &pb.Document{
 			Duid: imaginaryDUID,
 			Uuid: imaginaryUUID,
 		}}, available,
-			fmt.Sprintf("rpc error: code = InvalidArgument desc = Document not found, duid: %s - uuid: %s",
-				imaginaryDUID, imaginaryUUID),
-			true},
-		{&pb.DocumentRequest{Data: &pb.Document{
-			Duid: imaginaryUUID,
-			Uuid: imaginaryUUID,
-		}}, available,
-			fmt.Sprintf("rpc error: code = InvalidArgument desc = %s", errInvalidDocumentDUID.Error()),
-			true},
-		{&pb.DocumentRequest{Data: &pb.Document{
-			Duid: imaginaryDUID,
-			Uuid: "",
-		}}, available,
-			fmt.Sprintf("rpc error: code = InvalidArgument desc = %s", errInvalidDocumentUUID.Error()),
+			fmt.Sprintf("rpc error: code = InvalidArgument desc = Document not found, duid: %s",
+				imaginaryDUID),
 			true},
 		{&pb.DocumentRequest{Data: &pb.Document{
 			Duid: tempDUID,
@@ -363,8 +346,8 @@ func TestDeleteDocument(t *testing.T) {
 			Duid: tempDUID,
 			Uuid: tempUUID,
 		}}, available,
-			fmt.Sprintf("rpc error: code = InvalidArgument desc = Document not found, duid: %s - uuid: %s",
-				tempDUID, tempUUID),
+			fmt.Sprintf("rpc error: code = InvalidArgument desc = Document not found, duid: %s",
+				tempDUID),
 			true},
 	}
 
@@ -562,14 +545,6 @@ func TestAddFileMetadata(t *testing.T) {
 			FileMetadataParameters: &pb.FileMetadataTransaction{
 				Url:  "some url",
 				Duid: "1ChHfmKs8GX7D1XVf61lwVdisWf",
-			},
-		}, available,
-			"rpc error: code = InvalidArgument desc = invalid Document uuid", true, 0,
-		},
-		{&pb.DocumentRequest{
-			FileMetadataParameters: &pb.FileMetadataTransaction{
-				Url:  "some url",
-				Duid: "1ChHfmKs8GX7D1XVf61lwVdisWf",
 				Uuid: "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
 			},
 		}, available,
@@ -633,7 +608,7 @@ func TestAddFileMetadata(t *testing.T) {
 				Media: pb.FileType_IMAGE,
 			},
 		}, available,
-			"rpc error: code = InvalidArgument desc = Document not found, duid: xxxHfmKs8GX7D1XVf61lwVdisWf - uuid: 0XXXXSNJG0MQJHBF4QX1EFD6Y3", true, 0,
+			"rpc error: code = InvalidArgument desc = Document not found, duid: xxxHfmKs8GX7D1XVf61lwVdisWf", true, 0,
 		},
 		{&pb.DocumentRequest{
 			FileMetadataParameters: &pb.FileMetadataTransaction{
@@ -763,21 +738,6 @@ func TestDeleteFileMetadata(t *testing.T) {
 		},
 		{&pb.DocumentRequest{
 			FileMetadataParameters: &pb.FileMetadataTransaction{
-				Duid: "some duid",
-			},
-		}, available,
-			"rpc error: code = InvalidArgument desc = invalid Document duid", true, 0,
-		},
-		{&pb.DocumentRequest{
-			FileMetadataParameters: &pb.FileMetadataTransaction{
-				Duid: "1ChHfmKs8GX7D1XVf61lwVdisWf",
-				Uuid: "some uuid",
-			},
-		}, available,
-			"rpc error: code = InvalidArgument desc = invalid Document uuid", true, 0,
-		},
-		{&pb.DocumentRequest{
-			FileMetadataParameters: &pb.FileMetadataTransaction{
 				Duid: "1ChHfmKs8GX7D1XVf61lwVdisWf",
 				Uuid: "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
 				Fuid: "some fuid",
@@ -803,7 +763,7 @@ func TestDeleteFileMetadata(t *testing.T) {
 				Media: pb.FileType_FILE,
 			},
 		}, available,
-			"rpc error: code = InvalidArgument desc = Document not found, duid: xxxHfmKs8GX7D1XVf61lwVdisWf - uuid: 0XXXXSNJG0MQJHBF4QX1EFD6Y3", true, 0,
+			"rpc error: code = InvalidArgument desc = Document not found, duid: xxxHfmKs8GX7D1XVf61lwVdisWf", true, 0,
 		},
 		{&pb.DocumentRequest{
 			FileMetadataParameters: &pb.FileMetadataTransaction{

@@ -1,7 +1,7 @@
 # hwsc-document-svc
 
 ## Purpose
- Provides services to hwsc-app-gateway-svc for CRUD document, and file metadata in Azure CosmosDB
+ Provides services to hwsc-app-gateway-svc for CRUD document, and file metadata in MongoDB
 
 ## Contract
 The proto file and compiled proto buffers are located in [hwsc-api-blocks](https://github.com/hwsc-org/hwsc-api-blocks/tree/master/int/hwsc-document-svc/proto).
@@ -33,9 +33,10 @@ The proto file and compiled proto buffers are located in [hwsc-api-blocks](https
 - Returns a collection of Documents.
 
 ## Prerequisites
-- GoLang version [go 1.11.1](https://golang.org/dl/)
+- GoLang version [go 1.11.4](https://golang.org/dl/)
 - GoLang Dependency Management [dep](https://github.com/golang/dep)
 - Go Source Code Linter [golint](https://github.com/golang/lint)
+- mongo-go-driver beta [0.2.0](https://github.com/mongodb/mongo-go-driver)
 - Docker
 - [Optional] If a new proto file and compiled proto buffer exists in [hwsc-api-blocks](https://github.com/hwsc-org/hwsc-api-blocks/tree/master/int/hwsc-document-svc/proto), update dependency ``$dep ensure -update``
 
