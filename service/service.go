@@ -821,8 +821,8 @@ func (s *Service) ListDistinctFieldValues(ctx context.Context, req *pb.DocumentR
 
 }
 
-//// QueryDocument queries the MongoDB server with the given query parameters.
-//// Returns a collection of Documents.
+// QueryDocument queries the MongoDB server with the given query parameters.
+// Returns a collection of Documents.
 func (s *Service) QueryDocument(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
 	log.Println("[INFO] Requesting QueryDocument service")
 	if ok := isStateAvailable(); !ok {
@@ -866,7 +866,7 @@ func (s *Service) QueryDocument(ctx context.Context, req *pb.DocumentRequest) (*
 	}
 	cur, err := collection.Aggregate(context.Background(), pipeline)
 	if err != nil {
-		log.Printf("[ERROR] Find: %s\n", err.Error())
+		log.Printf("[ERROR] Aggregate: %s\n", err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 

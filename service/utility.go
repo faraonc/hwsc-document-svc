@@ -4,6 +4,7 @@ import (
 	"fmt"
 	pb "github.com/hwsc-org/hwsc-api-blocks/int/hwsc-document-svc/proto"
 	"github.com/mongodb/mongo-go-driver/bson"
+	"github.com/mongodb/mongo-go-driver/bson/primitive"
 	"log"
 	"net/http"
 	"net/url"
@@ -70,6 +71,7 @@ var (
 		"SensorTypes":   4,
 		"SensorNames":   5,
 	}
+	mongoDBPatternAll = primitive.Regex{Pattern: ".*", Options: ""}
 )
 
 // ValidateDocument validates the Document.
@@ -497,7 +499,6 @@ func isStateAvailable() bool {
 	return true
 }
 
-//TODO
 func buildAggregatePipeline(queryParams *pb.QueryTransaction) (bson.A, error) {
 	if queryParams == nil {
 		return nil, errNilQueryTransaction
@@ -506,43 +507,37 @@ func buildAggregatePipeline(queryParams *pb.QueryTransaction) (bson.A, error) {
 	lastNames, firstNames := extractPublishersFields(queryParams.GetPublishers())
 	cities, states, provinces, countries := extractStudySitesFields(queryParams.GetStudySites())
 	pipeline := bson.A{
-		bson.M{"$match":
-			bson.M{
-				"$and": bson.A{
-					bson.M{"publisherName.lastName":  bson.M{"$in": buildArrayFromElements(lastNames)}},
-					bson.M{"publisherName.firstName": bson.M{"$in": buildArrayFromElements(firstNames)}},
+		bson.M{"$match": bson.M{
+			"$and": bson.A{
+				bson.M{"publisherName.lastName": bson.M{"$in": buildArrayFromElements(lastNames)}},
+				bson.M{"publisherName.firstName": bson.M{"$in": buildArrayFromElements(firstNames)}},
 
-					bson.M{"studySite.city":     bson.M{"$in": buildArrayFromElements(cities)}},
-					bson.M{"studySite.state":    bson.M{"$in": buildArrayFromElements(states)}},
-					bson.M{"studySite.province": bson.M{"$in": buildArrayFromElements(provinces)}},
-					bson.M{"studySite.country":  bson.M{"$in": buildArrayFromElements(countries)}},
+				bson.M{"studySite.city": bson.M{"$in": buildArrayFromElements(cities)}},
+				bson.M{"studySite.state": bson.M{"$in": buildArrayFromElements(states)}},
+				bson.M{"studySite.province": bson.M{"$in": buildArrayFromElements(provinces)}},
+				bson.M{"studySite.country": bson.M{"$in": buildArrayFromElements(countries)}},
 
-					bson.M{"callTypeName": bson.M{"$in": buildArrayFromElements(queryParams.GetCallTypeNames())}},
-					bson.M{"groundType":   bson.M{"$in": buildArrayFromElements(queryParams.GetGroundTypes())}},
-					bson.M{"sensorType":   bson.M{"$in": buildArrayFromElements(queryParams.GetSensorTypes())}},
-					bson.M{"sensorName":   bson.M{"$in": buildArrayFromElements(queryParams.GetSensorNames())}},
-					bson.M{"recordTimestamp": bson.M{"gte": queryParams.GetMinRecordTimestamp(),
-						"$lte": queryParams.GetMaxRecordTimestamp()}},
-				},
+				bson.M{"callTypeName": bson.M{"$in": buildArrayFromElements(queryParams.GetCallTypeNames())}},
+				bson.M{"groundType": bson.M{"$in": buildArrayFromElements(queryParams.GetGroundTypes())}},
+				bson.M{"sensorType": bson.M{"$in": buildArrayFromElements(queryParams.GetSensorTypes())}},
+				bson.M{"sensorName": bson.M{"$in": buildArrayFromElements(queryParams.GetSensorNames())}},
+				bson.M{"recordTimestamp": bson.M{"$gte": queryParams.GetMinRecordTimestamp(),
+					"$lte": queryParams.GetMaxRecordTimestamp()}},
 			},
+		},
 		},
 	}
 
 	return pipeline, nil
 }
 
-//TODO
 func buildArrayFromElements(elems []string) bson.A {
 	if elems == nil || len(elems) == 0 {
-		regex := bson.RawValue{
-			Type: bson.TypeRegex,
-			Value: []byte(".*"),
-		}
-		return bson.A{regex}
+		return bson.A{mongoDBPatternAll}
 	}
 
-	result := bson.A {}
-	for _, e := range(elems) {
+	result := bson.A{}
+	for _, e := range elems {
 		result = append(result, e)
 	}
 

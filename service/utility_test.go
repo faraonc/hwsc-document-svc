@@ -1750,7 +1750,6 @@ func TestIsStateAvailable(t *testing.T) {
 
 }
 
-//TODO
 func TestBuildAggregatePipeline(t *testing.T) {
 	cases := []struct {
 		input     *pb.QueryTransaction
@@ -1797,59 +1796,21 @@ func TestBuildAggregatePipeline(t *testing.T) {
 				SensorNames:   []string{"Moto"},
 			},
 			bson.A{
-				bson.M{"$match":
-					bson.M{
-						"$and": bson.A{
-
-						}
-					}
-				}
-			}
-						bson.EC.SubDocumentFromElements("publisherName.lastName",
-							bson.EC.ArrayFromElements("$in",
-								bson.VC.String("Seger"),
-								bson.VC.String("Abadi"),
-							)),
-						bson.EC.SubDocumentFromElements("publisherName.firstName",
-							bson.EC.ArrayFromElements("$in",
-								bson.VC.String("Kerri"),
-								bson.VC.String("Shima"),
-							)),
-						bson.EC.SubDocumentFromElements("studySite.city",
-							bson.EC.ArrayFromElements("$in",
-								bson.VC.String("San Diego"),
-								bson.VC.String("Batangas City"),
-								bson.VC.String("Some City"),
-							)),
-						bson.EC.SubDocumentFromElements("studySite.state",
-							bson.EC.ArrayFromElements("$in",
-								bson.VC.String("California"),
-							)),
-						bson.EC.SubDocumentFromElements("studySite.province",
-							bson.EC.ArrayFromElements("$in",
-								bson.VC.String("Batangas"),
-							)),
-						bson.EC.SubDocumentFromElements("studySite.country",
-							bson.EC.ArrayFromElements("$in",
-								bson.VC.String("USA"),
-								bson.VC.String("Philippines"),
-								bson.VC.String("Some Country"),
-							)),
-						bson.EC.SubDocumentFromElements("callTypeName",
-							bson.EC.ArrayFromElements("$in", bson.VC.Regex(".*", ""))),
-						bson.EC.SubDocumentFromElements("groundType",
-							bson.EC.ArrayFromElements("$in",
-								bson.VC.String("Wookie"),
-							)),
-						bson.EC.SubDocumentFromElements("sensorType",
-							bson.EC.ArrayFromElements("$in",
-								bson.VC.String("BProbe"),
-							)),
-						bson.EC.SubDocumentFromElements("sensorName",
-							bson.EC.ArrayFromElements("$in",
-								bson.VC.String("Moto"),
-							)),
-					),
+				bson.M{"$match": bson.M{
+					"$and": bson.A{
+						bson.M{"publisherName.lastName": bson.M{"$in": bson.A{"Seger", "Abadi"}}},
+						bson.M{"publisherName.firstName": bson.M{"$in": bson.A{"Kerri", "Shima"}}},
+						bson.M{"studySite.city": bson.M{"$in": bson.A{"San Diego", "Batangas City", "Some City"}}},
+						bson.M{"studySite.state": bson.M{"$in": bson.A{"California"}}},
+						bson.M{"studySite.province": bson.M{"$in": bson.A{"Batangas"}}},
+						bson.M{"studySite.country": bson.M{"$in": bson.A{"USA", "Philippines", "Some Country"}}},
+						bson.M{"callTypeName": bson.M{"$in": bson.A{mongoDBPatternAll}}},
+						bson.M{"groundType": bson.M{"$in": bson.A{"Wookie"}}},
+						bson.M{"sensorType": bson.M{"$in": bson.A{"BProbe"}}},
+						bson.M{"sensorName": bson.M{"$in": bson.A{"Moto"}}},
+						bson.M{"recordTimestamp": bson.M{"$gte": int64(0), "$lte": int64(0)}},
+					},
+				},
 				},
 			},
 			false,
@@ -1858,37 +1819,35 @@ func TestBuildAggregatePipeline(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		_, err := buildAggregatePipeline(c.input)
+		output, err := buildAggregatePipeline(c.input)
 		if c.isExpErr {
 			assert.EqualError(t, err, c.errorStr)
 		} else {
 			assert.Nil(t, err)
+			assert.Equal(t, c.expOutput, output)
 		}
 	}
 }
 
-//TODO
 func TestBuildArrayFromElements(t *testing.T) {
 	cases := []struct {
 		input     []string
-		expOutput bson.E
+		expOutput bson.A
 	}{
-		{nil, bson.E{bson.A{"$in", bson.D{{".*", ""}}}},
-		{[]string{}, bson.EC.ArrayFromElements("$in", bson.VC.Regex(".*", ""))},
+		{nil, bson.A{mongoDBPatternAll}},
+		{[]string{}, bson.A{mongoDBPatternAll}},
 
 		{[]string{
 			"Seger",
 			"Abadi",
 		},
-			bson.EC.ArrayFromElements("$in",
-				bson.VC.String("Seger"),
-				bson.VC.String("Abadi")),
+			bson.A{"Seger", "Abadi"},
 		},
 	}
 
 	for _, c := range cases {
 		elems := buildArrayFromElements(c.input)
-		assert.True(t, elems.Equal(c.expOutput))
+		assert.Equal(t, c.expOutput, elems)
 	}
 }
 
