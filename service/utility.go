@@ -541,16 +541,12 @@ func buildArrayFromElements(elems []string) bson.A {
 		return bson.A{regex}
 	}
 
-	arrayElements, err := bson.Marshal(elems)
-	if err != nil {
-
-	}
-	result := bson.RawValue{
-		Type: bson.TypeArray,
-		Value: arrayElements,
+	result := bson.A {}
+	for _, e := range(elems) {
+		result = append(result, e)
 	}
 
-	return bson.A{result}
+	return result
 }
 
 func extractPublishersFields(publishers []*pb.Publisher) ([]string, []string) {

@@ -1754,7 +1754,7 @@ func TestIsStateAvailable(t *testing.T) {
 func TestBuildAggregatePipeline(t *testing.T) {
 	cases := []struct {
 		input     *pb.QueryTransaction
-		expOutput *bson.Array
+		expOutput bson.A
 		isExpErr  bool
 		errorStr  string
 	}{
@@ -1796,10 +1796,15 @@ func TestBuildAggregatePipeline(t *testing.T) {
 				SensorTypes:   []string{"BProbe"},
 				SensorNames:   []string{"Moto"},
 			},
-			bson.NewArray(
-				bson.VC.DocumentFromElements(
-					bson.EC.SubDocumentFromElements(
-						"$match",
+			bson.A{
+				bson.M{"$match":
+					bson.M{
+						"$and": bson.A{
+
+						}
+					}
+				}
+			}
 						bson.EC.SubDocumentFromElements("publisherName.lastName",
 							bson.EC.ArrayFromElements("$in",
 								bson.VC.String("Seger"),
@@ -1845,8 +1850,8 @@ func TestBuildAggregatePipeline(t *testing.T) {
 								bson.VC.String("Moto"),
 							)),
 					),
-				),
-			),
+				},
+			},
 			false,
 			"",
 		},
