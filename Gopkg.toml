@@ -41,3 +41,6 @@
 [[constraint]]
   name = "github.com/mongodb/mongo-go-driver"
   version = "0.2.0"
+[[constraint]]
+  branch = "master"
+  name = "github.com/hwsc-org/hwsc-logger"
