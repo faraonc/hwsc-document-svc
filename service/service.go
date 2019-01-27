@@ -742,8 +742,8 @@ func (s *Service) DeleteFileMetadata(ctx context.Context, req *pb.DocumentReques
 	}
 
 	log.Info(deleteFileMetadataTag, fmt.Sprintf("Updated document: \n%s\n", pretty.Sprint(document)))
-	log.Info(deleteFileMetadataTag, "Success deleting file metadata in document, duid: %s - fuid: %s",
-		document.GetDuid(), fileMetadataParameters.GetFuid())
+	log.Info(deleteFileMetadataTag, fmt.Sprintf("Success deleting file metadata in document, duid: %s - fuid: %s",
+		document.GetDuid(), fileMetadataParameters.GetFuid()))
 
 	return &pb.DocumentResponse{
 		Status:  &pb.DocumentResponse_Code{Code: uint32(codes.OK)},
