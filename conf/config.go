@@ -34,7 +34,7 @@ func init() {
 		}
 	}
 
-	if err := conf.Get("hosts", "grpc").Scan(&GRPCHost); err != nil {
+	if err := conf.Get("hosts", "document").Scan(&GRPCHost); err != nil {
 		log.Fatal("Failed to get GRPC configuration", err.Error())
 	}
 	if err := conf.Get("hosts", "mongodb").Scan(&DocumentDB); err != nil {
