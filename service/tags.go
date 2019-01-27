@@ -7,9 +7,9 @@ const (
 	updateDocumentTag             string = "UpdateDocument:"
 	deleteDocumentTag             string = "DeleteDocument:"
 	addFileMetadataTag            string = "AddFileMetadata:"
-	deleteFileMetadataTag         string = "DeleteFileMetadata"
-	listDistinctFieldValuesTag    string = "ListDistinctFieldValues"
-	queryDocumentTag              string = "QueryDocument"
+	deleteFileMetadataTag         string = "DeleteFileMetadata:"
+	listDistinctFieldValuesTag    string = "ListDistinctFieldValues:"
+	queryDocumentTag              string = "QueryDocument:"
 	serviceStateTag               string = "Service State:"
-	mongoDBTag                    string = "MongoDB"
+	mongoDBTag                    string = "MongoDB:"
 )
