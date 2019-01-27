@@ -1,9 +1,11 @@
 package service
 
 import (
+	"fmt"
 	"github.com/google/uuid"
 	pb "github.com/hwsc-org/hwsc-api-blocks/int/hwsc-document-svc/proto"
 	"github.com/hwsc-org/hwsc-document-svc/conf"
+	log "github.com/hwsc-org/hwsc-logger/logger"
 	"github.com/kylelemons/godebug/pretty"
 	"github.com/mongodb/mongo-go-driver/bson"
 	"github.com/mongodb/mongo-go-driver/mongo/options"
@@ -11,7 +13,6 @@ import (
 	"golang.org/x/net/context"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"log"
 	"reflect"
 	"sync"
 	"time"
@@ -92,14 +93,14 @@ func (d *fuidLocker) NewFUID() string {
 
 // GetStatus gets the current status of the service.
 func (s *Service) GetStatus(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
-	log.Println("[INFO] Requesting GetStatus service")
+	log.Info("Requesting GetStatus service")
 
 	// Lock the state for reading
 	serviceStateLocker.lock.RLock()
 	// Unlock the state before function exits
 	defer serviceStateLocker.lock.RUnlock()
 
-	log.Printf("[INFO] Service State: %s\n", serviceStateLocker.currentServiceState)
+	log.Info("Service State:", serviceStateLocker.currentServiceState.String())
 	if serviceStateLocker.currentServiceState == unavailable {
 		return &pb.DocumentResponse{
 			Status:  &pb.DocumentResponse_Code{Code: uint32(codes.Unavailable)},
@@ -109,14 +110,14 @@ func (s *Service) GetStatus(ctx context.Context, req *pb.DocumentRequest) (*pb.D
 
 	// Check MongoDB Clients
 	if err := refreshMongoDBConnection(mongoDBReader, &conf.DocumentDB.Reader); err != nil {
-		log.Printf("[ERROR] %s\n", err.Error())
+		log.Error(getStatusTag, err.Error())
 		return &pb.DocumentResponse{
 			Status:  &pb.DocumentResponse_Code{Code: uint32(codes.Unavailable)},
 			Message: codes.Unavailable.String(),
 		}, nil
 	}
 	if err := refreshMongoDBConnection(mongoDBWriter, &conf.DocumentDB.Writer); err != nil {
-		log.Printf("[ERROR] %s\n", err.Error())
+		log.Error(getStatusTag, err.Error())
 		return &pb.DocumentResponse{
 			Status:  &pb.DocumentResponse_Code{Code: uint32(codes.Unavailable)},
 			Message: codes.Unavailable.String(),
@@ -133,26 +134,26 @@ func (s *Service) GetStatus(ctx context.Context, req *pb.DocumentRequest) (*pb.D
 // CreateDocument creates a document in MongoDB.
 // Returns the Document.
 func (s *Service) CreateDocument(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
-	log.Println("[INFO] Requesting CreateDocument service")
+	log.Info("Requesting CreateDocument service")
 
 	if ok := isStateAvailable(); !ok {
-		log.Printf("[INFO] %s\n", errServiceUnavailable.Error())
+		log.Info(createDocumentTag, errServiceUnavailable.Error())
 		return nil, status.Error(codes.Unavailable, errServiceUnavailable.Error())
 	}
 
 	if err := refreshMongoDBConnection(mongoDBWriter, &conf.DocumentDB.Writer); err != nil {
-		log.Printf("[ERROR] %s\n", err.Error())
+		log.Error(createDocumentTag, err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
 	if req == nil {
-		log.Printf("[ERROR] %s\n", errNilRequest.Error())
+		log.Error(createDocumentTag, errNilRequest.Error())
 		return nil, status.Error(codes.InvalidArgument, errNilRequest.Error())
 	}
 
 	doc := req.GetData()
 	if doc == nil {
-		log.Printf("[ERROR] %s\n", errNilRequestData.Error())
+		log.Error(createDocumentTag, errNilRequestData.Error())
 		return nil, status.Error(codes.InvalidArgument, errNilRequestData.Error())
 	}
 
@@ -208,20 +209,20 @@ func (s *Service) CreateDocument(ctx context.Context, req *pb.DocumentRequest) (
 	doc.CreateTimestamp = time.Now().UTC().Unix()
 
 	if err := ValidateDocument(doc); err != nil {
-		log.Printf("[ERROR] %s\n", err.Error())
+		log.Error(createDocumentTag, err.Error())
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	log.Printf("[INFO] Document contains:\n %s\n\n", pretty.Sprint(doc))
+	log.Error(createDocumentTag, pretty.Sprint(doc))
 	collection := mongoDBWriter.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
 
 	res, err := collection.InsertOne(context.Background(), doc)
 	if err != nil {
-		log.Printf("[ERROR] InsertOne: %s\n", err.Error())
+		log.Error(createDocumentTag, err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	log.Printf("[INFO] Success inserting document _id: %v\n", res.InsertedID)
+	log.Info(createDocumentTag, fmt.Sprintf("inserted document _id: %v", res.InsertedID))
 
 	return &pb.DocumentResponse{
 		Status:  &pb.DocumentResponse_Code{Code: uint32(codes.OK)},
@@ -234,31 +235,31 @@ func (s *Service) CreateDocument(ctx context.Context, req *pb.DocumentRequest) (
 // ListUserDocumentCollection retrieves all the MongoDB documents for a specific user with the given UUID.
 // Returns a collection of Documents.
 func (s *Service) ListUserDocumentCollection(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
-	log.Println("[INFO] Requesting ListUserDocumentCollection service")
+	log.Info("Requesting ListUserDocumentCollection service")
 
 	if ok := isStateAvailable(); !ok {
-		log.Printf("[ERROR] %s\n", errServiceUnavailable.Error())
+		log.Error(listUserDocumentCollectionTag, errServiceUnavailable.Error())
 		return nil, status.Error(codes.Unavailable, errServiceUnavailable.Error())
 	}
 
 	if err := refreshMongoDBConnection(mongoDBReader, &conf.DocumentDB.Reader); err != nil {
-		log.Printf("[ERROR] %s\n", err.Error())
+		log.Error(listUserDocumentCollectionTag, err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
 	if req == nil {
-		log.Printf("[ERROR] %s\n", errNilRequest.Error())
+		log.Error(listUserDocumentCollectionTag, errNilRequest.Error())
 		return nil, status.Error(codes.InvalidArgument, errNilRequest.Error())
 	}
 
 	doc := req.GetData()
 	if doc == nil {
-		log.Printf("[ERROR] %s\n", errNilRequestData.Error())
+		log.Error(listUserDocumentCollectionTag, errNilRequestData.Error())
 		return nil, status.Error(codes.InvalidArgument, errNilRequestData.Error())
 	}
 
 	if err := ValidateUUID(doc.GetUuid()); err != nil {
-		log.Printf("[ERROR] %s\n", err.Error())
+		log.Error(listUserDocumentCollectionTag, err.Error())
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
@@ -268,7 +269,7 @@ func (s *Service) ListUserDocumentCollection(ctx context.Context, req *pb.Docume
 	filter := bson.M{"uuid": doc.GetUuid()}
 	cur, err := collection.Find(context.Background(), filter)
 	if err != nil {
-		log.Printf("[ERROR] Find: %s\n", err.Error())
+		log.Error(listUserDocumentCollectionTag, err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
@@ -276,37 +277,37 @@ func (s *Service) ListUserDocumentCollection(ctx context.Context, req *pb.Docume
 	documentCollection := make([]*pb.Document, 0)
 	for cur.Next(context.Background()) {
 		if err := cur.Err(); err != nil {
-			log.Printf("[ERROR] Cursor Err: %s\n", err.Error())
+			log.Error(listUserDocumentCollectionTag, err.Error())
 			return nil, status.Error(codes.Internal, err.Error())
 		}
 
 		// Mutate and retrieve Document
 		document := &pb.Document{}
 		if err := cur.Decode(document); err != nil {
-			log.Printf("[ERROR] Cursor Decode: %s\n", err.Error())
+			log.Error(listUserDocumentCollectionTag, err.Error())
 			return nil, status.Error(codes.Internal, err.Error())
 		}
 
 		documentCollection = append(documentCollection, document)
-		log.Printf("[INFO] document: \n%s\n\n", pretty.Sprint(document))
+		log.Info(listUserDocumentCollectionTag, pretty.Sprint(document))
 
 	}
 
 	if err := cur.Err(); err != nil {
-		log.Printf("[ERROR] Cursor Err: %s\n", err.Error())
+		log.Error(listUserDocumentCollectionTag, err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
 	if err := cur.Close(context.Background()); err != nil {
-		log.Printf("[ERROR] Cursor Err: %s\n", err.Error())
+		log.Error(listUserDocumentCollectionTag, err.Error())
 	}
 
 	if len(documentCollection) == 0 {
-		log.Printf("[ERROR] No document for uuid: %s\n", doc.GetUuid())
+		log.Error(listUserDocumentCollectionTag, doc.GetUuid())
 		return nil, status.Errorf(codes.InvalidArgument, "No document for uuid: %s", doc.GetUuid())
 	}
 
-	log.Printf("[INFO] Success listing documents, uuid: %s\n", doc.GetUuid())
+	log.Info(listUserDocumentCollectionTag, fmt.Sprintf("Success listing documents, uuid: %s", doc.GetUuid()))
 
 	return &pb.DocumentResponse{
 		Status:             &pb.DocumentResponse_Code{Code: uint32(codes.OK)},
@@ -319,31 +320,31 @@ func (s *Service) ListUserDocumentCollection(ctx context.Context, req *pb.Docume
 // UpdateDocument (completely) updates a MongoDB document with a given DUID.
 // Returns the updated Document.
 func (s *Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
-	log.Println("[INFO] Requesting UpdateDocument service")
+	log.Info("Requesting UpdateDocument service")
 
 	if ok := isStateAvailable(); !ok {
-		log.Printf("[ERROR] %s\n", errServiceUnavailable.Error())
+		log.Error(updateDocumentTag, errServiceUnavailable.Error())
 		return nil, status.Error(codes.Unavailable, errServiceUnavailable.Error())
 	}
 
 	if err := refreshMongoDBConnection(mongoDBWriter, &conf.DocumentDB.Writer); err != nil {
-		log.Printf("[ERROR] %s\n", err.Error())
+		log.Error(updateDocumentTag, err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
 	if req == nil {
-		log.Printf("[ERROR] %s\n", errNilRequest.Error())
+		log.Error(updateDocumentTag, errNilRequest.Error())
 		return nil, status.Error(codes.InvalidArgument, errNilRequest.Error())
 	}
 
 	doc := req.GetData()
 	if doc == nil {
-		log.Printf("[ERROR] %s\n", errNilRequestData.Error())
+		log.Error(updateDocumentTag, errNilRequestData.Error())
 		return nil, status.Error(codes.InvalidArgument, errNilRequestData.Error())
 	}
 
 	if doc.GetDuid() == "" {
-		log.Printf("[ERROR] Missing DUID")
+		log.Error(updateDocumentTag, errMissingDUID.Error())
 		return nil, status.Error(codes.InvalidArgument, errMissingDUID.Error())
 	}
 
@@ -397,11 +398,11 @@ func (s *Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (
 	doc.UpdateTimestamp = time.Now().UTC().Unix()
 
 	if err := ValidateDocument(doc); err != nil {
-		log.Printf("[ERROR] %s\n", err.Error())
+		log.Error(updateDocumentTag, err.Error())
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	log.Printf("[INFO] Document contains:\n %s\n\n", pretty.Sprint(doc))
+	log.Info(updateDocumentTag, pretty.Sprint(doc))
 	collection := mongoDBWriter.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
 
 	filter := bson.M{"duid": doc.GetDuid()}
@@ -412,27 +413,26 @@ func (s *Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (
 
 	// Extract the updated MongoDB document
 	if result == nil {
-		log.Printf("[INFO] Document not found, duid: %s - uuid: %s\n",
-			doc.GetDuid(), doc.GetUuid())
+		log.Info(updateDocumentTag, fmt.Sprintf("Document not found, duid: %s - uuid: %s",
+			doc.GetDuid(), doc.GetUuid()))
 
 		return nil, status.Errorf(codes.InvalidArgument,
-			"Document not found, duid: %s - uuid: %s",
-			doc.GetDuid(), doc.GetUuid())
+			"Document not found, duid: %s - uuid: %s", doc.GetDuid(), doc.GetUuid())
 	}
 
 	document := &pb.Document{}
 	if err := result.Decode(document); err != nil {
-		log.Printf("[ERROR] Document not found, duid: %s - uuid: %s - err: %s\n",
-			doc.GetDuid(), doc.GetUuid(), err.Error())
+		log.Error(updateDocumentTag, fmt.Sprintf("Document not found, duid: %s - uuid: %s - err: %s",
+			doc.GetDuid(), doc.GetUuid(), err.Error()))
 
 		return nil, status.Errorf(codes.InvalidArgument,
 			"Document not found, duid: %s - uuid: %s",
 			doc.GetDuid(), doc.GetUuid())
 	}
 
-	log.Printf("[INFO] Updated document: \n%s\n\n", pretty.Sprint(document))
-	log.Printf("[INFO] Success updating document, duid: %s - uuid: %s\n",
-		doc.GetDuid(), doc.GetUuid())
+	log.Info(updateDocumentTag, fmt.Sprintf("Updated document: \n%s\n", pretty.Sprint(document)))
+	log.Info(updateDocumentTag, fmt.Sprintf("Success updating document, duid: %s - uuid: %s",
+		doc.GetDuid(), doc.GetUuid()))
 
 	return &pb.DocumentResponse{
 		Status:  &pb.DocumentResponse_Code{Code: uint32(codes.OK)},
@@ -445,36 +445,36 @@ func (s *Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (
 // DeleteDocument deletes a MongoDB document using DUID.
 // Returns the deleted Document.
 func (s *Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
-	log.Println("[INFO] Requesting DeleteDocument service")
+	log.Info("Requesting DeleteDocument service")
 
 	if ok := isStateAvailable(); !ok {
-		log.Printf("[ERROR] %s\n", errServiceUnavailable.Error())
+		log.Error(deleteDocumentTag, errServiceUnavailable.Error())
 		return nil, status.Error(codes.Unavailable, errServiceUnavailable.Error())
 	}
 
 	if err := refreshMongoDBConnection(mongoDBWriter, &conf.DocumentDB.Writer); err != nil {
-		log.Printf("[ERROR] %s\n", err.Error())
+		log.Error(deleteDocumentTag, err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
 	if req == nil {
-		log.Printf("[ERROR] %s\n", errNilRequest.Error())
+		log.Error(deleteDocumentTag, errNilRequest.Error())
 		return nil, status.Error(codes.InvalidArgument, errNilRequest.Error())
 	}
 
 	doc := req.GetData()
 	if doc == nil {
-		log.Printf("[ERROR] %s\n", errNilRequestData.Error())
+		log.Error(deleteDocumentTag, errNilRequestData.Error())
 		return nil, status.Error(codes.InvalidArgument, errNilRequestData.Error())
 	}
 
 	if doc.GetDuid() == "" {
-		log.Printf("[ERROR] Missing DUID")
+		log.Error(deleteDocumentTag, errMissingDUID.Error())
 		return nil, status.Error(codes.InvalidArgument, errMissingDUID.Error())
 	}
 
 	if err := ValidateDUID(doc.GetDuid()); err != nil {
-		log.Printf("[ERROR] %s\n", err.Error())
+		log.Error(deleteDocumentTag, err.Error())
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
@@ -492,7 +492,7 @@ func (s *Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (
 
 	// Extract the deleted MongoDB document
 	if result == nil {
-		log.Printf("[INFO] Document not found, duid: %s\n", doc.GetDuid())
+		log.Info(deleteDocumentTag, fmt.Sprintf("Document not found, duid: %s", doc.GetDuid()))
 
 		return nil, status.Errorf(codes.InvalidArgument,
 			"Document not found, duid: %s", doc.GetDuid())
@@ -500,16 +500,17 @@ func (s *Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (
 
 	document := &pb.Document{}
 	if err := result.Decode(document); err != nil {
-		log.Printf("[ERROR] Document not found, duid: %s - err: %s\n", doc.GetDuid(), err.Error())
+		log.Error(deleteDocumentTag, fmt.Sprintf("Document not found, duid: %s - err: %s",
+			doc.GetDuid(), err.Error()))
 
 		return nil, status.Errorf(codes.InvalidArgument,
 			"Document not found, duid: %s", doc.GetDuid())
 	}
 
-	log.Printf("[INFO] Deleted document: \n%s\n\n", pretty.Sprint(document))
+	log.Info(deleteDocumentTag, fmt.Sprintf("Deleted document: \n%s\n", pretty.Sprint(document)))
 	// Log duid and uuid used for query
-	log.Printf("[INFO] Success deleting document, duid: %s - uuid: %s\n",
-		document.GetDuid(), document.GetUuid())
+	log.Info(deleteDocumentTag, fmt.Sprintf("Success deleting document, duid: %s - uuid: %s",
+		document.GetDuid(), document.GetUuid()))
 
 	return &pb.DocumentResponse{
 		Status:  &pb.DocumentResponse_Code{Code: uint32(codes.OK)},
@@ -521,20 +522,20 @@ func (s *Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (
 // AddFileMetadata adds a new FileMetadata in a MongoDB document using a given url, and DUID.
 // Returns the updated Document.
 func (s *Service) AddFileMetadata(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
-	log.Println("[INFO] Requesting AddFileMetadata service")
+	log.Info("Requesting AddFileMetadata service")
 
 	if ok := isStateAvailable(); !ok {
-		log.Printf("[ERROR] %s\n", errServiceUnavailable.Error())
+		log.Error(addFileMetadataTag, errServiceUnavailable.Error())
 		return nil, status.Error(codes.Unavailable, errServiceUnavailable.Error())
 	}
 
 	if err := refreshMongoDBConnection(mongoDBWriter, &conf.DocumentDB.Writer); err != nil {
-		log.Printf("[ERROR] %s\n", err.Error())
+		log.Error(addFileMetadataTag, err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
 	if req == nil {
-		log.Printf("[ERROR] %s\n", errNilRequest.Error())
+		log.Error(addFileMetadataTag, errNilRequest.Error())
 		return nil, status.Error(codes.InvalidArgument, errNilRequest.Error())
 	}
 
@@ -542,12 +543,12 @@ func (s *Service) AddFileMetadata(ctx context.Context, req *pb.DocumentRequest) 
 	if fileMetadataParameters == nil || fileMetadataParameters.GetUrl() == "" ||
 		fileMetadataParameters.GetDuid() == "" {
 
-		log.Printf("[ERROR] %s\n", errInvalidFileMetadataParameters.Error())
+		log.Error(addFileMetadataTag, errInvalidFileMetadataParameters.Error())
 		return nil, status.Error(codes.InvalidArgument, errInvalidFileMetadataParameters.Error())
 	}
 
 	if err := ValidateDUID(fileMetadataParameters.GetDuid()); err != nil {
-		log.Printf("[ERROR] %s\n", err.Error())
+		log.Error(addFileMetadataTag, err.Error())
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
@@ -556,17 +557,17 @@ func (s *Service) AddFileMetadata(ctx context.Context, req *pb.DocumentRequest) 
 		break
 	case pb.FileType_AUDIO:
 		if !audioRegex.MatchString(fileMetadataParameters.GetUrl()) {
-			log.Printf("[ERROR] %s\n", errInvalidDocumentAudioURL.Error())
+			log.Error(addFileMetadataTag, errInvalidDocumentAudioURL.Error())
 			return nil, status.Error(codes.InvalidArgument, errInvalidDocumentAudioURL.Error())
 		}
 	case pb.FileType_IMAGE:
 		if !imageRegex.MatchString(fileMetadataParameters.GetUrl()) {
-			log.Printf("[ERROR] %s\n", errInvalidDocumentImageURL.Error())
+			log.Error(addFileMetadataTag, errInvalidDocumentImageURL.Error())
 			return nil, status.Error(codes.InvalidArgument, errInvalidDocumentImageURL.Error())
 		}
 	case pb.FileType_VIDEO:
 		if !videoRegex.MatchString(fileMetadataParameters.GetUrl()) {
-			log.Printf("[ERROR] %s\n", errInvalidDocumentVideoURL.Error())
+			log.Error(addFileMetadataTag, errInvalidDocumentVideoURL.Error())
 			return nil, status.Error(codes.InvalidArgument, errInvalidDocumentVideoURL.Error())
 		}
 	default:
@@ -575,11 +576,12 @@ func (s *Service) AddFileMetadata(ctx context.Context, req *pb.DocumentRequest) 
 
 	// Test if the URI is reachable
 	if err := ValidateURL(fileMetadataParameters.GetUrl()); err != nil {
-		log.Printf("[ERROR] %s\n", err.Error())
+		log.Error(addFileMetadataTag, err.Error())
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	log.Printf("[INFO] FileMetadataParameters: \n%v\n\n", pretty.Sprint(req.GetFileMetadataParameters()))
+	log.Info(addFileMetadataTag, fmt.Sprintf("FileMetadataParameters: \n%v\n",
+		pretty.Sprint(req.GetFileMetadataParameters())))
 
 	// Get the specific lock if it already exists, else make the lock
 	lock, _ := duidClientLocker.LoadOrStore(fileMetadataParameters.GetDuid(), &sync.RWMutex{})
@@ -593,19 +595,19 @@ func (s *Service) AddFileMetadata(ctx context.Context, req *pb.DocumentRequest) 
 	filter := bson.M{"duid": fileMetadataParameters.GetDuid()}
 	bsonResult := collection.FindOne(context.Background(), filter)
 	if bsonResult == nil {
-		log.Printf("[ERROR] FindOne: %s\n", errNoDocumentFound.Error())
+		log.Error(addFileMetadataTag, errNoDocumentFound.Error())
 		return nil, status.Error(codes.InvalidArgument, errNoDocumentFound.Error())
 	}
 	documentToUpdate := &pb.Document{}
 	if err := bsonResult.Decode(documentToUpdate); err != nil {
-		log.Printf("[ERROR] Document not found, duid: %s - err: %s\n",
-			fileMetadataParameters.GetDuid(), err.Error())
+		log.Error(addFileMetadataTag, fmt.Sprintf("Document not found, duid: %s - err: %s",
+			fileMetadataParameters.GetDuid(), err.Error()))
 
 		return nil, status.Errorf(codes.InvalidArgument, "Document not found, duid: %s",
 			fileMetadataParameters.GetDuid())
 	}
 
-	log.Printf("[INFO] Document to update: \n%s\n\n", pretty.Sprint(documentToUpdate))
+	log.Info(addFileMetadataTag, fmt.Sprintf("Document to update: \n%s\n", pretty.Sprint(documentToUpdate)))
 	newFuid := fuidGenerator.NewFUID()
 	switch fileMetadataParameters.Media {
 	case pb.FileType_FILE:
@@ -628,7 +630,8 @@ func (s *Service) AddFileMetadata(ctx context.Context, req *pb.DocumentRequest) 
 
 	// Extract the updated MongoDB document
 	if result == nil {
-		log.Printf("[ERROR] Extracting updated document, duid: %s\n", documentToUpdate.GetDuid())
+		log.Error(addFileMetadataTag, fmt.Sprintf("Extracting updated document, duid: %s",
+			documentToUpdate.GetDuid()))
 
 		return nil, status.Errorf(codes.Internal,
 			"Extracting updated document duid: %s", documentToUpdate.GetDuid())
@@ -636,13 +639,13 @@ func (s *Service) AddFileMetadata(ctx context.Context, req *pb.DocumentRequest) 
 
 	document := &pb.Document{}
 	if err := result.Decode(document); err != nil {
-		log.Printf("[ERROR] %s\n", err.Error())
+		log.Error(addFileMetadataTag, err.Error())
 		return nil, status.Errorf(codes.Internal, err.Error())
 	}
 
-	log.Printf("[INFO] Updated document: \n%s\n\n", pretty.Sprint(document))
-	log.Printf("[INFO] Success adding file metadata in document, duid: %s - fuid: %s\n",
-		document.GetDuid(), newFuid)
+	log.Info(addFileMetadataTag, fmt.Sprintf("Updated document: \n%s\n", pretty.Sprint(document)))
+	log.Info(addFileMetadataTag, fmt.Sprintf("Success adding file metadata in document, duid: %s - fuid: %s",
+		document.GetDuid(), newFuid))
 
 	return &pb.DocumentResponse{
 		Status:  &pb.DocumentResponse_Code{Code: uint32(codes.OK)},
@@ -654,37 +657,37 @@ func (s *Service) AddFileMetadata(ctx context.Context, req *pb.DocumentRequest) 
 // DeleteFileMetadata deletes a FileMetadata in a MongoDB document using a given FUID, and DUID.
 // Returns the updated Document.
 func (s *Service) DeleteFileMetadata(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
-	log.Println("[INFO] Requesting DeleteFileMetadata service")
+	log.Info("Requesting DeleteFileMetadata service")
 
 	if ok := isStateAvailable(); !ok {
-		log.Printf("[ERROR] %s\n", errServiceUnavailable.Error())
+		log.Error(deleteFileMetadataTag, errServiceUnavailable.Error())
 		return nil, status.Error(codes.Unavailable, errServiceUnavailable.Error())
 	}
 
 	if err := refreshMongoDBConnection(mongoDBWriter, &conf.DocumentDB.Writer); err != nil {
-		log.Printf("[ERROR] %s\n", err.Error())
+		log.Error(deleteFileMetadataTag, err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
 	if req == nil {
-		log.Printf("[ERROR] %s\n", errNilRequest.Error())
+		log.Error(deleteFileMetadataTag, errNilRequest.Error())
 		return nil, status.Error(codes.InvalidArgument, errNilRequest.Error())
 	}
 
 	fileMetadataParameters := req.GetFileMetadataParameters()
 	if fileMetadataParameters == nil || fileMetadataParameters.GetDuid() == "" {
 
-		log.Printf("[ERROR] %s\n", errInvalidFileMetadataParameters.Error())
+		log.Error(deleteFileMetadataTag, errInvalidFileMetadataParameters.Error())
 		return nil, status.Error(codes.InvalidArgument, errInvalidFileMetadataParameters.Error())
 	}
 
 	if err := ValidateDUID(fileMetadataParameters.GetDuid()); err != nil {
-		log.Printf("[ERROR] %s\n", err.Error())
+		log.Error(deleteFileMetadataTag, err.Error())
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	if err := ValidateFUID(fileMetadataParameters.GetFuid()); err != nil {
-		log.Printf("[ERROR] %s\n", err.Error())
+		log.Error(deleteFileMetadataTag, err.Error())
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
@@ -692,7 +695,8 @@ func (s *Service) DeleteFileMetadata(ctx context.Context, req *pb.DocumentReques
 		return nil, status.Error(codes.InvalidArgument, errMediaType.Error())
 	}
 
-	log.Printf("[INFO] FileMetadataParameters: \n%v\n\n", pretty.Sprint(req.GetFileMetadataParameters()))
+	log.Info(deleteFileMetadataTag, fmt.Sprintf("FileMetadataParameters: \n%v\n",
+		pretty.Sprint(req.GetFileMetadataParameters())))
 
 	// Get the specific lock if it already exists, else make the lock
 	lock, _ := duidClientLocker.LoadOrStore(fileMetadataParameters.GetDuid(), &sync.RWMutex{})
@@ -706,19 +710,19 @@ func (s *Service) DeleteFileMetadata(ctx context.Context, req *pb.DocumentReques
 	filter := bson.M{"duid": fileMetadataParameters.GetDuid()}
 	bsonResult := collection.FindOne(context.Background(), filter)
 	if bsonResult == nil {
-		log.Printf("[ERROR] FindOne: %s\n", errNoDocumentFound.Error())
+		log.Error(deleteFileMetadataTag, errNoDocumentFound.Error())
 		return nil, status.Error(codes.InvalidArgument, errNoDocumentFound.Error())
 	}
 	documentToUpdate := &pb.Document{}
 	if err := bsonResult.Decode(documentToUpdate); err != nil {
-		log.Printf("[ERROR] Document not found, duid: %s - err: %s\n",
-			fileMetadataParameters.GetDuid(), err.Error())
+		log.Error(deleteFileMetadataTag, fmt.Sprintf("Document not found, duid: %s - err: %s",
+			fileMetadataParameters.GetDuid(), err.Error()))
 
 		return nil, status.Errorf(codes.InvalidArgument,
 			"Document not found, duid: %s", fileMetadataParameters.GetDuid())
 	}
 
-	log.Printf("[INFO] Document to update: \n%s\n\n", pretty.Sprint(documentToUpdate))
+	log.Info(deleteFileMetadataTag, fmt.Sprintf("Document to update: \n%s\n", pretty.Sprint(documentToUpdate)))
 
 	switch fileMetadataParameters.Media {
 	case pb.FileType_FILE:
@@ -741,7 +745,8 @@ func (s *Service) DeleteFileMetadata(ctx context.Context, req *pb.DocumentReques
 
 	// Extract the updated MongoDB document
 	if result == nil {
-		log.Printf("[ERROR] Extracting updated document, duid: %s\n", documentToUpdate.GetDuid())
+		log.Error(deleteFileMetadataTag, fmt.Sprintf("Extracting updated document, duid: %s",
+			documentToUpdate.GetDuid()))
 
 		return nil, status.Errorf(codes.Internal,
 			"Extracting updated document duid: %s", documentToUpdate.GetDuid())
@@ -749,12 +754,12 @@ func (s *Service) DeleteFileMetadata(ctx context.Context, req *pb.DocumentReques
 
 	document := &pb.Document{}
 	if err := result.Decode(document); err != nil {
-		log.Printf("[ERROR] %s\n", err.Error())
+		log.Error(deleteFileMetadataTag, err.Error())
 		return nil, status.Errorf(codes.Internal, err.Error())
 	}
 
-	log.Printf("[INFO] Updated document: \n%s\n\n", pretty.Sprint(document))
-	log.Printf("[INFO] Success deleting file metadata in document, duid: %s - fuid: %s\n",
+	log.Info(deleteFileMetadataTag, fmt.Sprintf("Updated document: \n%s\n", pretty.Sprint(document)))
+	log.Info(deleteFileMetadataTag, "Success deleting file metadata in document, duid: %s - fuid: %s",
 		document.GetDuid(), fileMetadataParameters.GetFuid())
 
 	return &pb.DocumentResponse{
@@ -768,19 +773,19 @@ func (s *Service) DeleteFileMetadata(ctx context.Context, req *pb.DocumentReques
 // ListDistinctFieldValues list all the unique fields values required for the front-end drop-down filter
 // Returns the QueryTransaction.
 func (s *Service) ListDistinctFieldValues(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
-	log.Println("[INFO] Requesting ListDistinctFieldValues service")
+	log.Info("Requesting ListDistinctFieldValues service")
 	if ok := isStateAvailable(); !ok {
-		log.Printf("[ERROR] %s\n", errServiceUnavailable.Error())
+		log.Error(listDistinctFieldValuesTag, errServiceUnavailable.Error())
 		return nil, status.Error(codes.Unavailable, errServiceUnavailable.Error())
 	}
 
 	if err := refreshMongoDBConnection(mongoDBReader, &conf.DocumentDB.Reader); err != nil {
-		log.Printf("[ERROR] %s\n", err.Error())
+		log.Error(listDistinctFieldValuesTag, err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
 	if req == nil {
-		log.Printf("[ERROR] %s\n", errNilRequest.Error())
+		log.Error(listDistinctFieldValuesTag, errNilRequest.Error())
 		return nil, status.Error(codes.InvalidArgument, errNilRequest.Error())
 	}
 
@@ -792,7 +797,7 @@ func (s *Service) ListDistinctFieldValues(ctx context.Context, req *pb.DocumentR
 		doc := &bson.D{}
 		result, err := collection.Distinct(context.Background(), distinctSearchFieldNames[i], doc)
 		if err != nil {
-			log.Printf("[ERROR] Distinct: %s\n", err.Error())
+			log.Error(listDistinctFieldValuesTag, err.Error())
 			return nil, status.Error(codes.Internal, err.Error())
 		}
 		distinctResult[i] = result
@@ -806,13 +811,13 @@ func (s *Service) ListDistinctFieldValues(ctx context.Context, req *pb.DocumentR
 		if err := extractDistinctResults(queryResult,
 			fieldName, distinctResult[distinctResultFieldIndices[fieldName]]); err != nil {
 
-			log.Printf("[ERROR] %s\n", err.Error())
+			log.Error(listDistinctFieldValuesTag, err.Error())
 			return nil, status.Error(codes.Internal, err.Error())
 		}
 	}
 
-	log.Printf("[INFO] Distinct values: \n%v\n\n", pretty.Sprint(queryResult))
-	log.Println("[INFO] Success listing distinct field values")
+	log.Info(listDistinctFieldValuesTag, fmt.Sprintf("Distinct values: \n%v\n", pretty.Sprint(queryResult)))
+	log.Info(listDistinctFieldValuesTag, "Success listing distinct field values")
 	return &pb.DocumentResponse{
 		Status:       &pb.DocumentResponse_Code{Code: uint32(codes.OK)},
 		Message:      codes.OK.String(),
@@ -824,49 +829,49 @@ func (s *Service) ListDistinctFieldValues(ctx context.Context, req *pb.DocumentR
 // QueryDocument queries the MongoDB server with the given query parameters.
 // Returns a collection of Documents.
 func (s *Service) QueryDocument(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
-	log.Println("[INFO] Requesting QueryDocument service")
+	log.Info("Requesting QueryDocument service")
 	if ok := isStateAvailable(); !ok {
-		log.Printf("[ERROR] %s\n", errServiceUnavailable.Error())
+		log.Error(queryDocumentTag, errServiceUnavailable.Error())
 		return nil, status.Error(codes.Unavailable, errServiceUnavailable.Error())
 	}
 
 	if err := refreshMongoDBConnection(mongoDBReader, &conf.DocumentDB.Reader); err != nil {
-		log.Printf("[ERROR] %s\n", err.Error())
+		log.Error(queryDocumentTag, err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
 	if req == nil {
-		log.Printf("[ERROR] %s\n", errNilRequest.Error())
+		log.Error(queryDocumentTag, errNilRequest.Error())
 		return nil, status.Error(codes.InvalidArgument, errNilRequest.Error())
 	}
 
 	queryParams := req.GetQueryParameters()
 	if queryParams == nil {
-		log.Printf("[ERROR] %s\n", errNilQueryArgs.Error())
+		log.Error(queryDocumentTag, errNilQueryArgs.Error())
 		return nil, status.Error(codes.InvalidArgument, errNilQueryArgs.Error())
 	}
 
 	if err := ValidateRecordTimestamp(queryParams.MinRecordTimestamp); err != nil {
-		log.Printf("[ERROR] %s\n", err)
+		log.Error(queryDocumentTag, err.Error())
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	if err := ValidateRecordTimestamp(queryParams.MaxRecordTimestamp); err != nil {
-		log.Printf("[ERROR] %s\n", err)
+		log.Error(queryDocumentTag, err.Error())
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	log.Printf("[INFO] QueryParameters contains:\n %s\n", pretty.Sprint(queryParams))
+	log.Info(queryDocumentTag, fmt.Sprintf("QueryParameters contains:\n %s", pretty.Sprint(queryParams)))
 	collection := mongoDBReader.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
 
 	pipeline, err := buildAggregatePipeline(queryParams)
 	if err != nil {
-		log.Printf("[ERROR] %s\n", err.Error())
+		log.Error(queryDocumentTag, err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 	cur, err := collection.Aggregate(context.Background(), pipeline)
 	if err != nil {
-		log.Printf("[ERROR] Aggregate: %s\n", err.Error())
+		log.Error(queryDocumentTag, err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
@@ -874,32 +879,32 @@ func (s *Service) QueryDocument(ctx context.Context, req *pb.DocumentRequest) (*
 	documentCollection := make([]*pb.Document, 0)
 	for cur.Next(context.Background()) {
 		if err := cur.Err(); err != nil {
-			log.Printf("[ERROR] Cursor Err: %s\n", err.Error())
+			log.Error(queryDocumentTag, err.Error())
 			return nil, status.Error(codes.Internal, err.Error())
 		}
 
 		// Mutate and retrieve Document
 		document := &pb.Document{}
 		if err := cur.Decode(document); err != nil {
-			log.Printf("[ERROR] Cursor Decode: %s\n", err.Error())
+			log.Error(queryDocumentTag, err.Error())
 			return nil, status.Error(codes.Internal, err.Error())
 		}
 
 		documentCollection = append(documentCollection, document)
-		log.Printf("[INFO] document: \n%s\n\n", pretty.Sprint(document))
+		log.Info(queryDocumentTag, fmt.Sprintf("document: \n%s\n", pretty.Sprint(document)))
 
 	}
 
 	if err := cur.Err(); err != nil {
-		log.Printf("[ERROR] Cursor Err: %s\n", err.Error())
+		log.Error(queryDocumentTag, err.Error())
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
 	if err := cur.Close(context.Background()); err != nil {
-		log.Printf("[ERROR] Cursor Err: %s\n", err.Error())
+		log.Error(queryDocumentTag, err.Error())
 	}
 
-	log.Println("[INFO] Success querying documents")
+	log.Info(queryDocumentTag, "Success querying documents")
 	return &pb.DocumentResponse{
 		Status:             &pb.DocumentResponse_Code{Code: uint32(codes.OK)},
 		Message:            codes.OK.String(),
