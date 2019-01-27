@@ -3,9 +3,9 @@ package service
 import (
 	"fmt"
 	"github.com/hwsc-org/hwsc-document-svc/conf"
+	log "github.com/hwsc-org/hwsc-logger/logger"
 	"github.com/mongodb/mongo-go-driver/mongo"
 	"golang.org/x/net/context"
-	"log"
 	"os"
 	"os/signal"
 	"strings"
@@ -21,11 +21,11 @@ func init() {
 	var err error
 	mongoDBReader, err = dialMongoDB(&conf.DocumentDB.Reader)
 	if err != nil {
-		log.Fatalf("[FATAL] %s\n", err.Error())
+		log.Fatal(mongoDBTag, err.Error())
 	}
 	mongoDBWriter, err = dialMongoDB(&conf.DocumentDB.Writer)
 	if err != nil {
-		log.Fatalf("[FATAL] %s\n", err.Error())
+		log.Fatal(mongoDBTag, err.Error())
 	}
 	// Handle Terminate Signal(Ctrl + C)
 	c := make(chan os.Signal)
@@ -35,7 +35,7 @@ func init() {
 		_ = disconnectMongoDBClient(mongoDBReader)
 		_ = disconnectMongoDBClient(mongoDBWriter)
 		fmt.Println()
-		log.Fatalln("[FATAL] hwsc-document-svc terminated")
+		log.Fatal(mongoDBTag, "hwsc-document-svc terminated")
 	}()
 }
 

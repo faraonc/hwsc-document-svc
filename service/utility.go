@@ -2,10 +2,12 @@ package service
 
 import (
 	"fmt"
+	"github.com/google/uuid"
 	pb "github.com/hwsc-org/hwsc-api-blocks/int/hwsc-document-svc/proto"
+	log "github.com/hwsc-org/hwsc-logger/logger"
 	"github.com/mongodb/mongo-go-driver/bson"
 	"github.com/mongodb/mongo-go-driver/bson/primitive"
-	"log"
+	"github.com/segmentio/ksuid"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -73,6 +75,22 @@ var (
 	}
 	mongoDBPatternAll = primitive.Regex{Pattern: ".*", Options: ""}
 )
+
+// NewDUID generates a new document unique ID.
+func (d *duidLocker) NewDUID() string {
+	d.lock.Lock()
+	defer d.lock.Unlock()
+	duid := ksuid.New().String()
+	return duid
+}
+
+// NewFUID generates a new file metadata unique ID.
+func (d *fuidLocker) NewFUID() string {
+	d.lock.Lock()
+	defer d.lock.Unlock()
+	newUUID := uuid.New().String()
+	return newUUID
+}
 
 // ValidateDocument validates the Document.
 // Returns an error if field fails validation.
@@ -491,7 +509,7 @@ func isStateAvailable() bool {
 	// Unlock the state before function exits
 	defer serviceStateLocker.lock.RUnlock()
 
-	log.Printf("[INFO] Service State: %s\n", serviceStateLocker.currentServiceState)
+	log.Info(serviceStateTag, serviceStateLocker.currentServiceState.String())
 	if serviceStateLocker.currentServiceState != available {
 		return false
 	}

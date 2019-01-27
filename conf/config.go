@@ -2,10 +2,10 @@ package conf
 
 import (
 	"fmt"
+	log "github.com/hwsc-org/hwsc-logger/logger"
 	"github.com/micro/go-config"
 	"github.com/micro/go-config/source/env"
 	"github.com/micro/go-config/source/file"
-	"log"
 )
 
 var (
@@ -22,23 +22,23 @@ func init() {
 	if err := conf.Load(file.NewSource(file.WithPath("conf/json/config.dev.json"))); err != nil {
 		// TODO - This is a hacky solution for the unit test, because of a weird path issue with GoLang Unit Test
 		if err := conf.Load(file.NewSource(file.WithPath("../conf/json/config.dev.json"))); err != nil {
-			log.Printf("[INFO] Failed to initialize configuration file %v\n", err)
-			log.Println("[INFO] Reading ENV variables")
+			log.Info("Failed to initialize configuration file", err.Error())
+			log.Info("Reading ENV variables")
 			src := env.NewSource(
 				env.WithPrefix("hosts"),
 			)
 			if err := conf.Load(src); err != nil {
-				log.Fatalf("[FATAL] Failed to initialize configuration %v\n", err)
+				log.Fatal("Failed to initialize configuration", err.Error())
 
 			}
 		}
 	}
 
 	if err := conf.Get("hosts", "grpc").Scan(&GRPCHost); err != nil {
-		log.Fatalf("[FATAL] Failed to get configuration %v\n", err)
+		log.Fatal("Failed to get GRPC configuration", err.Error())
 	}
 	if err := conf.Get("hosts", "mongodb").Scan(&DocumentDB); err != nil {
-		log.Fatalf("[FATAL] Failed to get configuration %v\n", err)
+		log.Fatal("Failed to get MongoDB configuration", err.Error())
 	}
 
 }

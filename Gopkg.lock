@@ -106,6 +106,14 @@
   revision = "c6e0ee1349a7efe7b8c10cd3619a0ef1717396fc"
 
 [[projects]]
+  branch = "master"
+  digest = "1:6d9e620e99454e3aa8f5f41f14f57fb1e2524d22b637f866fb96d51231acc605"
+  name = "github.com/hwsc-org/hwsc-logger"
+  packages = ["logger"]
+  pruneopts = "UT"
+  revision = "0158a67854b2a2090db0635c02a8e9a450a1c242"
+
+[[projects]]
   digest = "1:8eb1de8112c9924d59bf1d3e5c26f5eaa2bfc2a5fcbb92dc1c2e4546d695f277"
   name = "github.com/imdario/mergo"
   packages = ["."]
@@ -351,11 +359,13 @@
   input-imports = [
     "github.com/google/uuid",
     "github.com/hwsc-org/hwsc-api-blocks/int/hwsc-document-svc/proto",
+    "github.com/hwsc-org/hwsc-logger/logger",
     "github.com/kylelemons/godebug/pretty",
     "github.com/micro/go-config",
     "github.com/micro/go-config/source/env",
     "github.com/micro/go-config/source/file",
     "github.com/mongodb/mongo-go-driver/bson",
+    "github.com/mongodb/mongo-go-driver/bson/primitive",
     "github.com/mongodb/mongo-go-driver/mongo",
     "github.com/mongodb/mongo-go-driver/mongo/options",
     "github.com/segmentio/ksuid",
