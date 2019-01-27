@@ -4,9 +4,90 @@ import (
 	pb "github.com/hwsc-org/hwsc-api-blocks/int/hwsc-document-svc/proto"
 	"github.com/mongodb/mongo-go-driver/bson"
 	"github.com/stretchr/testify/assert"
+	"sync"
 	"testing"
 	"time"
 )
+
+func TestNewDUID(t *testing.T) {
+	const count = 100
+	var tokens sync.Map
+
+	var wg sync.WaitGroup // waits until all goroutines finish before executing code below wg.Wait()
+	wg.Add(count)         // indicate we are going to wait for 100 go routines
+
+	// start is a signal channel
+	// channel of empty structs is used to indicate that this channel
+	// will only be used for signalling and not for passing data
+	start := make(chan struct{})
+	for i := 0; i < count; i++ {
+		go func() {
+			// <-start blocks code below, waiting until the for loop is finished
+			// it waits for the start channel to be closed,
+			// once closed, all goroutines will execute(start) almost simultaneously
+			<-start
+
+			// decrement wg.Add, indicates 1 go routine has finished
+			// defer will call wg.Done() at end of go routine
+			defer wg.Done()
+
+			// store tokens in map to check for duplicates
+			duid := duidGenerator.NewDUID()
+			_, ok := tokens.Load(duid)
+			assert.Equal(t, false, ok)
+
+			tokens.Store(duid, true)
+		}()
+	}
+
+	// closing this channel, will unblock it,
+	// allowing execution to continue
+	close(start)
+
+	// wait for all 100 go routines to finish (when wg.Add reaches 0)
+	// blocks from running any code below it
+	wg.Wait()
+}
+
+func TestNewFUID(t *testing.T) {
+	const count = 100
+	var tokens sync.Map
+
+	var wg sync.WaitGroup // waits until all goroutines finish before executing code below wg.Wait()
+	wg.Add(count)         // indicate we are going to wait for 100 go routines
+
+	// start is a signal channel
+	// channel of empty structs is used to indicate that this channel
+	// will only be used for signalling and not for passing data
+	start := make(chan struct{})
+	for i := 0; i < count; i++ {
+		go func() {
+			// <-start blocks code below, waiting until the for loop is finished
+			// it waits for the start channel to be closed,
+			// once closed, all goroutines will execute(start) almost simultaneously
+			<-start
+
+			// decrement wg.Add, indicates 1 go routine has finished
+			// defer will call wg.Done() at end of go routine
+			defer wg.Done()
+
+			// store tokens in map to check for duplicates
+			fuid := fuidGenerator.NewFUID()
+			_, ok := tokens.Load(fuid)
+			assert.Equal(t, false, ok)
+
+			tokens.Store(fuid, true)
+		}()
+	}
+
+	// closing this channel, will unblock it,
+	// allowing execution to continue
+	close(start)
+
+	// wait for all 100 go routines to finish (when wg.Add reaches 0)
+	// blocks from running any code below it
+	wg.Wait()
+}
 
 func TestValidateDocument(t *testing.T) {
 
@@ -1735,19 +1816,46 @@ func TestValidateUpdateTimestamp(t *testing.T) {
 }
 
 func TestIsStateAvailable(t *testing.T) {
-	cases := []struct {
-		serverState state
-		expRet      bool
-	}{
-		{available, true},
-		{unavailable, false},
+	// NOTE: force a race condition by commenting out the locks inside isStateAvailable()
+
+	// test for unavailbility
+	serviceStateLocker.currentServiceState = unavailable
+	assert.Equal(t, unavailable, serviceStateLocker.currentServiceState)
+
+	ok := isStateAvailable()
+	assert.Equal(t, false, ok)
+
+	// test for availability
+	serviceStateLocker.currentServiceState = available
+	assert.Equal(t, available, serviceStateLocker.currentServiceState)
+
+	ok = isStateAvailable()
+	assert.Equal(t, true, ok)
+
+	// test race conditions
+	const count = 20
+	var wg sync.WaitGroup
+	start := make(chan struct{}) // signal channel
+
+	wg.Add(count) // #count go routines to wait for
+
+	for i := 0; i < count; i++ {
+		go func() {
+			<-start // blocks code below, until channel is closed
+
+			defer wg.Done()
+			_ = isStateAvailable()
+		}()
 	}
 
-	for _, c := range cases {
-		serviceStateLocker.currentServiceState = c.serverState
-		assert.Equal(t, c.expRet, isStateAvailable())
-	}
+	close(start) // starts executing blocked goroutines almost at the same time
 
+	// test that read-lock inside isStateAvailable() blocks this write-lock
+	serviceStateLocker.lock.Lock()
+	serviceStateLocker.currentServiceState = available
+	serviceStateLocker.lock.Unlock()
+
+	wg.Wait() // wait until all goroutines finish executing
 }
 
 func TestBuildAggregatePipeline(t *testing.T) {

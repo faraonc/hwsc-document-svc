@@ -10,4 +10,6 @@ const (
 	deleteFileMetadataTag         string = "DeleteFileMetadata"
 	listDistinctFieldValuesTag    string = "ListDistinctFieldValues"
 	queryDocumentTag              string = "QueryDocument"
+	serviceStateTag               string = "Service State:"
+	mongoDBTag                    string = "MongoDB"
 )

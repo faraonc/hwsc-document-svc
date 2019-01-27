@@ -9,7 +9,6 @@ import (
 	"github.com/kylelemons/godebug/pretty"
 	"github.com/mongodb/mongo-go-driver/bson"
 	"github.com/mongodb/mongo-go-driver/mongo/options"
-	"github.com/segmentio/ksuid"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -73,22 +72,6 @@ func init() {
 
 func (s state) String() string {
 	return serviceStateMap[s]
-}
-
-// NewDUID generates a new document unique ID.
-func (d *duidLocker) NewDUID() string {
-	d.lock.Lock()
-	defer d.lock.Unlock()
-	duid := ksuid.New().String()
-	return duid
-}
-
-// NewFUID generates a new file metadata unique ID.
-func (d *fuidLocker) NewFUID() string {
-	d.lock.Lock()
-	defer d.lock.Unlock()
-	newUUID := uuid.New().String()
-	return newUUID
 }
 
 // GetStatus gets the current status of the service.
