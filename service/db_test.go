@@ -2,6 +2,7 @@ package service
 
 import (
 	"github.com/hwsc-org/hwsc-document-svc/conf"
+	"github.com/hwsc-org/hwsc-document-svc/consts"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -34,7 +35,7 @@ func TestDisconnectMongoDBClient(t *testing.T) {
 		errorStr string
 	}{
 		{conf.DocumentDB.Reader, false, ""},
-		{"", true, errNilMongoDBClient.Error()},
+		{"", true, consts.ErrNilMongoDBClient.Error()},
 	}
 
 	for _, c := range cases {

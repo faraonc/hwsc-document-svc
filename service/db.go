@@ -1,8 +1,8 @@
 package service
 
 import (
-	"fmt"
 	"github.com/hwsc-org/hwsc-document-svc/conf"
+	"github.com/hwsc-org/hwsc-document-svc/consts"
 	log "github.com/hwsc-org/hwsc-logger/logger"
 	"github.com/mongodb/mongo-go-driver/mongo"
 	"golang.org/x/net/context"
@@ -21,11 +21,11 @@ func init() {
 	var err error
 	mongoDBReader, err = dialMongoDB(&conf.DocumentDB.Reader)
 	if err != nil {
-		log.Fatal(mongoDBTag, err.Error())
+		log.Fatal(consts.MongoDBTag, err.Error())
 	}
 	mongoDBWriter, err = dialMongoDB(&conf.DocumentDB.Writer)
 	if err != nil {
-		log.Fatal(mongoDBTag, err.Error())
+		log.Fatal(consts.MongoDBTag, err.Error())
 	}
 	// Handle Terminate Signal(Ctrl + C)
 	c := make(chan os.Signal)
@@ -34,8 +34,7 @@ func init() {
 		<-c
 		_ = disconnectMongoDBClient(mongoDBReader)
 		_ = disconnectMongoDBClient(mongoDBWriter)
-		fmt.Println()
-		log.Fatal(mongoDBTag, "hwsc-document-svc terminated")
+		log.Fatal(consts.MongoDBTag, "hwsc-document-svc terminated")
 	}()
 }
 
@@ -56,7 +55,7 @@ func dialMongoDB(uri *string) (*mongo.Client, error) {
 // Returns if there is any disconnection error.
 func disconnectMongoDBClient(client *mongo.Client) error {
 	if client == nil {
-		return errNilMongoDBClient
+		return consts.ErrNilMongoDBClient
 	}
 	return client.Disconnect(context.TODO())
 }
@@ -67,7 +66,7 @@ func refreshMongoDBConnection(client *mongo.Client, uri *string) error {
 	if client == nil {
 		newClient, err := dialMongoDB(uri)
 		if err != nil {
-			return errMongoDBUnavailable
+			return consts.ErrMongoDBUnavailable
 		}
 		assignMongoDBClient(newClient, uri)
 		return nil
@@ -76,7 +75,7 @@ func refreshMongoDBConnection(client *mongo.Client, uri *string) error {
 		newClient, err := dialMongoDB(uri)
 		if err != nil {
 			assignMongoDBClient(nil, uri)
-			return errMongoDBUnavailable
+			return consts.ErrMongoDBUnavailable
 		}
 		assignMongoDBClient(newClient, uri)
 		return nil

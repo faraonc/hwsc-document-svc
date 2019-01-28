@@ -3,6 +3,7 @@ package service
 import (
 	"fmt"
 	pb "github.com/hwsc-org/hwsc-api-blocks/int/hwsc-document-svc/proto"
+	"github.com/hwsc-org/hwsc-document-svc/consts"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/context"
 	"math/rand"
@@ -80,7 +81,8 @@ func TestCreateDocument(t *testing.T) {
 		{&pb.DocumentRequest{Data: &pb.Document{
 			Uuid: "garbage",
 		}}, available,
-			fmt.Sprintf("rpc error: code = InvalidArgument desc = %s", errInvalidDocumentUUID.Error()),
+			fmt.Sprintf("rpc error: code = InvalidArgument desc = %s",
+				consts.ErrInvalidDocumentUUID.Error()),
 			true},
 		{&pb.DocumentRequest{
 			Data: &pb.Document{
@@ -163,7 +165,8 @@ func TestListUserDocumentCollection(t *testing.T) {
 		{&pb.DocumentRequest{Data: &pb.Document{
 			Uuid: "garbage",
 		}}, available, 0,
-			fmt.Sprintf("rpc error: code = InvalidArgument desc = %s", errInvalidDocumentUUID.Error()),
+			fmt.Sprintf("rpc error: code = InvalidArgument desc = %s",
+				consts.ErrInvalidDocumentUUID.Error()),
 			true},
 		{&pb.DocumentRequest{Data: &pb.Document{
 			Uuid: "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
@@ -176,7 +179,8 @@ func TestListUserDocumentCollection(t *testing.T) {
 		{&pb.DocumentRequest{Data: &pb.Document{
 			Uuid: "4ee30333-8ec8-45a4-ba94-5e22c4a686de",
 		}}, available, 0,
-			fmt.Sprintf("rpc error: code = InvalidArgument desc = %s", errInvalidDocumentUUID.Error()),
+			fmt.Sprintf("rpc error: code = InvalidArgument desc = %s",
+				consts.ErrInvalidDocumentUUID.Error()),
 			true},
 		{&pb.DocumentRequest{Data: &pb.Document{
 			Uuid: "xxx0XSNJG0MQJHBF4QX1EFD6Y3",
