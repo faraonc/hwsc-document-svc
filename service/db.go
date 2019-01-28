@@ -34,7 +34,7 @@ func init() {
 		<-c
 		_ = disconnectMongoDBClient(mongoDBReader)
 		_ = disconnectMongoDBClient(mongoDBWriter)
-		log.Fatal("\n", consts.MongoDBTag, "hwsc-document-svc terminated")
+		log.Fatal(consts.MongoDBTag, "hwsc-document-svc terminated")
 	}()
 }
 
