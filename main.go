@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/hwsc-org/hwsc-document-svc/conf"
+	"github.com/hwsc-org/hwsc-document-svc/consts"
 	"google.golang.org/grpc"
 	"net"
 
@@ -11,12 +12,12 @@ import (
 )
 
 func main() {
-	log.Info("hwsc-document-svc initiating...")
+	log.Info(consts.DocumentServiceTag, "hwsc-document-svc initiating...")
 
 	// Make TCP listener
 	lis, err := net.Listen(conf.GRPCHost.Network, conf.GRPCHost.String())
 	if err != nil {
-		log.Fatal("Failed to initialize TCP listener:", err.Error())
+		log.Fatal(consts.DocumentServiceTag, "Failed to initialize TCP listener:", err.Error())
 	}
 
 	// Make gRPC server
@@ -25,10 +26,10 @@ func main() {
 	// Implement services in /service/service.go
 	// Register service with gRPC server
 	pb.RegisterDocumentServiceServer(s, &svc.Service{})
-	log.Info("hwsc-document-svc started at:", conf.GRPCHost.String())
+	log.Info(consts.DocumentServiceTag, "hwsc-document-svc started at:", conf.GRPCHost.String())
 
 	// Start gRPC server
 	if err := s.Serve(lis); err != nil {
-		log.Fatal("Failed to serve:", err.Error())
+		log.Fatal(consts.DocumentServiceTag, "Failed to serve:", err.Error())
 	}
 }

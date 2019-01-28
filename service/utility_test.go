@@ -2,6 +2,7 @@ package service
 
 import (
 	pb "github.com/hwsc-org/hwsc-api-blocks/int/hwsc-document-svc/proto"
+	"github.com/hwsc-org/hwsc-document-svc/consts"
 	"github.com/mongodb/mongo-go-driver/bson"
 	"github.com/stretchr/testify/assert"
 	"sync"
@@ -165,7 +166,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
-			true, errAtLeastOneImageAudioURL.Error()},
+			true, consts.ErrAtLeastOneImageAudioURL.Error()},
 		{&pb.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
@@ -202,7 +203,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
-			true, errInvalidDocumentFUID.Error()},
+			true, consts.ErrInvalidDocumentFUID.Error()},
 		{&pb.Document{
 			Duid: "0ujssszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
@@ -239,7 +240,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
-			true, errInvalidDocumentDUID.Error()},
+			true, consts.ErrInvalidDocumentDUID.Error()},
 		{&pb.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "000s0XSNJG0MQJHBF4QX1EFD6Y3",
@@ -276,7 +277,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
-			true, errInvalidDocumentUUID.Error()},
+			true, consts.ErrInvalidDocumentUUID.Error()},
 		{&pb.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
@@ -313,7 +314,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
-			true, errInvalidDocumentLastName.Error()},
+			true, consts.ErrInvalidDocumentLastName.Error()},
 		{&pb.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
@@ -350,7 +351,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
-			true, errInvalidDocumentFirstName.Error()},
+			true, consts.ErrInvalidDocumentFirstName.Error()},
 		{&pb.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
@@ -387,7 +388,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
-			true, errInvalidDocumentCallTypeName.Error()},
+			true, consts.ErrInvalidDocumentCallTypeName.Error()},
 		{&pb.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
@@ -424,7 +425,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
-			true, errInvalidDocumentGroundType.Error()},
+			true, consts.ErrInvalidDocumentGroundType.Error()},
 		{&pb.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
@@ -461,7 +462,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
-			true, errInvalidDocumentCity.Error()},
+			true, consts.ErrInvalidDocumentCity.Error()},
 		{&pb.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
@@ -499,7 +500,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
-			true, errInvalidDocumentState.Error()},
+			true, consts.ErrInvalidDocumentState.Error()},
 		{&pb.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
@@ -537,7 +538,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
-			true, errInvalidDocumentProvince.Error()},
+			true, consts.ErrInvalidDocumentProvince.Error()},
 		{&pb.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
@@ -574,7 +575,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
-			true, errInvalidDocumentCountry.Error()},
+			true, consts.ErrInvalidDocumentCountry.Error()},
 		{&pb.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
@@ -611,7 +612,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
-			true, errInvalidDocumentOcean.Error()},
+			true, consts.ErrInvalidDocumentOcean.Error()},
 		{&pb.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
@@ -648,7 +649,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
-			true, errInvalidDocumentSensorType.Error()},
+			true, consts.ErrInvalidDocumentSensorType.Error()},
 		{&pb.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
@@ -685,7 +686,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
-			true, errInvalidDocumentSensorName.Error()},
+			true, consts.ErrInvalidDocumentSensorName.Error()},
 		{&pb.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
@@ -722,7 +723,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
-			true, errInvalidDocumentSamplingRate.Error()},
+			true, consts.ErrInvalidDocumentSamplingRate.Error()},
 		{&pb.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
@@ -759,7 +760,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
-			true, errInvalidDocumentLatitude.Error()},
+			true, consts.ErrInvalidDocumentLatitude.Error()},
 		{&pb.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
@@ -796,7 +797,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
-			true, errInvalidDocumentLongitude.Error()},
+			true, consts.ErrInvalidDocumentLongitude.Error()},
 		{&pb.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
@@ -833,7 +834,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
-			true, errInvalidDocumentImageURL.Error()},
+			true, consts.ErrInvalidDocumentImageURL.Error()},
 		{&pb.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
@@ -870,44 +871,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
-			true, errInvalidDocumentAudioURL.Error()},
-		{&pb.Document{
-			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
-			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			PublisherName: &pb.Publisher{
-				LastName:  "Kim",
-				FirstName: "Lisa",
-			},
-			CallTypeName: "some call type name",
-			GroundType:   "some ground type",
-			StudySite: &pb.StudySite{
-				City:    "Seattle",
-				Country: "USA",
-			},
-			Ocean:        "Pacific Ocean",
-			SensorType:   "some sensor type",
-			SensorName:   "some sensor name",
-			SamplingRate: 100,
-			Latitude:     89.123,
-			Longitude:    -100.123,
-			ImageUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/images/Rotating_earth_(large).gif"},
-			AudioUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3"},
-			VideoUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
-			FileUrlsMap: map[string]string{
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
-				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
-			RecordTimestamp: 1514764800,
-			CreateTimestamp: 1539831496,
-			UpdateTimestamp: 0,
-			IsPublic:        true,
-		},
-			true, errInvalidDocumentVideoURL.Error()},
+			true, consts.ErrInvalidDocumentAudioURL.Error()},
 		{&pb.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
@@ -934,6 +898,43 @@ func TestValidateDocument(t *testing.T) {
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3"},
 			VideoUrlsMap: map[string]string{
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
+			FileUrlsMap: map[string]string{
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
+			RecordTimestamp: 1514764800,
+			CreateTimestamp: 1539831496,
+			UpdateTimestamp: 0,
+			IsPublic:        true,
+		},
+			true, consts.ErrInvalidDocumentVideoURL.Error()},
+		{&pb.Document{
+			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
+			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
+			PublisherName: &pb.Publisher{
+				LastName:  "Kim",
+				FirstName: "Lisa",
+			},
+			CallTypeName: "some call type name",
+			GroundType:   "some ground type",
+			StudySite: &pb.StudySite{
+				City:    "Seattle",
+				Country: "USA",
+			},
+			Ocean:        "Pacific Ocean",
+			SensorType:   "some sensor type",
+			SensorName:   "some sensor name",
+			SamplingRate: 100,
+			Latitude:     89.123,
+			Longitude:    -100.123,
+			ImageUrlsMap: map[string]string{
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/images/Rotating_earth_(large).gif"},
+			AudioUrlsMap: map[string]string{
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3"},
+			VideoUrlsMap: map[string]string{
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
 				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
 			FileUrlsMap: map[string]string{
@@ -944,7 +945,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
-			true, errInvalidDocumentFileURL.Error()},
+			true, consts.ErrInvalidDocumentFileURL.Error()},
 		{&pb.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
@@ -981,7 +982,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
-			true, errInvalidDocumentRecordTimestamp.Error()},
+			true, consts.ErrInvalidDocumentRecordTimestamp.Error()},
 		{&pb.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
@@ -1018,7 +1019,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 0,
 			IsPublic:        true,
 		},
-			true, errInvalidDocumentCreateTimestamp.Error()},
+			true, consts.ErrInvalidDocumentCreateTimestamp.Error()},
 		{&pb.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
@@ -1055,7 +1056,7 @@ func TestValidateDocument(t *testing.T) {
 			UpdateTimestamp: 1539831495,
 			IsPublic:        true,
 		},
-			true, errInvalidUpdateTimestamp.Error()},
+			true, consts.ErrInvalidUpdateTimestamp.Error()},
 	}
 
 	for _, c := range cases {
@@ -1083,11 +1084,11 @@ func TestValidateDUID(t *testing.T) {
 		errorStr string
 	}{
 		{"0ujsszwN8NRY24YaXiTIE2VWDTS", false, ""},
-		{"0ujsszwN8NRY24YaXiTIE2VWDTSD", true, errInvalidDocumentDUID.Error()},
-		{"0ujsszwN8NRY24YaXiTIE2VWDT", true, errInvalidDocumentDUID.Error()},
+		{"0ujsszwN8NRY24YaXiTIE2VWDTSD", true, consts.ErrInvalidDocumentDUID.Error()},
+		{"0ujsszwN8NRY24YaXiTIE2VWDT", true, consts.ErrInvalidDocumentDUID.Error()},
 		{"", false, ""},
-		{"   0ujsszwN8NRY24YaXiTIE2VWDTS", true, errInvalidDocumentDUID.Error()},
-		{"0ujsszwN8NRY24YaXiTIE2VWDTS    ", true, errInvalidDocumentDUID.Error()},
+		{"   0ujsszwN8NRY24YaXiTIE2VWDTS", true, consts.ErrInvalidDocumentDUID.Error()},
+		{"0ujsszwN8NRY24YaXiTIE2VWDTS    ", true, consts.ErrInvalidDocumentDUID.Error()},
 	}
 
 	for _, c := range cases {
@@ -1108,11 +1109,11 @@ func TestValidateUUID(t *testing.T) {
 		errorStr string
 	}{
 		{"0000XSNJG0MQJHBF4QX1EFD6Y3", false, ""},
-		{"0000XSNJG0MQJHBF4QX1EFD6Y33", true, errInvalidDocumentUUID.Error()},
-		{"0000XSNJG0MQJHBF4QX1EFD6Y", true, errInvalidDocumentUUID.Error()},
-		{"", true, errInvalidDocumentUUID.Error()},
-		{"   0000XSNJG0MQJHBF4QX1EFD6Y3", true, errInvalidDocumentUUID.Error()},
-		{"0000XSNJG0MQJHBF4QX1EFD6Y3    ", true, errInvalidDocumentUUID.Error()},
+		{"0000XSNJG0MQJHBF4QX1EFD6Y33", true, consts.ErrInvalidDocumentUUID.Error()},
+		{"0000XSNJG0MQJHBF4QX1EFD6Y", true, consts.ErrInvalidDocumentUUID.Error()},
+		{"", true, consts.ErrInvalidDocumentUUID.Error()},
+		{"   0000XSNJG0MQJHBF4QX1EFD6Y3", true, consts.ErrInvalidDocumentUUID.Error()},
+		{"0000XSNJG0MQJHBF4QX1EFD6Y3    ", true, consts.ErrInvalidDocumentUUID.Error()},
 	}
 
 	for _, c := range cases {
@@ -1133,19 +1134,19 @@ func TestValidateFUID(t *testing.T) {
 		errorStr string
 	}{
 		{"4ff30392-8ec8-45a4-ba94-5e22c4a686de", false, ""},
-		{"4fg30392-8ec8-45a4-ba94-5e22c4a686de", true, errInvalidDocumentFUID.Error()},
-		{"a4ff30392-8ec8-45a4-ba94-5e22c4a686de", true, errInvalidDocumentFUID.Error()},
-		{"4ff30392-a8ec8-45a4-ba94-5e22c4a686de", true, errInvalidDocumentFUID.Error()},
-		{"4ff30392-8ec8-a45a4-ba94-5e22c4a686de", true, errInvalidDocumentFUID.Error()},
-		{"4ff30392-8ec8-45a4-aba94-5e22c4a686de", true, errInvalidDocumentFUID.Error()},
-		{"4ff30392-8ec8-45a4-ba94-a5e22c4a686de", true, errInvalidDocumentFUID.Error()},
-		{"", true, errInvalidDocumentFUID.Error()},
-		{"   4ff30392-8ec8-45a4-ba94-5e22c4a686de", true, errInvalidDocumentFUID.Error()},
-		{"4ff30392-8ec8-45a4-ba94-5e22c4a686de    ", true, errInvalidDocumentFUID.Error()},
-		{"4ff303928ec8-45a4-ba94-5e22c4a686de", true, errInvalidDocumentFUID.Error()},
-		{"4ff30392-8ec845a4-ba94-5e22c4a686de", true, errInvalidDocumentFUID.Error()},
-		{"4ff30392-8ec8-45a4ba94-5e22c4a686de", true, errInvalidDocumentFUID.Error()},
-		{"4ff30392-8ec8-45a4-ba945e22c4a686de", true, errInvalidDocumentFUID.Error()},
+		{"4fg30392-8ec8-45a4-ba94-5e22c4a686de", true, consts.ErrInvalidDocumentFUID.Error()},
+		{"a4ff30392-8ec8-45a4-ba94-5e22c4a686de", true, consts.ErrInvalidDocumentFUID.Error()},
+		{"4ff30392-a8ec8-45a4-ba94-5e22c4a686de", true, consts.ErrInvalidDocumentFUID.Error()},
+		{"4ff30392-8ec8-a45a4-ba94-5e22c4a686de", true, consts.ErrInvalidDocumentFUID.Error()},
+		{"4ff30392-8ec8-45a4-aba94-5e22c4a686de", true, consts.ErrInvalidDocumentFUID.Error()},
+		{"4ff30392-8ec8-45a4-ba94-a5e22c4a686de", true, consts.ErrInvalidDocumentFUID.Error()},
+		{"", true, consts.ErrInvalidDocumentFUID.Error()},
+		{"   4ff30392-8ec8-45a4-ba94-5e22c4a686de", true, consts.ErrInvalidDocumentFUID.Error()},
+		{"4ff30392-8ec8-45a4-ba94-5e22c4a686de    ", true, consts.ErrInvalidDocumentFUID.Error()},
+		{"4ff303928ec8-45a4-ba94-5e22c4a686de", true, consts.ErrInvalidDocumentFUID.Error()},
+		{"4ff30392-8ec845a4-ba94-5e22c4a686de", true, consts.ErrInvalidDocumentFUID.Error()},
+		{"4ff30392-8ec8-45a4ba94-5e22c4a686de", true, consts.ErrInvalidDocumentFUID.Error()},
+		{"4ff30392-8ec8-45a4-ba945e22c4a686de", true, consts.ErrInvalidDocumentFUID.Error()},
 	}
 
 	for _, c := range cases {
@@ -1168,9 +1169,9 @@ func TestValidatePublisher(t *testing.T) {
 		errorStr  string
 	}{
 		{"Kim", "Lisa", false, ""},
-		{"", "Lisa", true, errInvalidDocumentLastName.Error()},
-		{"Kim", "123456789123456789012345678901234", true, errInvalidDocumentFirstName.Error()},
-		{"       ", "Leesa", true, errInvalidDocumentLastName.Error()},
+		{"", "Lisa", true, consts.ErrInvalidDocumentLastName.Error()},
+		{"Kim", "123456789123456789012345678901234", true, consts.ErrInvalidDocumentFirstName.Error()},
+		{"       ", "Leesa", true, consts.ErrInvalidDocumentLastName.Error()},
 	}
 
 	for _, c := range cases {
@@ -1192,9 +1193,9 @@ func TestValidateLastName(t *testing.T) {
 		errorStr string
 	}{
 		{"Kim", false, ""},
-		{"", true, errInvalidDocumentLastName.Error()},
-		{"123456789123456789012345678901234", true, errInvalidDocumentLastName.Error()},
-		{"       ", true, errInvalidDocumentLastName.Error()},
+		{"", true, consts.ErrInvalidDocumentLastName.Error()},
+		{"123456789123456789012345678901234", true, consts.ErrInvalidDocumentLastName.Error()},
+		{"       ", true, consts.ErrInvalidDocumentLastName.Error()},
 	}
 
 	for _, c := range cases {
@@ -1216,9 +1217,9 @@ func TestValidateFirstName(t *testing.T) {
 		errorStr string
 	}{
 		{"Lisa", false, ""},
-		{"", true, errInvalidDocumentFirstName.Error()},
-		{"123456789123456789012345678901234", true, errInvalidDocumentFirstName.Error()},
-		{"       ", true, errInvalidDocumentFirstName.Error()},
+		{"", true, consts.ErrInvalidDocumentFirstName.Error()},
+		{"123456789123456789012345678901234", true, consts.ErrInvalidDocumentFirstName.Error()},
+		{"       ", true, consts.ErrInvalidDocumentFirstName.Error()},
 	}
 
 	for _, c := range cases {
@@ -1240,9 +1241,9 @@ func TestValidateCallTypeName(t *testing.T) {
 		errorStr string
 	}{
 		{"Gunshot", false, ""},
-		{"", true, errInvalidDocumentCallTypeName.Error()},
-		{"12345678912345678901234567890123412345678912345678901234567890123", true, errInvalidDocumentCallTypeName.Error()},
-		{"       ", true, errInvalidDocumentCallTypeName.Error()},
+		{"", true, consts.ErrInvalidDocumentCallTypeName.Error()},
+		{"12345678912345678901234567890123412345678912345678901234567890123", true, consts.ErrInvalidDocumentCallTypeName.Error()},
+		{"       ", true, consts.ErrInvalidDocumentCallTypeName.Error()},
 	}
 
 	for _, c := range cases {
@@ -1264,9 +1265,9 @@ func TestValidateGroundType(t *testing.T) {
 		errorStr string
 	}{
 		{"Gunshot", false, ""},
-		{"", true, errInvalidDocumentGroundType.Error()},
-		{"12345678912345678901234567890123412345678912345678901234567890123", true, errInvalidDocumentGroundType.Error()},
-		{"       ", true, errInvalidDocumentGroundType.Error()},
+		{"", true, consts.ErrInvalidDocumentGroundType.Error()},
+		{"12345678912345678901234567890123412345678912345678901234567890123", true, consts.ErrInvalidDocumentGroundType.Error()},
+		{"       ", true, consts.ErrInvalidDocumentGroundType.Error()},
 	}
 
 	for _, c := range cases {
@@ -1293,12 +1294,12 @@ func TestValidateStudySite(t *testing.T) {
 		{"Tijuana", "Baja California", "", "Mexico", false, ""},
 		{"Copenhagen", "", "", "Denmark", false, ""},
 		{"Batangas City", "", "Batangas", "Philippines", false, ""},
-		{"Batangas City", "", "12345678912345678901234567890123412345678912345678901234567890123", "Philippines", true, errInvalidDocumentProvince.Error()},
-		{"Tijuana", "12345678912345678901234567890123412345678912345678901234567890123", "", "Mexico", true, errInvalidDocumentState.Error()},
-		{"", "Baja California", "", "Mexico", true, errInvalidDocumentCity.Error()},
-		{"Tijuana", "Baja California", "", "", true, errInvalidDocumentCountry.Error()},
-		{"San Diego", "CA", "", "12345678912345678901234567890123412345678912345678901234567890123", true, errInvalidDocumentCountry.Error()},
-		{"       ", "Baja California", "", "Mexico", true, errInvalidDocumentCity.Error()},
+		{"Batangas City", "", "12345678912345678901234567890123412345678912345678901234567890123", "Philippines", true, consts.ErrInvalidDocumentProvince.Error()},
+		{"Tijuana", "12345678912345678901234567890123412345678912345678901234567890123", "", "Mexico", true, consts.ErrInvalidDocumentState.Error()},
+		{"", "Baja California", "", "Mexico", true, consts.ErrInvalidDocumentCity.Error()},
+		{"Tijuana", "Baja California", "", "", true, consts.ErrInvalidDocumentCountry.Error()},
+		{"San Diego", "CA", "", "12345678912345678901234567890123412345678912345678901234567890123", true, consts.ErrInvalidDocumentCountry.Error()},
+		{"       ", "Baja California", "", "Mexico", true, consts.ErrInvalidDocumentCity.Error()},
 	}
 
 	for _, c := range cases {
@@ -1320,9 +1321,9 @@ func TestValidateCity(t *testing.T) {
 		errorStr string
 	}{
 		{"Mexico City", false, ""},
-		{"", true, errInvalidDocumentCity.Error()},
-		{"12345678912345678901234567890123412345678912345678901234567890123", true, errInvalidDocumentCity.Error()},
-		{"       ", true, errInvalidDocumentCity.Error()},
+		{"", true, consts.ErrInvalidDocumentCity.Error()},
+		{"12345678912345678901234567890123412345678912345678901234567890123", true, consts.ErrInvalidDocumentCity.Error()},
+		{"       ", true, consts.ErrInvalidDocumentCity.Error()},
 	}
 
 	for _, c := range cases {
@@ -1345,7 +1346,7 @@ func TestValidateState(t *testing.T) {
 	}{
 		{"California", false, ""},
 		{"", false, ""},
-		{"12345678912345678901234567890123412345678912345678901234567890123", true, errInvalidDocumentState.Error()},
+		{"12345678912345678901234567890123412345678912345678901234567890123", true, consts.ErrInvalidDocumentState.Error()},
 	}
 
 	for _, c := range cases {
@@ -1368,7 +1369,7 @@ func TestValidateProvince(t *testing.T) {
 	}{
 		{"Batangas City", false, ""},
 		{"", false, ""},
-		{"12345678912345678901234567890123412345678912345678901234567890123", true, errInvalidDocumentProvince.Error()},
+		{"12345678912345678901234567890123412345678912345678901234567890123", true, consts.ErrInvalidDocumentProvince.Error()},
 	}
 
 	for _, c := range cases {
@@ -1390,9 +1391,9 @@ func TestValidateCountry(t *testing.T) {
 		errorStr string
 	}{
 		{"Mexico", false, ""},
-		{"", true, errInvalidDocumentCountry.Error()},
-		{"12345678912345678901234567890123412345678912345678901234567890123", true, errInvalidDocumentCountry.Error()},
-		{"       ", true, errInvalidDocumentCountry.Error()},
+		{"", true, consts.ErrInvalidDocumentCountry.Error()},
+		{"12345678912345678901234567890123412345678912345678901234567890123", true, consts.ErrInvalidDocumentCountry.Error()},
+		{"       ", true, consts.ErrInvalidDocumentCountry.Error()},
 	}
 
 	for _, c := range cases {
@@ -1428,12 +1429,12 @@ func TestValidateOcean(t *testing.T) {
 		{"      Pacific Ocean", false, ""},
 		{"Atlantic ocean     ", false, ""},
 
-		{"Atlantic ocean    hello ", true, errInvalidDocumentOcean.Error()},
-		{"Atlantic oceans", true, errInvalidDocumentOcean.Error()},
-		{"", true, errInvalidDocumentOcean.Error()},
-		{"      ", true, errInvalidDocumentOcean.Error()},
-		{"idonotexist", true, errInvalidDocumentOcean.Error()},
-		{"Indian 1 Ocean", true, errInvalidDocumentOcean.Error()},
+		{"Atlantic ocean    hello ", true, consts.ErrInvalidDocumentOcean.Error()},
+		{"Atlantic oceans", true, consts.ErrInvalidDocumentOcean.Error()},
+		{"", true, consts.ErrInvalidDocumentOcean.Error()},
+		{"      ", true, consts.ErrInvalidDocumentOcean.Error()},
+		{"idonotexist", true, consts.ErrInvalidDocumentOcean.Error()},
+		{"Indian 1 Ocean", true, consts.ErrInvalidDocumentOcean.Error()},
 	}
 
 	for _, c := range cases {
@@ -1455,9 +1456,9 @@ func TestValidateSensorType(t *testing.T) {
 		errorStr string
 	}{
 		{"Bprobe", false, ""},
-		{"", true, errInvalidDocumentSensorType.Error()},
-		{"12345678912345678901234567890123412345678912345678901234567890123", true, errInvalidDocumentSensorType.Error()},
-		{"       ", true, errInvalidDocumentSensorType.Error()},
+		{"", true, consts.ErrInvalidDocumentSensorType.Error()},
+		{"12345678912345678901234567890123412345678912345678901234567890123", true, consts.ErrInvalidDocumentSensorType.Error()},
+		{"       ", true, consts.ErrInvalidDocumentSensorType.Error()},
 	}
 
 	for _, c := range cases {
@@ -1478,9 +1479,9 @@ func TestValidateSensorName(t *testing.T) {
 		errorStr string
 	}{
 		{"Tag", false, ""},
-		{"", true, errInvalidDocumentSensorName.Error()},
-		{"12345678912345678901234567890123412345678912345678901234567890123", true, errInvalidDocumentSensorName.Error()},
-		{"       ", true, errInvalidDocumentSensorName.Error()},
+		{"", true, consts.ErrInvalidDocumentSensorName.Error()},
+		{"12345678912345678901234567890123412345678912345678901234567890123", true, consts.ErrInvalidDocumentSensorName.Error()},
+		{"       ", true, consts.ErrInvalidDocumentSensorName.Error()},
 	}
 
 	for _, c := range cases {
@@ -1503,7 +1504,7 @@ func TestValidateSamplingRate(t *testing.T) {
 		{0, false, ""},
 		{1000, false, ""},
 		{maxSamplingRate, false, ""},
-		{maxSamplingRate + 1, true, errInvalidDocumentSamplingRate.Error()},
+		{maxSamplingRate + 1, true, consts.ErrInvalidDocumentSamplingRate.Error()},
 	}
 
 	for _, c := range cases {
@@ -1523,12 +1524,12 @@ func TestValidateLatitude(t *testing.T) {
 		isExpErr bool
 		errorStr string
 	}{
-		{minLatitude - 1, true, errInvalidDocumentLatitude.Error()},
+		{minLatitude - 1, true, consts.ErrInvalidDocumentLatitude.Error()},
 		{minLatitude, false, ""},
 		{0, false, ""},
 		{45, false, ""},
 		{maxLatitude, false, ""},
-		{maxLatitude + 1, true, errInvalidDocumentLatitude.Error()},
+		{maxLatitude + 1, true, consts.ErrInvalidDocumentLatitude.Error()},
 	}
 
 	for _, c := range cases {
@@ -1548,12 +1549,12 @@ func TestValidateLongitude(t *testing.T) {
 		isExpErr bool
 		errorStr string
 	}{
-		{minLongitude - 1, true, errInvalidDocumentLongitude.Error()},
+		{minLongitude - 1, true, consts.ErrInvalidDocumentLongitude.Error()},
 		{minLongitude, false, ""},
 		{0, false, ""},
 		{150, false, ""},
 		{maxLongitude, false, ""},
-		{maxLongitude + 1, true, errInvalidDocumentLongitude.Error()},
+		{maxLongitude + 1, true, consts.ErrInvalidDocumentLongitude.Error()},
 	}
 
 	for _, c := range cases {
@@ -1580,15 +1581,15 @@ func TestValidateImageURLs(t *testing.T) {
 		}, false, ""},
 		{map[string]string{
 			"4ff30392-8ec8-45a4-ba9a4-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/images/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.jpg",
-		}, true, errInvalidDocumentFUID.Error()},
+		}, true, consts.ErrInvalidDocumentFUID.Error()},
 		{nil,
-			true, errInvalidDocumentImageURLs.Error(),
+			true, consts.ErrInvalidDocumentImageURLs.Error(),
 		},
 		{map[string]string{
 			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "",
 			"4ff30392-8ec8-45a4-ba94-5e22c4a686d1": "https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png",
 			"4ff30392-8ec8-45a4-ba94-5e22c4a686d2": "https://hwscdevstorage.blob.core.windows.net/images/Rotating_earth_(large).gif",
-		}, true, errInvalidDocumentImageURL.Error()},
+		}, true, consts.ErrInvalidDocumentImageURL.Error()},
 		{map[string]string{
 			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "hwscdevstorage.blob.core.windows.net/images/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.jpg",
 		}, true, "invalid Document ImageURL: hwscdevstorage.blob.core.windows.net/images/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.jpg"},
@@ -1623,16 +1624,16 @@ func TestValidateAudioURLs(t *testing.T) {
 		}, false, ""},
 		{map[string]string{
 			"4ff30392-8ec8-45a4-ba9a4-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3",
-		}, true, errInvalidDocumentFUID.Error(),
+		}, true, consts.ErrInvalidDocumentFUID.Error(),
 		},
 		{nil,
-			true, errInvalidDocumentAudioURLs.Error(),
+			true, consts.ErrInvalidDocumentAudioURLs.Error(),
 		},
 		{map[string]string{
 			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "",
 			"4ff30392-8ec8-45a4-ba94-5e22c4a686d1": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
 			"4ff30392-8ec8-45a4-ba94-5e22c4a686d2": "https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3",
-		}, true, errInvalidDocumentAudioURL.Error()},
+		}, true, consts.ErrInvalidDocumentAudioURL.Error()},
 		{map[string]string{
 			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3",
 		}, true, "invalid Document AudioURL: hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3"},
@@ -1667,16 +1668,16 @@ func TestValidateVideoURLs(t *testing.T) {
 		}, false, ""},
 		{map[string]string{
 			"4ff30392-8ec8-45a4-ba9a4-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4",
-		}, true, errInvalidDocumentFUID.Error(),
+		}, true, consts.ErrInvalidDocumentFUID.Error(),
 		},
 		{nil,
-			true, errInvalidDocumentVideoURLs.Error(),
+			true, consts.ErrInvalidDocumentVideoURLs.Error(),
 		},
 		{map[string]string{
 			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "",
 			"4ff30392-8ec8-45a4-ba94-5e22c4a686d1": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
 			"4ff30392-8ec8-45a4-ba94-5e22c4a686d2": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4",
-		}, true, errInvalidDocumentVideoURL.Error()},
+		}, true, consts.ErrInvalidDocumentVideoURL.Error()},
 		{map[string]string{
 			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
 		}, true, "invalid Document VideoURL: hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv"},
@@ -1711,16 +1712,16 @@ func TestValidateFileURLs(t *testing.T) {
 		}, false, ""},
 		{map[string]string{
 			"4ff30392-8ec8-45a4-ba9a4-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4",
-		}, true, errInvalidDocumentFUID.Error(),
+		}, true, consts.ErrInvalidDocumentFUID.Error(),
 		},
 		{nil,
-			true, errInvalidDocumentFileURLs.Error(),
+			true, consts.ErrInvalidDocumentFileURLs.Error(),
 		},
 		{map[string]string{
 			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "",
 			"4ff30392-8ec8-45a4-ba94-5e22c4a686d1": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
 			"4ff30392-8ec8-45a4-ba94-5e22c4a686d2": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4",
-		}, true, errInvalidDocumentFileURL.Error()},
+		}, true, consts.ErrInvalidDocumentFileURL.Error()},
 		{map[string]string{
 			"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
 		}, true, "invalid Document FileURL: hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv"},
@@ -1745,8 +1746,8 @@ func TestValidateRecordTimestamp(t *testing.T) {
 	}{
 		{1514764800, false, ""},
 		{minTimestamp, false, ""},
-		{minTimestamp - 1, true, errInvalidDocumentRecordTimestamp.Error()},
-		{time.Now().UTC().Unix() + 100, true, errInvalidDocumentRecordTimestamp.Error()},
+		{minTimestamp - 1, true, consts.ErrInvalidDocumentRecordTimestamp.Error()},
+		{time.Now().UTC().Unix() + 100, true, consts.ErrInvalidDocumentRecordTimestamp.Error()},
 	}
 
 	for _, c := range cases {
@@ -1771,9 +1772,9 @@ func TestValidateCreateTimestamp(t *testing.T) {
 		{0, 1514764800, false, ""},
 		{1539831496, 1514764800, false, ""},
 		{1514764800, 1539831496, true,
-			errInvalidDocumentCreateTimestamp.Error()},
+			consts.ErrInvalidDocumentCreateTimestamp.Error()},
 		{time.Now().UTC().Unix() + 100, 1539831496, true,
-			errInvalidDocumentCreateTimestamp.Error()},
+			consts.ErrInvalidDocumentCreateTimestamp.Error()},
 	}
 
 	for _, c := range cases {
@@ -1798,9 +1799,9 @@ func TestValidateUpdateTimestamp(t *testing.T) {
 		{0, 1514764800, false, ""},
 		{1514764801, 1514764800, false, ""},
 		{1514764800, 1539831496, true,
-			errInvalidUpdateTimestamp.Error()},
+			consts.ErrInvalidUpdateTimestamp.Error()},
 		{time.Now().UTC().Unix() + 100, 1539831496, true,
-			errInvalidUpdateTimestamp.Error()},
+			consts.ErrInvalidUpdateTimestamp.Error()},
 	}
 
 	for _, c := range cases {
@@ -1865,7 +1866,7 @@ func TestBuildAggregatePipeline(t *testing.T) {
 		isExpErr  bool
 		errorStr  string
 	}{
-		{nil, nil, true, errNilQueryTransaction.Error()},
+		{nil, nil, true, consts.ErrNilQueryTransaction.Error()},
 		{
 			&pb.QueryTransaction{
 				Publishers: []*pb.Publisher{
@@ -2064,8 +2065,8 @@ func TestExtractDistinctResults(t *testing.T) {
 		isExpErr    bool
 		errorStr    string
 	}{
-		{nil, nil, nil, "", true, errNilQueryResult.Error()},
-		{nil, &pb.QueryTransaction{}, nil, "", true, errInvalidDistinctResult.Error()},
+		{nil, nil, nil, "", true, consts.ErrNilQueryResult.Error()},
+		{nil, &pb.QueryTransaction{}, nil, "", true, consts.ErrInvalidDistinctResult.Error()},
 		{
 			[]interface{}{
 				bson.D{
@@ -2190,7 +2191,7 @@ func TestExtractDistinctResults(t *testing.T) {
 			},
 			"default",
 			true,
-			errInvalidDistinctFieldName.Error(),
+			consts.ErrInvalidDistinctFieldName.Error(),
 		},
 	}
 
@@ -2211,8 +2212,8 @@ func TestExtractDistinctPublishers(t *testing.T) {
 		isExpErr  bool
 		errorStr  string
 	}{
-		{nil, nil, true, errInvalidDistinctResult.Error()},
-		{[]interface{}{}, nil, true, errInvalidDistinctResult.Error()},
+		{nil, nil, true, consts.ErrInvalidDistinctResult.Error()},
+		{[]interface{}{}, nil, true, consts.ErrInvalidDistinctResult.Error()},
 		{
 			[]interface{}{
 				bson.D{
@@ -2250,8 +2251,8 @@ func TestExtractDistinctStudySites(t *testing.T) {
 		isExpErr  bool
 		errorStr  string
 	}{
-		{nil, nil, true, errInvalidDistinctResult.Error()},
-		{[]interface{}{}, nil, true, errInvalidDistinctResult.Error()},
+		{nil, nil, true, consts.ErrInvalidDistinctResult.Error()},
+		{[]interface{}{}, nil, true, consts.ErrInvalidDistinctResult.Error()},
 		{
 			[]interface{}{
 				bson.D{
@@ -2293,8 +2294,8 @@ func TestExtractDistinct(t *testing.T) {
 		isExpErr  bool
 		errorStr  string
 	}{
-		{nil, nil, true, errInvalidDistinctResult.Error()},
-		{[]interface{}{}, nil, true, errInvalidDistinctResult.Error()},
+		{nil, nil, true, consts.ErrInvalidDistinctResult.Error()},
+		{[]interface{}{}, nil, true, consts.ErrInvalidDistinctResult.Error()},
 		{[]interface{}{"a", "b", "c"}, []string{"a", "b", "c"}, false, ""},
 	}
 
@@ -2333,8 +2334,8 @@ func TestValidateURL(t *testing.T) {
 		isExpErr bool
 		errorStr string
 	}{
-		{"", true, errUnreachableURI.Error()},
-		{"https://hwscdevstorage.blob.core.windows.net/imag/Rotating_earth_(large).gif", true, errUnreachableURI.Error()},
+		{"", true, consts.ErrUnreachableURI.Error()},
+		{"https://hwscdevstorage.blob.core.windows.net/imag/Rotating_earth_(large).gif", true, consts.ErrUnreachableURI.Error()},
 		{"https://hwscdevstorage.blob.core.windows.net/images/Rotating_earth_(large).gif", false, ""},
 	}
 
