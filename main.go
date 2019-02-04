@@ -8,7 +8,7 @@ import (
 
 	pb "github.com/hwsc-org/hwsc-api-blocks/int/hwsc-document-svc/proto"
 	svc "github.com/hwsc-org/hwsc-document-svc/service"
-	log "github.com/hwsc-org/hwsc-logger/logger"
+	log "github.com/hwsc-org/hwsc-lib/logger"
 )
 
 func main() {

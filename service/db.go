@@ -3,7 +3,7 @@ package service
 import (
 	"github.com/hwsc-org/hwsc-document-svc/conf"
 	"github.com/hwsc-org/hwsc-document-svc/consts"
-	log "github.com/hwsc-org/hwsc-logger/logger"
+	log "github.com/hwsc-org/hwsc-lib/logger"
 	"github.com/mongodb/mongo-go-driver/mongo"
 	"golang.org/x/net/context"
 	"os"
