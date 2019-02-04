@@ -40,7 +40,7 @@
   version = "1.0.0"
 [[constraint]]
   name = "github.com/mongodb/mongo-go-driver"
-  version = "0.2.0"
+  version = "0.3.0"
 [[constraint]]
   branch = "master"
-  name = "github.com/hwsc-org/hwsc-logger"
+  name = "github.com/hwsc-org/hwsc-lib"

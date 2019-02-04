@@ -6,7 +6,7 @@ import (
 	pb "github.com/hwsc-org/hwsc-api-blocks/int/hwsc-document-svc/proto"
 	"github.com/hwsc-org/hwsc-document-svc/conf"
 	"github.com/hwsc-org/hwsc-document-svc/consts"
-	log "github.com/hwsc-org/hwsc-logger/logger"
+	log "github.com/hwsc-org/hwsc-lib/logger"
 	"github.com/kylelemons/godebug/pretty"
 	"github.com/mongodb/mongo-go-driver/bson"
 	"github.com/mongodb/mongo-go-driver/mongo/options"
