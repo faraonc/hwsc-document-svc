@@ -77,14 +77,14 @@ func (s state) String() string {
 
 // GetStatus gets the current status of the service.
 func (s *Service) GetStatus(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
-	log.Info("Requesting GetStatus service")
+	log.Info(consts.DocumentServiceTag, "Requesting GetStatus service")
 
 	// Lock the state for reading
 	serviceStateLocker.lock.RLock()
 	// Unlock the state before function exits
 	defer serviceStateLocker.lock.RUnlock()
 
-	log.Info("Service State:", serviceStateLocker.currentServiceState.String())
+	log.Info(consts.DocumentServiceTag, "Service State:", serviceStateLocker.currentServiceState.String())
 	if serviceStateLocker.currentServiceState == unavailable {
 		return &pb.DocumentResponse{
 			Status:  &pb.DocumentResponse_Code{Code: uint32(codes.Unavailable)},
@@ -118,7 +118,7 @@ func (s *Service) GetStatus(ctx context.Context, req *pb.DocumentRequest) (*pb.D
 // CreateDocument creates a document in MongoDB.
 // Returns the Document.
 func (s *Service) CreateDocument(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
-	log.Info("Requesting CreateDocument service")
+	log.Info(consts.DocumentServiceTag, "Requesting CreateDocument service")
 
 	if ok := isStateAvailable(); !ok {
 		log.Info(consts.CreateDocumentTag, consts.ErrServiceUnavailable.Error())
@@ -219,7 +219,7 @@ func (s *Service) CreateDocument(ctx context.Context, req *pb.DocumentRequest) (
 // ListUserDocumentCollection retrieves all the MongoDB documents for a specific user with the given UUID.
 // Returns a collection of Documents.
 func (s *Service) ListUserDocumentCollection(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
-	log.Info("Requesting ListUserDocumentCollection service")
+	log.Info(consts.DocumentServiceTag, "Requesting ListUserDocumentCollection service")
 
 	if ok := isStateAvailable(); !ok {
 		log.Error(consts.ListUserDocumentCollectionTag, consts.ErrServiceUnavailable.Error())
@@ -304,7 +304,7 @@ func (s *Service) ListUserDocumentCollection(ctx context.Context, req *pb.Docume
 // UpdateDocument (completely) updates a MongoDB document with a given DUID.
 // Returns the updated Document.
 func (s *Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
-	log.Info("Requesting UpdateDocument service")
+	log.Info(consts.DocumentServiceTag, "Requesting UpdateDocument service")
 
 	if ok := isStateAvailable(); !ok {
 		log.Error(consts.UpdateDocumentTag, consts.ErrServiceUnavailable.Error())
@@ -429,7 +429,7 @@ func (s *Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (
 // DeleteDocument deletes a MongoDB document using DUID.
 // Returns the deleted Document.
 func (s *Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
-	log.Info("Requesting DeleteDocument service")
+	log.Info(consts.DocumentServiceTag, "Requesting DeleteDocument service")
 
 	if ok := isStateAvailable(); !ok {
 		log.Error(consts.DeleteDocumentTag, consts.ErrServiceUnavailable.Error())
@@ -506,7 +506,7 @@ func (s *Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (
 // AddFileMetadata adds a new FileMetadata in a MongoDB document using a given url, and DUID.
 // Returns the updated Document.
 func (s *Service) AddFileMetadata(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
-	log.Info("Requesting AddFileMetadata service")
+	log.Info(consts.DocumentServiceTag, "Requesting AddFileMetadata service")
 
 	if ok := isStateAvailable(); !ok {
 		log.Error(consts.AddFileMetadataTag, consts.ErrServiceUnavailable.Error())
@@ -641,7 +641,7 @@ func (s *Service) AddFileMetadata(ctx context.Context, req *pb.DocumentRequest) 
 // DeleteFileMetadata deletes a FileMetadata in a MongoDB document using a given FUID, and DUID.
 // Returns the updated Document.
 func (s *Service) DeleteFileMetadata(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
-	log.Info("Requesting DeleteFileMetadata service")
+	log.Info(consts.DocumentServiceTag, "Requesting DeleteFileMetadata service")
 
 	if ok := isStateAvailable(); !ok {
 		log.Error(consts.DeleteFileMetadataTag, consts.ErrServiceUnavailable.Error())
@@ -757,7 +757,7 @@ func (s *Service) DeleteFileMetadata(ctx context.Context, req *pb.DocumentReques
 // ListDistinctFieldValues list all the unique fields values required for the front-end drop-down filter
 // Returns the QueryTransaction.
 func (s *Service) ListDistinctFieldValues(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
-	log.Info("Requesting ListDistinctFieldValues service")
+	log.Info(consts.DocumentServiceTag, "Requesting ListDistinctFieldValues service")
 	if ok := isStateAvailable(); !ok {
 		log.Error(consts.ListDistinctFieldValuesTag, consts.ErrServiceUnavailable.Error())
 		return nil, status.Error(codes.Unavailable, consts.ErrServiceUnavailable.Error())
@@ -813,7 +813,7 @@ func (s *Service) ListDistinctFieldValues(ctx context.Context, req *pb.DocumentR
 // QueryDocument queries the MongoDB server with the given query parameters.
 // Returns a collection of Documents.
 func (s *Service) QueryDocument(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
-	log.Info("Requesting QueryDocument service")
+	log.Info(consts.DocumentServiceTag, "Requesting QueryDocument service")
 	if ok := isStateAvailable(); !ok {
 		log.Error(consts.QueryDocumentTag, consts.ErrServiceUnavailable.Error())
 		return nil, status.Error(codes.Unavailable, consts.ErrServiceUnavailable.Error())
