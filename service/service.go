@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	pbsvc "github.com/hwsc-org/hwsc-api-blocks/int/hwsc-document-svc/document"
+	pbdoc "github.com/hwsc-org/hwsc-api-blocks/lib"
 	"github.com/hwsc-org/hwsc-document-svc/conf"
 	"github.com/hwsc-org/hwsc-document-svc/consts"
 	log "github.com/hwsc-org/hwsc-lib/logger"
@@ -54,7 +55,10 @@ var (
 	fuidGenerator      fuidLocker
 
 	// Converts State of the service to a string
-	serviceStateMap map[state]string
+	serviceStateMap = map[state]string{
+		available:   "Available",
+		unavailable: "Unavailable",
+	}
 
 	// Stores the lock for each duid
 	duidClientLocker sync.Map
@@ -64,11 +68,6 @@ func init() {
 	serviceStateLocker = stateLocker{currentServiceState: available}
 	duidGenerator = duidLocker{}
 	fuidGenerator = fuidLocker{}
-
-	serviceStateMap = map[state]string{
-		available:   "Available",
-		unavailable: "Unavailable",
-	}
 }
 
 func (s state) String() string {
@@ -117,7 +116,7 @@ func (s *Service) GetStatus(ctx context.Context, req *pbsvc.DocumentRequest) (*p
 
 // CreateDocument creates a document in MongoDB.
 // Returns the Document.
-func (s *Service) CreateDocument(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
+func (s *Service) CreateDocument(ctx context.Context, req *pbsvc.DocumentRequest) (*pbsvc.DocumentResponse, error) {
 	log.Info(consts.DocumentServiceTag, "Requesting CreateDocument service")
 
 	if ok := isStateAvailable(); !ok {
@@ -208,8 +207,8 @@ func (s *Service) CreateDocument(ctx context.Context, req *pb.DocumentRequest) (
 
 	log.Info(consts.CreateDocumentTag, fmt.Sprintf("inserted document _id: %v", res.InsertedID))
 
-	return &pb.DocumentResponse{
-		Status:  &pb.DocumentResponse_Code{Code: uint32(codes.OK)},
+	return &pbsvc.DocumentResponse{
+		Status:  &pbsvc.DocumentResponse_Code{Code: uint32(codes.OK)},
 		Message: codes.OK.String(),
 		Data:    doc,
 	}, nil
@@ -218,7 +217,7 @@ func (s *Service) CreateDocument(ctx context.Context, req *pb.DocumentRequest) (
 
 // ListUserDocumentCollection retrieves all the MongoDB documents for a specific user with the given UUID.
 // Returns a collection of Documents.
-func (s *Service) ListUserDocumentCollection(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
+func (s *Service) ListUserDocumentCollection(ctx context.Context, req *pbsvc.DocumentRequest) (*pbsvc.DocumentResponse, error) {
 	log.Info(consts.DocumentServiceTag, "Requesting ListUserDocumentCollection service")
 
 	if ok := isStateAvailable(); !ok {
@@ -258,7 +257,7 @@ func (s *Service) ListUserDocumentCollection(ctx context.Context, req *pb.Docume
 	}
 
 	// Extract the documents
-	documentCollection := make([]*pb.Document, 0)
+	documentCollection := make([]*pbdoc.Document, 0)
 	for cur.Next(context.Background()) {
 		if err := cur.Err(); err != nil {
 			log.Error(consts.ListUserDocumentCollectionTag, err.Error())
@@ -266,7 +265,7 @@ func (s *Service) ListUserDocumentCollection(ctx context.Context, req *pb.Docume
 		}
 
 		// Mutate and retrieve Document
-		document := &pb.Document{}
+		document := &pbdoc.Document{}
 		if err := cur.Decode(document); err != nil {
 			log.Error(consts.ListUserDocumentCollectionTag, err.Error())
 			return nil, status.Error(codes.Internal, err.Error())
@@ -293,8 +292,8 @@ func (s *Service) ListUserDocumentCollection(ctx context.Context, req *pb.Docume
 
 	log.Info(consts.ListUserDocumentCollectionTag, fmt.Sprintf("Success listing documents, uuid: %s", doc.GetUuid()))
 
-	return &pb.DocumentResponse{
-		Status:             &pb.DocumentResponse_Code{Code: uint32(codes.OK)},
+	return &pbsvc.DocumentResponse{
+		Status:             &pbsvc.DocumentResponse_Code{Code: uint32(codes.OK)},
 		Message:            codes.OK.String(),
 		DocumentCollection: documentCollection,
 	}, nil
@@ -303,7 +302,7 @@ func (s *Service) ListUserDocumentCollection(ctx context.Context, req *pb.Docume
 
 // UpdateDocument (completely) updates a MongoDB document with a given DUID.
 // Returns the updated Document.
-func (s *Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
+func (s *Service) UpdateDocument(ctx context.Context, req *pbsvc.DocumentRequest) (*pbsvc.DocumentResponse, error) {
 	log.Info(consts.DocumentServiceTag, "Requesting UpdateDocument service")
 
 	if ok := isStateAvailable(); !ok {
@@ -404,7 +403,7 @@ func (s *Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (
 			"Document not found, duid: %s - uuid: %s", doc.GetDuid(), doc.GetUuid())
 	}
 
-	document := &pb.Document{}
+	document := &pbdoc.Document{}
 	if err := result.Decode(document); err != nil {
 		log.Error(consts.UpdateDocumentTag, fmt.Sprintf("Document not found, duid: %s - uuid: %s - err: %s",
 			doc.GetDuid(), doc.GetUuid(), err.Error()))
@@ -418,8 +417,8 @@ func (s *Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (
 	log.Info(consts.UpdateDocumentTag, fmt.Sprintf("Success updating document, duid: %s - uuid: %s",
 		doc.GetDuid(), doc.GetUuid()))
 
-	return &pb.DocumentResponse{
-		Status:  &pb.DocumentResponse_Code{Code: uint32(codes.OK)},
+	return &pbsvc.DocumentResponse{
+		Status:  &pbsvc.DocumentResponse_Code{Code: uint32(codes.OK)},
 		Message: codes.OK.String(),
 		Data:    document,
 	}, nil
@@ -428,7 +427,7 @@ func (s *Service) UpdateDocument(ctx context.Context, req *pb.DocumentRequest) (
 
 // DeleteDocument deletes a MongoDB document using DUID.
 // Returns the deleted Document.
-func (s *Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
+func (s *Service) DeleteDocument(ctx context.Context, req *pbsvc.DocumentRequest) (*pbsvc.DocumentResponse, error) {
 	log.Info(consts.DocumentServiceTag, "Requesting DeleteDocument service")
 
 	if ok := isStateAvailable(); !ok {
@@ -482,7 +481,7 @@ func (s *Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (
 			"Document not found, duid: %s", doc.GetDuid())
 	}
 
-	document := &pb.Document{}
+	document := &pbdoc.Document{}
 	if err := result.Decode(document); err != nil {
 		log.Error(consts.DeleteDocumentTag, fmt.Sprintf("Document not found, duid: %s - err: %s",
 			doc.GetDuid(), err.Error()))
@@ -496,8 +495,8 @@ func (s *Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (
 	log.Info(consts.DeleteDocumentTag, fmt.Sprintf("Success deleting document, duid: %s - uuid: %s",
 		document.GetDuid(), document.GetUuid()))
 
-	return &pb.DocumentResponse{
-		Status:  &pb.DocumentResponse_Code{Code: uint32(codes.OK)},
+	return &pbsvc.DocumentResponse{
+		Status:  &pbsvc.DocumentResponse_Code{Code: uint32(codes.OK)},
 		Message: codes.OK.String(),
 		Data:    document,
 	}, nil
@@ -505,7 +504,7 @@ func (s *Service) DeleteDocument(ctx context.Context, req *pb.DocumentRequest) (
 
 // AddFileMetadata adds a new FileMetadata in a MongoDB document using a given url, and DUID.
 // Returns the updated Document.
-func (s *Service) AddFileMetadata(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
+func (s *Service) AddFileMetadata(ctx context.Context, req *pbsvc.DocumentRequest) (*pbsvc.DocumentResponse, error) {
 	log.Info(consts.DocumentServiceTag, "Requesting AddFileMetadata service")
 
 	if ok := isStateAvailable(); !ok {
@@ -537,19 +536,19 @@ func (s *Service) AddFileMetadata(ctx context.Context, req *pb.DocumentRequest) 
 	}
 
 	switch fileMetadataParameters.Media {
-	case pb.FileType_FILE:
+	case pbdoc.FileType_FILE:
 		break
-	case pb.FileType_AUDIO:
+	case pbdoc.FileType_AUDIO:
 		if !audioRegex.MatchString(fileMetadataParameters.GetUrl()) {
 			log.Error(consts.AddFileMetadataTag, consts.ErrInvalidDocumentAudioURL.Error())
 			return nil, status.Error(codes.InvalidArgument, consts.ErrInvalidDocumentAudioURL.Error())
 		}
-	case pb.FileType_IMAGE:
+	case pbdoc.FileType_IMAGE:
 		if !imageRegex.MatchString(fileMetadataParameters.GetUrl()) {
 			log.Error(consts.AddFileMetadataTag, consts.ErrInvalidDocumentImageURL.Error())
 			return nil, status.Error(codes.InvalidArgument, consts.ErrInvalidDocumentImageURL.Error())
 		}
-	case pb.FileType_VIDEO:
+	case pbdoc.FileType_VIDEO:
 		if !videoRegex.MatchString(fileMetadataParameters.GetUrl()) {
 			log.Error(consts.AddFileMetadataTag, consts.ErrInvalidDocumentVideoURL.Error())
 			return nil, status.Error(codes.InvalidArgument, consts.ErrInvalidDocumentVideoURL.Error())
@@ -582,7 +581,7 @@ func (s *Service) AddFileMetadata(ctx context.Context, req *pb.DocumentRequest) 
 		log.Error(consts.AddFileMetadataTag, consts.ErrNoDocumentFound.Error())
 		return nil, status.Error(codes.InvalidArgument, consts.ErrNoDocumentFound.Error())
 	}
-	documentToUpdate := &pb.Document{}
+	documentToUpdate := &pbdoc.Document{}
 	if err := bsonResult.Decode(documentToUpdate); err != nil {
 		log.Error(consts.AddFileMetadataTag, fmt.Sprintf("Document not found, duid: %s - err: %s",
 			fileMetadataParameters.GetDuid(), err.Error()))
@@ -594,13 +593,13 @@ func (s *Service) AddFileMetadata(ctx context.Context, req *pb.DocumentRequest) 
 	log.Info(consts.AddFileMetadataTag, fmt.Sprintf("Document to update: \n%s\n", pretty.Sprint(documentToUpdate)))
 	newFuid := fuidGenerator.NewFUID()
 	switch fileMetadataParameters.Media {
-	case pb.FileType_FILE:
+	case pbdoc.FileType_FILE:
 		documentToUpdate.GetFileUrlsMap()[newFuid] = fileMetadataParameters.GetUrl()
-	case pb.FileType_AUDIO:
+	case pbdoc.FileType_AUDIO:
 		documentToUpdate.GetAudioUrlsMap()[newFuid] = fileMetadataParameters.GetUrl()
-	case pb.FileType_IMAGE:
+	case pbdoc.FileType_IMAGE:
 		documentToUpdate.GetImageUrlsMap()[newFuid] = fileMetadataParameters.GetUrl()
-	case pb.FileType_VIDEO:
+	case pbdoc.FileType_VIDEO:
 		documentToUpdate.GetVideoUrlsMap()[newFuid] = fileMetadataParameters.GetUrl()
 	default:
 		return nil, status.Error(codes.InvalidArgument, consts.ErrMediaType.Error())
@@ -621,7 +620,7 @@ func (s *Service) AddFileMetadata(ctx context.Context, req *pb.DocumentRequest) 
 			"Extracting updated document duid: %s", documentToUpdate.GetDuid())
 	}
 
-	document := &pb.Document{}
+	document := &pbdoc.Document{}
 	if err := result.Decode(document); err != nil {
 		log.Error(consts.AddFileMetadataTag, err.Error())
 		return nil, status.Errorf(codes.Internal, err.Error())
@@ -631,8 +630,8 @@ func (s *Service) AddFileMetadata(ctx context.Context, req *pb.DocumentRequest) 
 	log.Info(consts.AddFileMetadataTag, fmt.Sprintf("Success adding file metadata in document, duid: %s - fuid: %s",
 		document.GetDuid(), newFuid))
 
-	return &pb.DocumentResponse{
-		Status:  &pb.DocumentResponse_Code{Code: uint32(codes.OK)},
+	return &pbsvc.DocumentResponse{
+		Status:  &pbsvc.DocumentResponse_Code{Code: uint32(codes.OK)},
 		Message: codes.OK.String(),
 		Data:    document,
 	}, nil
@@ -640,7 +639,7 @@ func (s *Service) AddFileMetadata(ctx context.Context, req *pb.DocumentRequest) 
 
 // DeleteFileMetadata deletes a FileMetadata in a MongoDB document using a given FUID, and DUID.
 // Returns the updated Document.
-func (s *Service) DeleteFileMetadata(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
+func (s *Service) DeleteFileMetadata(ctx context.Context, req *pbsvc.DocumentRequest) (*pbsvc.DocumentResponse, error) {
 	log.Info(consts.DocumentServiceTag, "Requesting DeleteFileMetadata service")
 
 	if ok := isStateAvailable(); !ok {
@@ -675,7 +674,7 @@ func (s *Service) DeleteFileMetadata(ctx context.Context, req *pb.DocumentReques
 		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	if fileMetadataParameters.Media > pb.FileType_VIDEO {
+	if fileMetadataParameters.Media > pbdoc.FileType_VIDEO {
 		return nil, status.Error(codes.InvalidArgument, consts.ErrMediaType.Error())
 	}
 
@@ -697,7 +696,7 @@ func (s *Service) DeleteFileMetadata(ctx context.Context, req *pb.DocumentReques
 		log.Error(consts.DeleteFileMetadataTag, consts.ErrNoDocumentFound.Error())
 		return nil, status.Error(codes.InvalidArgument, consts.ErrNoDocumentFound.Error())
 	}
-	documentToUpdate := &pb.Document{}
+	documentToUpdate := &pbdoc.Document{}
 	if err := bsonResult.Decode(documentToUpdate); err != nil {
 		log.Error(consts.DeleteFileMetadataTag, fmt.Sprintf("Document not found, duid: %s - err: %s",
 			fileMetadataParameters.GetDuid(), err.Error()))
@@ -709,13 +708,13 @@ func (s *Service) DeleteFileMetadata(ctx context.Context, req *pb.DocumentReques
 	log.Info(consts.DeleteFileMetadataTag, fmt.Sprintf("Document to update: \n%s\n", pretty.Sprint(documentToUpdate)))
 
 	switch fileMetadataParameters.Media {
-	case pb.FileType_FILE:
+	case pbdoc.FileType_FILE:
 		delete(documentToUpdate.GetFileUrlsMap(), fileMetadataParameters.GetFuid())
-	case pb.FileType_AUDIO:
+	case pbdoc.FileType_AUDIO:
 		delete(documentToUpdate.GetAudioUrlsMap(), fileMetadataParameters.GetFuid())
-	case pb.FileType_IMAGE:
+	case pbdoc.FileType_IMAGE:
 		delete(documentToUpdate.GetImageUrlsMap(), fileMetadataParameters.GetFuid())
-	case pb.FileType_VIDEO:
+	case pbdoc.FileType_VIDEO:
 		delete(documentToUpdate.GetVideoUrlsMap(), fileMetadataParameters.GetFuid())
 	default:
 		return nil, status.Error(codes.InvalidArgument, consts.ErrMediaType.Error())
@@ -736,7 +735,7 @@ func (s *Service) DeleteFileMetadata(ctx context.Context, req *pb.DocumentReques
 			"Extracting updated document duid: %s", documentToUpdate.GetDuid())
 	}
 
-	document := &pb.Document{}
+	document := &pbdoc.Document{}
 	if err := result.Decode(document); err != nil {
 		log.Error(consts.DeleteFileMetadataTag, err.Error())
 		return nil, status.Errorf(codes.Internal, err.Error())
@@ -746,8 +745,8 @@ func (s *Service) DeleteFileMetadata(ctx context.Context, req *pb.DocumentReques
 	log.Info(consts.DeleteFileMetadataTag, fmt.Sprintf("Success deleting file metadata in document, duid: %s - fuid: %s",
 		document.GetDuid(), fileMetadataParameters.GetFuid()))
 
-	return &pb.DocumentResponse{
-		Status:  &pb.DocumentResponse_Code{Code: uint32(codes.OK)},
+	return &pbsvc.DocumentResponse{
+		Status:  &pbsvc.DocumentResponse_Code{Code: uint32(codes.OK)},
 		Message: codes.OK.String(),
 		Data:    document,
 	}, nil
@@ -756,7 +755,7 @@ func (s *Service) DeleteFileMetadata(ctx context.Context, req *pb.DocumentReques
 
 // ListDistinctFieldValues list all the unique fields values required for the front-end drop-down filter
 // Returns the QueryTransaction.
-func (s *Service) ListDistinctFieldValues(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
+func (s *Service) ListDistinctFieldValues(ctx context.Context, req *pbsvc.DocumentRequest) (*pbsvc.DocumentResponse, error) {
 	log.Info(consts.DocumentServiceTag, "Requesting ListDistinctFieldValues service")
 	if ok := isStateAvailable(); !ok {
 		log.Error(consts.ListDistinctFieldValuesTag, consts.ErrServiceUnavailable.Error())
@@ -788,7 +787,7 @@ func (s *Service) ListDistinctFieldValues(ctx context.Context, req *pb.DocumentR
 	}
 
 	// Extract distinct from distinctResult, and put them in queryResult
-	queryResult := &pb.QueryTransaction{}
+	queryResult := &pbdoc.QueryTransaction{}
 	val := reflect.ValueOf(*queryResult)
 	for i := 0; i < len(distinctResultFieldIndices); i++ {
 		fieldName := val.Type().Field(i).Name
@@ -802,8 +801,8 @@ func (s *Service) ListDistinctFieldValues(ctx context.Context, req *pb.DocumentR
 
 	log.Info(consts.ListDistinctFieldValuesTag, fmt.Sprintf("Distinct values: \n%v\n", pretty.Sprint(queryResult)))
 	log.Info(consts.ListDistinctFieldValuesTag, "Success listing distinct field values")
-	return &pb.DocumentResponse{
-		Status:       &pb.DocumentResponse_Code{Code: uint32(codes.OK)},
+	return &pbsvc.DocumentResponse{
+		Status:       &pbsvc.DocumentResponse_Code{Code: uint32(codes.OK)},
 		Message:      codes.OK.String(),
 		QueryResults: queryResult,
 	}, nil
@@ -812,7 +811,7 @@ func (s *Service) ListDistinctFieldValues(ctx context.Context, req *pb.DocumentR
 
 // QueryDocument queries the MongoDB server with the given query parameters.
 // Returns a collection of Documents.
-func (s *Service) QueryDocument(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
+func (s *Service) QueryDocument(ctx context.Context, req *pbsvc.DocumentRequest) (*pbsvc.DocumentResponse, error) {
 	log.Info(consts.DocumentServiceTag, "Requesting QueryDocument service")
 	if ok := isStateAvailable(); !ok {
 		log.Error(consts.QueryDocumentTag, consts.ErrServiceUnavailable.Error())
@@ -860,7 +859,7 @@ func (s *Service) QueryDocument(ctx context.Context, req *pb.DocumentRequest) (*
 	}
 
 	// Extract the documents
-	documentCollection := make([]*pb.Document, 0)
+	documentCollection := make([]*pbdoc.Document, 0)
 	for cur.Next(context.Background()) {
 		if err := cur.Err(); err != nil {
 			log.Error(consts.QueryDocumentTag, err.Error())
@@ -868,7 +867,7 @@ func (s *Service) QueryDocument(ctx context.Context, req *pb.DocumentRequest) (*
 		}
 
 		// Mutate and retrieve Document
-		document := &pb.Document{}
+		document := &pbdoc.Document{}
 		if err := cur.Decode(document); err != nil {
 			log.Error(consts.QueryDocumentTag, err.Error())
 			return nil, status.Error(codes.Internal, err.Error())
@@ -889,8 +888,8 @@ func (s *Service) QueryDocument(ctx context.Context, req *pb.DocumentRequest) (*
 	}
 
 	log.Info(consts.QueryDocumentTag, "Success querying documents")
-	return &pb.DocumentResponse{
-		Status:             &pb.DocumentResponse_Code{Code: uint32(codes.OK)},
+	return &pbsvc.DocumentResponse{
+		Status:             &pbsvc.DocumentResponse_Code{Code: uint32(codes.OK)},
 		Message:            codes.OK.String(),
 		DocumentCollection: documentCollection,
 	}, nil
