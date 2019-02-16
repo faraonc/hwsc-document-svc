@@ -3,7 +3,7 @@ package service
 import (
 	"fmt"
 	"github.com/google/uuid"
-	pb "github.com/hwsc-org/hwsc-api-blocks/int/hwsc-document-svc/proto"
+	pbsvc "github.com/hwsc-org/hwsc-api-blocks/int/hwsc-document-svc/document"
 	"github.com/hwsc-org/hwsc-document-svc/conf"
 	"github.com/hwsc-org/hwsc-document-svc/consts"
 	log "github.com/hwsc-org/hwsc-lib/logger"
@@ -76,7 +76,7 @@ func (s state) String() string {
 }
 
 // GetStatus gets the current status of the service.
-func (s *Service) GetStatus(ctx context.Context, req *pb.DocumentRequest) (*pb.DocumentResponse, error) {
+func (s *Service) GetStatus(ctx context.Context, req *pbsvc.DocumentRequest) (*pbsvc.DocumentResponse, error) {
 	log.Info(consts.DocumentServiceTag, "Requesting GetStatus service")
 
 	// Lock the state for reading
@@ -86,8 +86,8 @@ func (s *Service) GetStatus(ctx context.Context, req *pb.DocumentRequest) (*pb.D
 
 	log.Info(consts.DocumentServiceTag, "Service State:", serviceStateLocker.currentServiceState.String())
 	if serviceStateLocker.currentServiceState == unavailable {
-		return &pb.DocumentResponse{
-			Status:  &pb.DocumentResponse_Code{Code: uint32(codes.Unavailable)},
+		return &pbsvc.DocumentResponse{
+			Status:  &pbsvc.DocumentResponse_Code{Code: uint32(codes.Unavailable)},
 			Message: codes.Unavailable.String(),
 		}, nil
 	}
@@ -95,21 +95,21 @@ func (s *Service) GetStatus(ctx context.Context, req *pb.DocumentRequest) (*pb.D
 	// Check MongoDB Clients
 	if err := refreshMongoDBConnection(mongoDBReader, &conf.DocumentDB.Reader); err != nil {
 		log.Error(consts.GetStatusTag, err.Error())
-		return &pb.DocumentResponse{
-			Status:  &pb.DocumentResponse_Code{Code: uint32(codes.Unavailable)},
+		return &pbsvc.DocumentResponse{
+			Status:  &pbsvc.DocumentResponse_Code{Code: uint32(codes.Unavailable)},
 			Message: codes.Unavailable.String(),
 		}, nil
 	}
 	if err := refreshMongoDBConnection(mongoDBWriter, &conf.DocumentDB.Writer); err != nil {
 		log.Error(consts.GetStatusTag, err.Error())
-		return &pb.DocumentResponse{
-			Status:  &pb.DocumentResponse_Code{Code: uint32(codes.Unavailable)},
+		return &pbsvc.DocumentResponse{
+			Status:  &pbsvc.DocumentResponse_Code{Code: uint32(codes.Unavailable)},
 			Message: codes.Unavailable.String(),
 		}, nil
 	}
 
-	return &pb.DocumentResponse{
-		Status:  &pb.DocumentResponse_Code{Code: uint32(codes.OK)},
+	return &pbsvc.DocumentResponse{
+		Status:  &pbsvc.DocumentResponse_Code{Code: uint32(codes.OK)},
 		Message: codes.OK.String(),
 	}, nil
 

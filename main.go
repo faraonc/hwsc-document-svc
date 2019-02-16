@@ -6,7 +6,7 @@ import (
 	"google.golang.org/grpc"
 	"net"
 
-	pb "github.com/hwsc-org/hwsc-api-blocks/int/hwsc-document-svc/proto"
+	pbsvc "github.com/hwsc-org/hwsc-api-blocks/int/hwsc-document-svc/document"
 	svc "github.com/hwsc-org/hwsc-document-svc/service"
 	log "github.com/hwsc-org/hwsc-lib/logger"
 )
@@ -25,7 +25,7 @@ func main() {
 
 	// Implement services in /service/service.go
 	// Register service with gRPC server
-	pb.RegisterDocumentServiceServer(s, &svc.Service{})
+	pbsvc.RegisterDocumentServiceServer(s, &svc.Service{})
 	log.Info(consts.DocumentServiceTag, "hwsc-document-svc started at:", conf.GRPCHost.String())
 
 	// Start gRPC server

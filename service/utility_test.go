@@ -1,7 +1,7 @@
 package service
 
 import (
-	pb "github.com/hwsc-org/hwsc-api-blocks/int/hwsc-document-svc/proto"
+	pbdoc "github.com/hwsc-org/hwsc-api-blocks/lib"
 	"github.com/hwsc-org/hwsc-document-svc/consts"
 	"github.com/mongodb/mongo-go-driver/bson"
 	"github.com/stretchr/testify/assert"
@@ -93,20 +93,20 @@ func TestNewFUID(t *testing.T) {
 func TestValidateDocument(t *testing.T) {
 
 	cases := []struct {
-		input    *pb.Document
+		input    *pbdoc.Document
 		isExpErr bool
 		errorStr string
 	}{
-		{&pb.Document{
+		{&pbdoc.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			PublisherName: &pb.Publisher{
+			PublisherName: &pbdoc.Publisher{
 				LastName:  "Kim",
 				FirstName: "Lisa",
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			StudySite: &pb.StudySite{
+			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				Country: "USA",
 			},
@@ -134,16 +134,16 @@ func TestValidateDocument(t *testing.T) {
 			IsPublic:        true,
 		},
 			false, ""},
-		{&pb.Document{
+		{&pbdoc.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			PublisherName: &pb.Publisher{
+			PublisherName: &pbdoc.Publisher{
 				LastName:  "Kim",
 				FirstName: "Lisa",
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			StudySite: &pb.StudySite{
+			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				Country: "USA",
 			},
@@ -167,16 +167,16 @@ func TestValidateDocument(t *testing.T) {
 			IsPublic:        true,
 		},
 			true, consts.ErrAtLeastOneImageAudioURL.Error()},
-		{&pb.Document{
+		{&pbdoc.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			PublisherName: &pb.Publisher{
+			PublisherName: &pbdoc.Publisher{
 				LastName:  "Kim",
 				FirstName: "Lisa",
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			StudySite: &pb.StudySite{
+			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				Country: "USA",
 			},
@@ -204,16 +204,16 @@ func TestValidateDocument(t *testing.T) {
 			IsPublic:        true,
 		},
 			true, consts.ErrInvalidDocumentFUID.Error()},
-		{&pb.Document{
+		{&pbdoc.Document{
 			Duid: "0ujssszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			PublisherName: &pb.Publisher{
+			PublisherName: &pbdoc.Publisher{
 				LastName:  "Kim",
 				FirstName: "Lisa",
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			StudySite: &pb.StudySite{
+			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				Country: "USA",
 			},
@@ -241,16 +241,16 @@ func TestValidateDocument(t *testing.T) {
 			IsPublic:        true,
 		},
 			true, consts.ErrInvalidDocumentDUID.Error()},
-		{&pb.Document{
+		{&pbdoc.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "000s0XSNJG0MQJHBF4QX1EFD6Y3",
-			PublisherName: &pb.Publisher{
+			PublisherName: &pbdoc.Publisher{
 				LastName:  "Kim",
 				FirstName: "Lisa",
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			StudySite: &pb.StudySite{
+			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				Country: "USA",
 			},
@@ -278,16 +278,16 @@ func TestValidateDocument(t *testing.T) {
 			IsPublic:        true,
 		},
 			true, consts.ErrInvalidDocumentUUID.Error()},
-		{&pb.Document{
+		{&pbdoc.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			PublisherName: &pb.Publisher{
+			PublisherName: &pbdoc.Publisher{
 				LastName:  "",
 				FirstName: "Lisa",
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			StudySite: &pb.StudySite{
+			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				Country: "USA",
 			},
@@ -315,16 +315,16 @@ func TestValidateDocument(t *testing.T) {
 			IsPublic:        true,
 		},
 			true, consts.ErrInvalidDocumentLastName.Error()},
-		{&pb.Document{
+		{&pbdoc.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			PublisherName: &pb.Publisher{
+			PublisherName: &pbdoc.Publisher{
 				LastName:  "Kim",
 				FirstName: "",
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			StudySite: &pb.StudySite{
+			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				Country: "USA",
 			},
@@ -352,16 +352,16 @@ func TestValidateDocument(t *testing.T) {
 			IsPublic:        true,
 		},
 			true, consts.ErrInvalidDocumentFirstName.Error()},
-		{&pb.Document{
+		{&pbdoc.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			PublisherName: &pb.Publisher{
+			PublisherName: &pbdoc.Publisher{
 				LastName:  "Kim",
 				FirstName: "Lisa",
 			},
 			CallTypeName: "",
 			GroundType:   "some ground type",
-			StudySite: &pb.StudySite{
+			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				Country: "USA",
 			},
@@ -389,16 +389,16 @@ func TestValidateDocument(t *testing.T) {
 			IsPublic:        true,
 		},
 			true, consts.ErrInvalidDocumentCallTypeName.Error()},
-		{&pb.Document{
+		{&pbdoc.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			PublisherName: &pb.Publisher{
+			PublisherName: &pbdoc.Publisher{
 				LastName:  "Kim",
 				FirstName: "Lisa",
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "",
-			StudySite: &pb.StudySite{
+			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				Country: "USA",
 			},
@@ -426,16 +426,16 @@ func TestValidateDocument(t *testing.T) {
 			IsPublic:        true,
 		},
 			true, consts.ErrInvalidDocumentGroundType.Error()},
-		{&pb.Document{
+		{&pbdoc.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			PublisherName: &pb.Publisher{
+			PublisherName: &pbdoc.Publisher{
 				LastName:  "Kim",
 				FirstName: "Lisa",
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			StudySite: &pb.StudySite{
+			StudySite: &pbdoc.StudySite{
 				City:    "",
 				Country: "USA",
 			},
@@ -463,16 +463,16 @@ func TestValidateDocument(t *testing.T) {
 			IsPublic:        true,
 		},
 			true, consts.ErrInvalidDocumentCity.Error()},
-		{&pb.Document{
+		{&pbdoc.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			PublisherName: &pb.Publisher{
+			PublisherName: &pbdoc.Publisher{
 				LastName:  "Kim",
 				FirstName: "Lisa",
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			StudySite: &pb.StudySite{
+			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				State:   "123456789012345678901234567890123",
 				Country: "USA",
@@ -501,16 +501,16 @@ func TestValidateDocument(t *testing.T) {
 			IsPublic:        true,
 		},
 			true, consts.ErrInvalidDocumentState.Error()},
-		{&pb.Document{
+		{&pbdoc.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			PublisherName: &pb.Publisher{
+			PublisherName: &pbdoc.Publisher{
 				LastName:  "Kim",
 				FirstName: "Lisa",
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			StudySite: &pb.StudySite{
+			StudySite: &pbdoc.StudySite{
 				City:     "Vancouver",
 				Province: "1234567890123456789012345678901234567890123456789",
 				Country:  "Canada",
@@ -539,16 +539,16 @@ func TestValidateDocument(t *testing.T) {
 			IsPublic:        true,
 		},
 			true, consts.ErrInvalidDocumentProvince.Error()},
-		{&pb.Document{
+		{&pbdoc.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			PublisherName: &pb.Publisher{
+			PublisherName: &pbdoc.Publisher{
 				LastName:  "Kim",
 				FirstName: "Lisa",
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			StudySite: &pb.StudySite{
+			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				Country: "",
 			},
@@ -576,16 +576,16 @@ func TestValidateDocument(t *testing.T) {
 			IsPublic:        true,
 		},
 			true, consts.ErrInvalidDocumentCountry.Error()},
-		{&pb.Document{
+		{&pbdoc.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			PublisherName: &pb.Publisher{
+			PublisherName: &pbdoc.Publisher{
 				LastName:  "Kim",
 				FirstName: "Lisa",
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			StudySite: &pb.StudySite{
+			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				Country: "USA",
 			},
@@ -613,16 +613,16 @@ func TestValidateDocument(t *testing.T) {
 			IsPublic:        true,
 		},
 			true, consts.ErrInvalidDocumentOcean.Error()},
-		{&pb.Document{
+		{&pbdoc.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			PublisherName: &pb.Publisher{
+			PublisherName: &pbdoc.Publisher{
 				LastName:  "Kim",
 				FirstName: "Lisa",
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			StudySite: &pb.StudySite{
+			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				Country: "USA",
 			},
@@ -650,16 +650,16 @@ func TestValidateDocument(t *testing.T) {
 			IsPublic:        true,
 		},
 			true, consts.ErrInvalidDocumentSensorType.Error()},
-		{&pb.Document{
+		{&pbdoc.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			PublisherName: &pb.Publisher{
+			PublisherName: &pbdoc.Publisher{
 				LastName:  "Kim",
 				FirstName: "Lisa",
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			StudySite: &pb.StudySite{
+			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				Country: "USA",
 			},
@@ -687,16 +687,16 @@ func TestValidateDocument(t *testing.T) {
 			IsPublic:        true,
 		},
 			true, consts.ErrInvalidDocumentSensorName.Error()},
-		{&pb.Document{
+		{&pbdoc.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			PublisherName: &pb.Publisher{
+			PublisherName: &pbdoc.Publisher{
 				LastName:  "Kim",
 				FirstName: "Lisa",
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			StudySite: &pb.StudySite{
+			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				Country: "USA",
 			},
@@ -724,16 +724,16 @@ func TestValidateDocument(t *testing.T) {
 			IsPublic:        true,
 		},
 			true, consts.ErrInvalidDocumentSamplingRate.Error()},
-		{&pb.Document{
+		{&pbdoc.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			PublisherName: &pb.Publisher{
+			PublisherName: &pbdoc.Publisher{
 				LastName:  "Kim",
 				FirstName: "Lisa",
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			StudySite: &pb.StudySite{
+			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				Country: "USA",
 			},
@@ -761,16 +761,16 @@ func TestValidateDocument(t *testing.T) {
 			IsPublic:        true,
 		},
 			true, consts.ErrInvalidDocumentLatitude.Error()},
-		{&pb.Document{
+		{&pbdoc.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			PublisherName: &pb.Publisher{
+			PublisherName: &pbdoc.Publisher{
 				LastName:  "Kim",
 				FirstName: "Lisa",
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			StudySite: &pb.StudySite{
+			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				Country: "USA",
 			},
@@ -798,16 +798,16 @@ func TestValidateDocument(t *testing.T) {
 			IsPublic:        true,
 		},
 			true, consts.ErrInvalidDocumentLongitude.Error()},
-		{&pb.Document{
+		{&pbdoc.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			PublisherName: &pb.Publisher{
+			PublisherName: &pbdoc.Publisher{
 				LastName:  "Kim",
 				FirstName: "Lisa",
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			StudySite: &pb.StudySite{
+			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				Country: "USA",
 			},
@@ -835,16 +835,16 @@ func TestValidateDocument(t *testing.T) {
 			IsPublic:        true,
 		},
 			true, consts.ErrInvalidDocumentImageURL.Error()},
-		{&pb.Document{
+		{&pbdoc.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			PublisherName: &pb.Publisher{
+			PublisherName: &pbdoc.Publisher{
 				LastName:  "Kim",
 				FirstName: "Lisa",
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			StudySite: &pb.StudySite{
+			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				Country: "USA",
 			},
@@ -872,16 +872,16 @@ func TestValidateDocument(t *testing.T) {
 			IsPublic:        true,
 		},
 			true, consts.ErrInvalidDocumentAudioURL.Error()},
-		{&pb.Document{
+		{&pbdoc.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			PublisherName: &pb.Publisher{
+			PublisherName: &pbdoc.Publisher{
 				LastName:  "Kim",
 				FirstName: "Lisa",
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			StudySite: &pb.StudySite{
+			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				Country: "USA",
 			},
@@ -909,16 +909,16 @@ func TestValidateDocument(t *testing.T) {
 			IsPublic:        true,
 		},
 			true, consts.ErrInvalidDocumentVideoURL.Error()},
-		{&pb.Document{
+		{&pbdoc.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			PublisherName: &pb.Publisher{
+			PublisherName: &pbdoc.Publisher{
 				LastName:  "Kim",
 				FirstName: "Lisa",
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			StudySite: &pb.StudySite{
+			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				Country: "USA",
 			},
@@ -946,16 +946,16 @@ func TestValidateDocument(t *testing.T) {
 			IsPublic:        true,
 		},
 			true, consts.ErrInvalidDocumentFileURL.Error()},
-		{&pb.Document{
+		{&pbdoc.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			PublisherName: &pb.Publisher{
+			PublisherName: &pbdoc.Publisher{
 				LastName:  "Kim",
 				FirstName: "Lisa",
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			StudySite: &pb.StudySite{
+			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				Country: "USA",
 			},
@@ -983,16 +983,16 @@ func TestValidateDocument(t *testing.T) {
 			IsPublic:        true,
 		},
 			true, consts.ErrInvalidDocumentRecordTimestamp.Error()},
-		{&pb.Document{
+		{&pbdoc.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			PublisherName: &pb.Publisher{
+			PublisherName: &pbdoc.Publisher{
 				LastName:  "Kim",
 				FirstName: "Lisa",
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			StudySite: &pb.StudySite{
+			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				Country: "USA",
 			},
@@ -1020,16 +1020,16 @@ func TestValidateDocument(t *testing.T) {
 			IsPublic:        true,
 		},
 			true, consts.ErrInvalidDocumentCreateTimestamp.Error()},
-		{&pb.Document{
+		{&pbdoc.Document{
 			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
 			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
-			PublisherName: &pb.Publisher{
+			PublisherName: &pbdoc.Publisher{
 				LastName:  "Kim",
 				FirstName: "Lisa",
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
-			StudySite: &pb.StudySite{
+			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				Country: "USA",
 			},
@@ -1861,15 +1861,15 @@ func TestIsStateAvailable(t *testing.T) {
 
 func TestBuildAggregatePipeline(t *testing.T) {
 	cases := []struct {
-		input     *pb.QueryTransaction
+		input     *pbdoc.QueryTransaction
 		expOutput bson.A
 		isExpErr  bool
 		errorStr  string
 	}{
 		{nil, nil, true, consts.ErrNilQueryTransaction.Error()},
 		{
-			&pb.QueryTransaction{
-				Publishers: []*pb.Publisher{
+			&pbdoc.QueryTransaction{
+				Publishers: []*pbdoc.Publisher{
 					{
 						LastName:  "Seger",
 						FirstName: "Kerri",
@@ -1879,7 +1879,7 @@ func TestBuildAggregatePipeline(t *testing.T) {
 						FirstName: "Shima",
 					},
 				},
-				StudySites: []*pb.StudySite{
+				StudySites: []*pbdoc.StudySite{
 					{
 						City:     "San Diego",
 						State:    "California",
@@ -1962,14 +1962,14 @@ func TestBuildArrayFromElements(t *testing.T) {
 
 func TestExtractPublishersFields(t *testing.T) {
 	cases := []struct {
-		input      []*pb.Publisher
+		input      []*pbdoc.Publisher
 		lastNames  []string
 		firstNames []string
 	}{
 		{nil, []string{}, []string{}},
-		{[]*pb.Publisher{}, []string{}, []string{}},
+		{[]*pbdoc.Publisher{}, []string{}, []string{}},
 		{
-			[]*pb.Publisher{
+			[]*pbdoc.Publisher{
 				{
 					LastName:  "Seger",
 					FirstName: "Kerri",
@@ -1999,16 +1999,16 @@ func TestExtractPublishersFields(t *testing.T) {
 
 func TestExtractStudySitesFields(t *testing.T) {
 	cases := []struct {
-		input     []*pb.StudySite
+		input     []*pbdoc.StudySite
 		cities    []string
 		states    []string
 		provinces []string
 		countries []string
 	}{
 		{nil, []string{}, []string{}, []string{}, []string{}},
-		{[]*pb.StudySite{}, []string{}, []string{}, []string{}, []string{}},
+		{[]*pbdoc.StudySite{}, []string{}, []string{}, []string{}, []string{}},
 		{
-			[]*pb.StudySite{
+			[]*pbdoc.StudySite{
 				{
 					City:     "San Diego",
 					State:    "California",
@@ -2059,14 +2059,14 @@ func TestExtractStudySitesFields(t *testing.T) {
 func TestExtractDistinctResults(t *testing.T) {
 	cases := []struct {
 		input       []interface{}
-		queryResult *pb.QueryTransaction
-		expOutput   *pb.QueryTransaction
+		queryResult *pbdoc.QueryTransaction
+		expOutput   *pbdoc.QueryTransaction
 		fieldName   string
 		isExpErr    bool
 		errorStr    string
 	}{
 		{nil, nil, nil, "", true, consts.ErrNilQueryResult.Error()},
-		{nil, &pb.QueryTransaction{}, nil, "", true, consts.ErrInvalidDistinctResult.Error()},
+		{nil, &pbdoc.QueryTransaction{}, nil, "", true, consts.ErrInvalidDistinctResult.Error()},
 		{
 			[]interface{}{
 				bson.D{
@@ -2078,9 +2078,9 @@ func TestExtractDistinctResults(t *testing.T) {
 					{"firstName", "Shima"},
 				},
 			},
-			&pb.QueryTransaction{},
-			&pb.QueryTransaction{
-				Publishers: []*pb.Publisher{
+			&pbdoc.QueryTransaction{},
+			&pbdoc.QueryTransaction{
+				Publishers: []*pbdoc.Publisher{
 					{LastName: "Seger", FirstName: "Kerri"},
 					{LastName: "Abadi", FirstName: "Shima"},
 				},
@@ -2104,9 +2104,9 @@ func TestExtractDistinctResults(t *testing.T) {
 					{"country", "USA"},
 				},
 			},
-			&pb.QueryTransaction{},
-			&pb.QueryTransaction{
-				StudySites: []*pb.StudySite{
+			&pbdoc.QueryTransaction{},
+			&pbdoc.QueryTransaction{
+				StudySites: []*pbdoc.StudySite{
 					{City: "Batangas City", Province: "Batangas", Country: "Philippines"},
 					{City: "San Diego", State: "California", Country: "USA"},
 				},
@@ -2120,8 +2120,8 @@ func TestExtractDistinctResults(t *testing.T) {
 				"ab",
 				"cd",
 			},
-			&pb.QueryTransaction{},
-			&pb.QueryTransaction{
+			&pbdoc.QueryTransaction{},
+			&pbdoc.QueryTransaction{
 				CallTypeNames: []string{
 					"ab",
 					"cd",
@@ -2136,8 +2136,8 @@ func TestExtractDistinctResults(t *testing.T) {
 				"ef",
 				"gh",
 			},
-			&pb.QueryTransaction{},
-			&pb.QueryTransaction{
+			&pbdoc.QueryTransaction{},
+			&pbdoc.QueryTransaction{
 				GroundTypes: []string{
 					"ef",
 					"gh",
@@ -2152,8 +2152,8 @@ func TestExtractDistinctResults(t *testing.T) {
 				"ij",
 				"kl",
 			},
-			&pb.QueryTransaction{},
-			&pb.QueryTransaction{
+			&pbdoc.QueryTransaction{},
+			&pbdoc.QueryTransaction{
 				SensorTypes: []string{
 					"ij",
 					"kl",
@@ -2168,8 +2168,8 @@ func TestExtractDistinctResults(t *testing.T) {
 				"mn",
 				"op",
 			},
-			&pb.QueryTransaction{},
-			&pb.QueryTransaction{
+			&pbdoc.QueryTransaction{},
+			&pbdoc.QueryTransaction{
 				SensorNames: []string{
 					"mn",
 					"op",
@@ -2183,8 +2183,8 @@ func TestExtractDistinctResults(t *testing.T) {
 			[]interface{}{
 				"mn",
 			},
-			&pb.QueryTransaction{},
-			&pb.QueryTransaction{
+			&pbdoc.QueryTransaction{},
+			&pbdoc.QueryTransaction{
 				SensorNames: []string{
 					"mn",
 				},
@@ -2208,7 +2208,7 @@ func TestExtractDistinctResults(t *testing.T) {
 func TestExtractDistinctPublishers(t *testing.T) {
 	cases := []struct {
 		input     []interface{}
-		expOutput []*pb.Publisher
+		expOutput []*pbdoc.Publisher
 		isExpErr  bool
 		errorStr  string
 	}{
@@ -2225,7 +2225,7 @@ func TestExtractDistinctPublishers(t *testing.T) {
 					{"firstName", "Shima"},
 				},
 			},
-			[]*pb.Publisher{
+			[]*pbdoc.Publisher{
 				{LastName: "Seger", FirstName: "Kerri"},
 				{LastName: "Abadi", FirstName: "Shima"},
 			},
@@ -2247,7 +2247,7 @@ func TestExtractDistinctPublishers(t *testing.T) {
 func TestExtractDistinctStudySites(t *testing.T) {
 	cases := []struct {
 		input     []interface{}
-		expOutput []*pb.StudySite
+		expOutput []*pbdoc.StudySite
 		isExpErr  bool
 		errorStr  string
 	}{
@@ -2268,7 +2268,7 @@ func TestExtractDistinctStudySites(t *testing.T) {
 					{"country", "USA"},
 				},
 			},
-			[]*pb.StudySite{
+			[]*pbdoc.StudySite{
 				{City: "Batangas City", Province: "Batangas", Country: "Philippines"},
 				{City: "San Diego", State: "California", Country: "USA"},
 			},

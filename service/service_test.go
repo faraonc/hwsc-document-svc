@@ -2,7 +2,8 @@ package service
 
 import (
 	"fmt"
-	pb "github.com/hwsc-org/hwsc-api-blocks/int/hwsc-document-svc/proto"
+	pbsvc "github.com/hwsc-org/hwsc-api-blocks/int/hwsc-document-svc/document"
+	pbdoc "github.com/hwsc-org/hwsc-api-blocks/lib"
 	"github.com/hwsc-org/hwsc-document-svc/consts"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/context"
@@ -49,12 +50,12 @@ func randStringBytes(n int) string {
 
 func TestGetStatus(t *testing.T) {
 	cases := []struct {
-		req         *pb.DocumentRequest
+		req         *pbsvc.DocumentRequest
 		serverState state
 		expMsg      string
 	}{
-		{&pb.DocumentRequest{}, available, "OK"},
-		{&pb.DocumentRequest{}, unavailable, "Unavailable"},
+		{&pbsvc.DocumentRequest{}, available, "OK"},
+		{&pbsvc.DocumentRequest{}, unavailable, "Unavailable"},
 	}
 
 	for _, c := range cases {
@@ -67,34 +68,34 @@ func TestGetStatus(t *testing.T) {
 
 func TestCreateDocument(t *testing.T) {
 	cases := []struct {
-		req         *pb.DocumentRequest
+		req         *pbsvc.DocumentRequest
 		serverState state
 		expMsg      string
 		isExpErr    bool
 	}{
-		{&pb.DocumentRequest{}, unavailable,
+		{&pbsvc.DocumentRequest{}, unavailable,
 			"rpc error: code = Unavailable desc = service unavailable", true},
 		{nil, available,
 			"rpc error: code = InvalidArgument desc = nil request", true},
-		{&pb.DocumentRequest{}, available,
+		{&pbsvc.DocumentRequest{}, available,
 			"rpc error: code = InvalidArgument desc = nil request data", true},
-		{&pb.DocumentRequest{Data: &pb.Document{
+		{&pbsvc.DocumentRequest{Data: &pbdoc.Document{
 			Uuid: "garbage",
 		}}, available,
 			fmt.Sprintf("rpc error: code = InvalidArgument desc = %s",
 				consts.ErrInvalidDocumentUUID.Error()),
 			true},
-		{&pb.DocumentRequest{
-			Data: &pb.Document{
+		{&pbsvc.DocumentRequest{
+			Data: &pbdoc.Document{
 				Duid: "",
 				Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
-				PublisherName: &pb.Publisher{
+				PublisherName: &pbdoc.Publisher{
 					LastName:  "Test LastName",
 					FirstName: "Test FirstName",
 				},
 				CallTypeName: "some call type name",
 				GroundType:   "some ground type",
-				StudySite: &pb.StudySite{
+				StudySite: &pbdoc.StudySite{
 					City:    "Seattle",
 					State:   "Washington",
 					Country: "USA",
@@ -150,39 +151,39 @@ func TestCreateDocument(t *testing.T) {
 
 func TestListUserDocumentCollection(t *testing.T) {
 	cases := []struct {
-		req         *pb.DocumentRequest
+		req         *pbsvc.DocumentRequest
 		serverState state
 		expLength   int
 		expMsg      string
 		isExpErr    bool
 	}{
-		{&pb.DocumentRequest{}, unavailable, 0,
+		{&pbsvc.DocumentRequest{}, unavailable, 0,
 			"rpc error: code = Unavailable desc = service unavailable", true},
 		{nil, available, 0,
 			"rpc error: code = InvalidArgument desc = nil request", true},
-		{&pb.DocumentRequest{}, available, 0,
+		{&pbsvc.DocumentRequest{}, available, 0,
 			"rpc error: code = InvalidArgument desc = nil request data", true},
-		{&pb.DocumentRequest{Data: &pb.Document{
+		{&pbsvc.DocumentRequest{Data: &pbdoc.Document{
 			Uuid: "garbage",
 		}}, available, 0,
 			fmt.Sprintf("rpc error: code = InvalidArgument desc = %s",
 				consts.ErrInvalidDocumentUUID.Error()),
 			true},
-		{&pb.DocumentRequest{Data: &pb.Document{
+		{&pbsvc.DocumentRequest{Data: &pbdoc.Document{
 			Uuid: "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
 		}}, available, 7,
 			"OK", false},
-		{&pb.DocumentRequest{Data: &pb.Document{
+		{&pbsvc.DocumentRequest{Data: &pbdoc.Document{
 			Uuid: "123XXSNJG0MQASDF4QFFFFD6Y3",
 		}}, available, 8,
 			"OK", false},
-		{&pb.DocumentRequest{Data: &pb.Document{
+		{&pbsvc.DocumentRequest{Data: &pbdoc.Document{
 			Uuid: "4ee30333-8ec8-45a4-ba94-5e22c4a686de",
 		}}, available, 0,
 			fmt.Sprintf("rpc error: code = InvalidArgument desc = %s",
 				consts.ErrInvalidDocumentUUID.Error()),
 			true},
-		{&pb.DocumentRequest{Data: &pb.Document{
+		{&pbsvc.DocumentRequest{Data: &pbdoc.Document{
 			Uuid: "xxx0XSNJG0MQJHBF4QX1EFD6Y3",
 		}}, available, 0,
 			"rpc error: code = InvalidArgument desc = No document for uuid: xxx0XSNJG0MQJHBF4QX1EFD6Y3", true},
@@ -206,32 +207,32 @@ func TestListUserDocumentCollection(t *testing.T) {
 
 func TestUpdateDocument(t *testing.T) {
 	cases := []struct {
-		req         *pb.DocumentRequest
+		req         *pbsvc.DocumentRequest
 		serverState state
 		expMsg      string
 		isExpErr    bool
 	}{
-		{&pb.DocumentRequest{}, unavailable,
+		{&pbsvc.DocumentRequest{}, unavailable,
 			"rpc error: code = Unavailable desc = service unavailable", true},
 		{nil, available,
 			"rpc error: code = InvalidArgument desc = nil request", true},
-		{&pb.DocumentRequest{}, available,
+		{&pbsvc.DocumentRequest{}, available,
 			"rpc error: code = InvalidArgument desc = nil request data", true},
-		{&pb.DocumentRequest{Data: &pb.Document{
+		{&pbsvc.DocumentRequest{Data: &pbdoc.Document{
 			Duid: "",
 		}}, available,
 			"rpc error: code = InvalidArgument desc = missing DUID", true},
-		{&pb.DocumentRequest{
-			Data: &pb.Document{
+		{&pbsvc.DocumentRequest{
+			Data: &pbdoc.Document{
 				Duid: tempDUID,
 				Uuid: tempUUID,
-				PublisherName: &pb.Publisher{
+				PublisherName: &pbdoc.Publisher{
 					LastName:  randFirstName,
 					FirstName: randLastName,
 				},
 				CallTypeName: "some call type name",
 				GroundType:   "some ground type",
-				StudySite: &pb.StudySite{
+				StudySite: &pbdoc.StudySite{
 					City:     randCity,
 					Province: randProvince,
 					Country:  "Canada",
@@ -265,17 +266,17 @@ func TestUpdateDocument(t *testing.T) {
 			FileUrls:  []string{"https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv"},
 		}, available,
 			"OK", false},
-		{&pb.DocumentRequest{
-			Data: &pb.Document{
+		{&pbsvc.DocumentRequest{
+			Data: &pbdoc.Document{
 				Duid: imaginaryDUID,
 				Uuid: imaginaryUUID,
-				PublisherName: &pb.Publisher{
+				PublisherName: &pbdoc.Publisher{
 					LastName:  randFirstName,
 					FirstName: randLastName,
 				},
 				CallTypeName: "some call type name",
 				GroundType:   "some ground type",
-				StudySite: &pb.StudySite{
+				StudySite: &pbdoc.StudySite{
 					City:     randCity,
 					Province: randProvince,
 					Country:  "Canada",
@@ -321,32 +322,32 @@ func TestUpdateDocument(t *testing.T) {
 
 func TestDeleteDocument(t *testing.T) {
 	cases := []struct {
-		req         *pb.DocumentRequest
+		req         *pbsvc.DocumentRequest
 		serverState state
 		expMsg      string
 		isExpErr    bool
 	}{
-		{&pb.DocumentRequest{}, unavailable,
+		{&pbsvc.DocumentRequest{}, unavailable,
 			"rpc error: code = Unavailable desc = service unavailable", true},
 		{nil, available,
 			"rpc error: code = InvalidArgument desc = nil request", true},
-		{&pb.DocumentRequest{}, available,
+		{&pbsvc.DocumentRequest{}, available,
 			"rpc error: code = InvalidArgument desc = nil request data", true},
-		{&pb.DocumentRequest{Data: &pb.Document{}}, available,
+		{&pbsvc.DocumentRequest{Data: &pbdoc.Document{}}, available,
 			"rpc error: code = InvalidArgument desc = missing DUID", true},
-		{&pb.DocumentRequest{Data: &pb.Document{
+		{&pbsvc.DocumentRequest{Data: &pbdoc.Document{
 			Duid: imaginaryDUID,
 			Uuid: imaginaryUUID,
 		}}, available,
 			fmt.Sprintf("rpc error: code = InvalidArgument desc = Document not found, duid: %s",
 				imaginaryDUID),
 			true},
-		{&pb.DocumentRequest{Data: &pb.Document{
+		{&pbsvc.DocumentRequest{Data: &pbdoc.Document{
 			Duid: tempDUID,
 			Uuid: tempUUID,
 		}}, available,
 			"OK", false},
-		{&pb.DocumentRequest{Data: &pb.Document{
+		{&pbsvc.DocumentRequest{Data: &pbdoc.Document{
 			Duid: tempDUID,
 			Uuid: tempUUID,
 		}}, available,
@@ -371,19 +372,19 @@ func TestDeleteDocument(t *testing.T) {
 
 func TestListDistinctFieldValues(t *testing.T) {
 	cases := []struct {
-		req         *pb.DocumentRequest
+		req         *pbsvc.DocumentRequest
 		serverState state
 		expMsg      string
 		isExpErr    bool
 		expNumDocs  int
 	}{
-		{&pb.DocumentRequest{}, unavailable,
+		{&pbsvc.DocumentRequest{}, unavailable,
 			"rpc error: code = Unavailable desc = service unavailable", true, 0,
 		},
 		{nil, available,
 			"rpc error: code = InvalidArgument desc = nil request", true, 0,
 		},
-		{&pb.DocumentRequest{}, available,
+		{&pbsvc.DocumentRequest{}, available,
 			"", false, 0,
 		},
 	}
@@ -410,31 +411,31 @@ func TestListDistinctFieldValues(t *testing.T) {
 
 func TestQueryDocument(t *testing.T) {
 	cases := []struct {
-		req         *pb.DocumentRequest
+		req         *pbsvc.DocumentRequest
 		serverState state
 		expMsg      string
 		isExpErr    bool
 		expNumDocs  int
 	}{
-		{&pb.DocumentRequest{}, unavailable,
+		{&pbsvc.DocumentRequest{}, unavailable,
 			"rpc error: code = Unavailable desc = service unavailable", true, 0,
 		},
 		{nil, available,
 			"rpc error: code = InvalidArgument desc = nil request", true, 0,
 		},
-		{&pb.DocumentRequest{}, available,
+		{&pbsvc.DocumentRequest{}, available,
 			"rpc error: code = InvalidArgument desc = nil query arguments", true, 0,
 		},
 		{
-			&pb.DocumentRequest{QueryParameters: &pb.QueryTransaction{
+			&pbsvc.DocumentRequest{QueryParameters: &pbdoc.QueryTransaction{
 				MinRecordTimestamp: minTimestamp,
 				MaxRecordTimestamp: time.Now().UTC().Unix() - 1,
 			}}, available,
 			"OK", false, 32,
 		},
 		{
-			&pb.DocumentRequest{QueryParameters: &pb.QueryTransaction{
-				Publishers: []*pb.Publisher{
+			&pbsvc.DocumentRequest{QueryParameters: &pbdoc.QueryTransaction{
+				Publishers: []*pbdoc.Publisher{
 					{
 						LastName:  "Seger",
 						FirstName: "Kerri",
@@ -450,8 +451,8 @@ func TestQueryDocument(t *testing.T) {
 			"OK", false, 11,
 		},
 		{
-			&pb.DocumentRequest{QueryParameters: &pb.QueryTransaction{
-				Publishers: []*pb.Publisher{
+			&pbsvc.DocumentRequest{QueryParameters: &pbdoc.QueryTransaction{
+				Publishers: []*pbdoc.Publisher{
 					{
 						LastName:  "Seger",
 						FirstName: "Kerri",
@@ -466,14 +467,14 @@ func TestQueryDocument(t *testing.T) {
 			"OK", false, 1,
 		},
 		{
-			&pb.DocumentRequest{QueryParameters: &pb.QueryTransaction{
+			&pbsvc.DocumentRequest{QueryParameters: &pbdoc.QueryTransaction{
 				MinRecordTimestamp: 1446744336,
 				MaxRecordTimestamp: 1510287809,
 			}}, available,
 			"OK", false, 12,
 		},
 		{
-			&pb.DocumentRequest{QueryParameters: &pb.QueryTransaction{
+			&pbsvc.DocumentRequest{QueryParameters: &pbdoc.QueryTransaction{
 				MinRecordTimestamp: 0,
 				MaxRecordTimestamp: 1510287809,
 			}}, available,
@@ -481,7 +482,7 @@ func TestQueryDocument(t *testing.T) {
 			true, 0,
 		},
 		{
-			&pb.DocumentRequest{QueryParameters: &pb.QueryTransaction{
+			&pbsvc.DocumentRequest{QueryParameters: &pbdoc.QueryTransaction{
 				MinRecordTimestamp: 1446744336,
 				MaxRecordTimestamp: 0,
 			}}, available,
@@ -507,46 +508,46 @@ func TestQueryDocument(t *testing.T) {
 
 func TestAddFileMetadata(t *testing.T) {
 	cases := []struct {
-		req         *pb.DocumentRequest
+		req         *pbsvc.DocumentRequest
 		serverState state
 		expMsg      string
 		isExpErr    bool
 		expNumDocs  int
 	}{
-		{&pb.DocumentRequest{}, unavailable,
+		{&pbsvc.DocumentRequest{}, unavailable,
 			"rpc error: code = Unavailable desc = service unavailable", true, 0,
 		},
 		{nil, available,
 			"rpc error: code = InvalidArgument desc = nil request", true, 0,
 		},
-		{&pb.DocumentRequest{}, available,
+		{&pbsvc.DocumentRequest{}, available,
 			"rpc error: code = InvalidArgument desc = invalid FileMetadataParameters", true, 0,
 		},
-		{&pb.DocumentRequest{
-			FileMetadataParameters: &pb.FileMetadataTransaction{
+		{&pbsvc.DocumentRequest{
+			FileMetadataParameters: &pbdoc.FileMetadataTransaction{
 				Url: "",
 			},
 		}, available,
 			"rpc error: code = InvalidArgument desc = invalid FileMetadataParameters", true, 0,
 		},
-		{&pb.DocumentRequest{
-			FileMetadataParameters: &pb.FileMetadataTransaction{
+		{&pbsvc.DocumentRequest{
+			FileMetadataParameters: &pbdoc.FileMetadataTransaction{
 				Url:  "some url",
 				Duid: "",
 			},
 		}, available,
 			"rpc error: code = InvalidArgument desc = invalid FileMetadataParameters", true, 0,
 		},
-		{&pb.DocumentRequest{
-			FileMetadataParameters: &pb.FileMetadataTransaction{
+		{&pbsvc.DocumentRequest{
+			FileMetadataParameters: &pbdoc.FileMetadataTransaction{
 				Url:  "some url",
 				Duid: "some duid",
 			},
 		}, available,
 			"rpc error: code = InvalidArgument desc = invalid Document duid", true, 0,
 		},
-		{&pb.DocumentRequest{
-			FileMetadataParameters: &pb.FileMetadataTransaction{
+		{&pbsvc.DocumentRequest{
+			FileMetadataParameters: &pbdoc.FileMetadataTransaction{
 				Url:  "some url",
 				Duid: "1ChHfmKs8GX7D1XVf61lwVdisWf",
 				Uuid: "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
@@ -554,38 +555,38 @@ func TestAddFileMetadata(t *testing.T) {
 		}, available,
 			"rpc error: code = InvalidArgument desc = unreachable URI", true, 0,
 		},
-		{&pb.DocumentRequest{
-			FileMetadataParameters: &pb.FileMetadataTransaction{
+		{&pbsvc.DocumentRequest{
+			FileMetadataParameters: &pbdoc.FileMetadataTransaction{
 				Url:   "some url",
 				Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
 				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
-				Media: pb.FileType_AUDIO,
+				Media: pbdoc.FileType_AUDIO,
 			},
 		}, available,
 			"rpc error: code = InvalidArgument desc = invalid Document AudioURL", true, 0,
 		},
-		{&pb.DocumentRequest{
-			FileMetadataParameters: &pb.FileMetadataTransaction{
+		{&pbsvc.DocumentRequest{
+			FileMetadataParameters: &pbdoc.FileMetadataTransaction{
 				Url:   "some url",
 				Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
 				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
-				Media: pb.FileType_IMAGE,
+				Media: pbdoc.FileType_IMAGE,
 			},
 		}, available,
 			"rpc error: code = InvalidArgument desc = invalid Document ImageURL", true, 0,
 		},
-		{&pb.DocumentRequest{
-			FileMetadataParameters: &pb.FileMetadataTransaction{
+		{&pbsvc.DocumentRequest{
+			FileMetadataParameters: &pbdoc.FileMetadataTransaction{
 				Url:   "some url",
 				Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
 				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
-				Media: pb.FileType_VIDEO,
+				Media: pbdoc.FileType_VIDEO,
 			},
 		}, available,
 			"rpc error: code = InvalidArgument desc = invalid Document VideoURL", true, 0,
 		},
-		{&pb.DocumentRequest{
-			FileMetadataParameters: &pb.FileMetadataTransaction{
+		{&pbsvc.DocumentRequest{
+			FileMetadataParameters: &pbdoc.FileMetadataTransaction{
 				Url:   "some url",
 				Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
 				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
@@ -594,62 +595,62 @@ func TestAddFileMetadata(t *testing.T) {
 		}, available,
 			"rpc error: code = InvalidArgument desc = invalid media type", true, 0,
 		},
-		{&pb.DocumentRequest{
-			FileMetadataParameters: &pb.FileMetadataTransaction{
+		{&pbsvc.DocumentRequest{
+			FileMetadataParameters: &pbdoc.FileMetadataTransaction{
 				Url:   "https://hwscdevstorage.blob.core.windows.net/images/pusheen.mp3",
 				Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
 				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
-				Media: pb.FileType_AUDIO,
+				Media: pbdoc.FileType_AUDIO,
 			},
 		}, available,
 			"rpc error: code = InvalidArgument desc = unreachable URI", true, 0,
 		},
-		{&pb.DocumentRequest{
-			FileMetadataParameters: &pb.FileMetadataTransaction{
+		{&pbsvc.DocumentRequest{
+			FileMetadataParameters: &pbdoc.FileMetadataTransaction{
 				Url:   "https://hwscdevstorage.blob.core.windows.net/images/pusheen.jpg",
 				Duid:  "xxxHfmKs8GX7D1XVf61lwVdisWf",
 				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
-				Media: pb.FileType_IMAGE,
+				Media: pbdoc.FileType_IMAGE,
 			},
 		}, available,
 			"rpc error: code = InvalidArgument desc = Document not found, duid: xxxHfmKs8GX7D1XVf61lwVdisWf", true, 0,
 		},
-		{&pb.DocumentRequest{
-			FileMetadataParameters: &pb.FileMetadataTransaction{
+		{&pbsvc.DocumentRequest{
+			FileMetadataParameters: &pbdoc.FileMetadataTransaction{
 				Url:   "https://hwscdevstorage.blob.core.windows.net/images/pusheen.jpg",
 				Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
 				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
-				Media: pb.FileType_IMAGE,
+				Media: pbdoc.FileType_IMAGE,
 			},
 		}, available,
 			"OK", false, 3,
 		},
-		{&pb.DocumentRequest{
-			FileMetadataParameters: &pb.FileMetadataTransaction{
+		{&pbsvc.DocumentRequest{
+			FileMetadataParameters: &pbdoc.FileMetadataTransaction{
 				Url:   "https://hwscdevstorage.blob.core.windows.net/videos/pusheen.mp4",
 				Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
 				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
-				Media: pb.FileType_VIDEO,
+				Media: pbdoc.FileType_VIDEO,
 			},
 		}, available,
 			"OK", false, 3,
 		},
-		{&pb.DocumentRequest{
-			FileMetadataParameters: &pb.FileMetadataTransaction{
+		{&pbsvc.DocumentRequest{
+			FileMetadataParameters: &pbdoc.FileMetadataTransaction{
 				Url:   "https://hwscdevstorage.blob.core.windows.net/audios/pusheen.mp3",
 				Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
 				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
-				Media: pb.FileType_AUDIO,
+				Media: pbdoc.FileType_AUDIO,
 			},
 		}, available,
 			"OK", false, 3,
 		},
-		{&pb.DocumentRequest{
-			FileMetadataParameters: &pb.FileMetadataTransaction{
+		{&pbsvc.DocumentRequest{
+			FileMetadataParameters: &pbdoc.FileMetadataTransaction{
 				Url:   "https://hwscdevstorage.blob.core.windows.net/videos/pusheen.mp4",
 				Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
 				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
-				Media: pb.FileType_FILE,
+				Media: pbdoc.FileType_FILE,
 			},
 		}, available,
 			"OK", false, 3,
@@ -664,7 +665,7 @@ func TestAddFileMetadata(t *testing.T) {
 			assert.Nil(t, err)
 			assert.NotNil(t, res)
 			switch c.req.FileMetadataParameters.GetMedia() {
-			case pb.FileType_FILE:
+			case pbdoc.FileType_FILE:
 				for k, v := range res.Data.GetFileUrlsMap() {
 					if v == c.req.FileMetadataParameters.GetUrl() {
 						tempFileFUID = k
@@ -673,7 +674,7 @@ func TestAddFileMetadata(t *testing.T) {
 				if !assert.Equal(t, c.expNumDocs, len(res.GetData().GetFileUrlsMap())) {
 					assert.Fail(t, c.req.FileMetadataParameters.GetUrl())
 				}
-			case pb.FileType_AUDIO:
+			case pbdoc.FileType_AUDIO:
 				for k, v := range res.Data.GetAudioUrlsMap() {
 					if v == c.req.FileMetadataParameters.GetUrl() {
 						tempAudioFUID = k
@@ -682,7 +683,7 @@ func TestAddFileMetadata(t *testing.T) {
 				if !assert.Equal(t, c.expNumDocs, len(res.GetData().GetAudioUrlsMap())) {
 					assert.Fail(t, c.req.FileMetadataParameters.GetUrl())
 				}
-			case pb.FileType_IMAGE:
+			case pbdoc.FileType_IMAGE:
 				for k, v := range res.Data.GetImageUrlsMap() {
 					if v == c.req.FileMetadataParameters.GetUrl() {
 						tempImageFUID = k
@@ -691,7 +692,7 @@ func TestAddFileMetadata(t *testing.T) {
 				if !assert.Equal(t, c.expNumDocs, len(res.GetData().GetImageUrlsMap())) {
 					assert.Fail(t, c.req.FileMetadataParameters.GetUrl())
 				}
-			case pb.FileType_VIDEO:
+			case pbdoc.FileType_VIDEO:
 				for k, v := range res.Data.GetVideoUrlsMap() {
 					if v == c.req.FileMetadataParameters.GetUrl() {
 						tempVideoFUID = k
@@ -711,37 +712,37 @@ func TestAddFileMetadata(t *testing.T) {
 
 func TestDeleteFileMetadata(t *testing.T) {
 	cases := []struct {
-		req         *pb.DocumentRequest
+		req         *pbsvc.DocumentRequest
 		serverState state
 		expMsg      string
 		isExpErr    bool
 		expNumDocs  int
 	}{
-		{&pb.DocumentRequest{}, unavailable,
+		{&pbsvc.DocumentRequest{}, unavailable,
 			"rpc error: code = Unavailable desc = service unavailable", true, 0,
 		},
 		{nil, available,
 			"rpc error: code = InvalidArgument desc = nil request", true, 0,
 		},
-		{&pb.DocumentRequest{}, available,
+		{&pbsvc.DocumentRequest{}, available,
 			"rpc error: code = InvalidArgument desc = invalid FileMetadataParameters", true, 0,
 		},
-		{&pb.DocumentRequest{
-			FileMetadataParameters: &pb.FileMetadataTransaction{
+		{&pbsvc.DocumentRequest{
+			FileMetadataParameters: &pbdoc.FileMetadataTransaction{
 				Duid: "",
 			},
 		}, available,
 			"rpc error: code = InvalidArgument desc = invalid FileMetadataParameters", true, 0,
 		},
-		{&pb.DocumentRequest{
-			FileMetadataParameters: &pb.FileMetadataTransaction{
+		{&pbsvc.DocumentRequest{
+			FileMetadataParameters: &pbdoc.FileMetadataTransaction{
 				Duid: "some duid",
 			},
 		}, available,
 			"rpc error: code = InvalidArgument desc = invalid Document duid", true, 0,
 		},
-		{&pb.DocumentRequest{
-			FileMetadataParameters: &pb.FileMetadataTransaction{
+		{&pbsvc.DocumentRequest{
+			FileMetadataParameters: &pbdoc.FileMetadataTransaction{
 				Duid: "1ChHfmKs8GX7D1XVf61lwVdisWf",
 				Uuid: "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
 				Fuid: "some fuid",
@@ -749,8 +750,8 @@ func TestDeleteFileMetadata(t *testing.T) {
 		}, available,
 			"rpc error: code = InvalidArgument desc = invalid Document fuid", true, 0,
 		},
-		{&pb.DocumentRequest{
-			FileMetadataParameters: &pb.FileMetadataTransaction{
+		{&pbsvc.DocumentRequest{
+			FileMetadataParameters: &pbdoc.FileMetadataTransaction{
 				Fuid:  tempFileFUID,
 				Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
 				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
@@ -759,51 +760,51 @@ func TestDeleteFileMetadata(t *testing.T) {
 		}, available,
 			"rpc error: code = InvalidArgument desc = invalid media type", true, 0,
 		},
-		{&pb.DocumentRequest{
-			FileMetadataParameters: &pb.FileMetadataTransaction{
+		{&pbsvc.DocumentRequest{
+			FileMetadataParameters: &pbdoc.FileMetadataTransaction{
 				Fuid:  tempFileFUID,
 				Duid:  "xxxHfmKs8GX7D1XVf61lwVdisWf",
 				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
-				Media: pb.FileType_FILE,
+				Media: pbdoc.FileType_FILE,
 			},
 		}, available,
 			"rpc error: code = InvalidArgument desc = Document not found, duid: xxxHfmKs8GX7D1XVf61lwVdisWf", true, 0,
 		},
-		{&pb.DocumentRequest{
-			FileMetadataParameters: &pb.FileMetadataTransaction{
+		{&pbsvc.DocumentRequest{
+			FileMetadataParameters: &pbdoc.FileMetadataTransaction{
 				Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
 				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
-				Media: pb.FileType_IMAGE,
+				Media: pbdoc.FileType_IMAGE,
 				Fuid:  tempImageFUID,
 			},
 		}, available,
 			"OK", false, 2,
 		},
-		{&pb.DocumentRequest{
-			FileMetadataParameters: &pb.FileMetadataTransaction{
+		{&pbsvc.DocumentRequest{
+			FileMetadataParameters: &pbdoc.FileMetadataTransaction{
 				Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
 				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
-				Media: pb.FileType_VIDEO,
+				Media: pbdoc.FileType_VIDEO,
 				Fuid:  tempVideoFUID,
 			},
 		}, available,
 			"OK", false, 2,
 		},
-		{&pb.DocumentRequest{
-			FileMetadataParameters: &pb.FileMetadataTransaction{
+		{&pbsvc.DocumentRequest{
+			FileMetadataParameters: &pbdoc.FileMetadataTransaction{
 				Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
 				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
-				Media: pb.FileType_AUDIO,
+				Media: pbdoc.FileType_AUDIO,
 				Fuid:  tempAudioFUID,
 			},
 		}, available,
 			"OK", false, 2,
 		},
-		{&pb.DocumentRequest{
-			FileMetadataParameters: &pb.FileMetadataTransaction{
+		{&pbsvc.DocumentRequest{
+			FileMetadataParameters: &pbdoc.FileMetadataTransaction{
 				Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
 				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
-				Media: pb.FileType_FILE,
+				Media: pbdoc.FileType_FILE,
 				Fuid:  tempFileFUID,
 			},
 		}, available,
@@ -819,19 +820,19 @@ func TestDeleteFileMetadata(t *testing.T) {
 			assert.Nil(t, err)
 			assert.NotNil(t, res)
 			switch c.req.FileMetadataParameters.GetMedia() {
-			case pb.FileType_FILE:
+			case pbdoc.FileType_FILE:
 				if !assert.Equal(t, c.expNumDocs, len(res.GetData().GetFileUrlsMap())) {
 					assert.Fail(t, c.req.FileMetadataParameters.GetFuid())
 				}
-			case pb.FileType_AUDIO:
+			case pbdoc.FileType_AUDIO:
 				if !assert.Equal(t, c.expNumDocs, len(res.GetData().GetAudioUrlsMap())) {
 					assert.Fail(t, c.req.FileMetadataParameters.GetFuid())
 				}
-			case pb.FileType_IMAGE:
+			case pbdoc.FileType_IMAGE:
 				if !assert.Equal(t, c.expNumDocs, len(res.GetData().GetImageUrlsMap())) {
 					assert.Fail(t, c.req.FileMetadataParameters.GetFuid())
 				}
-			case pb.FileType_VIDEO:
+			case pbdoc.FileType_VIDEO:
 				if !assert.Equal(t, c.expNumDocs, len(res.GetData().GetVideoUrlsMap())) {
 					assert.Fail(t, c.req.FileMetadataParameters.GetFuid())
 				}

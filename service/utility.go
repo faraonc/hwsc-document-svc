@@ -3,7 +3,7 @@ package service
 import (
 	"fmt"
 	"github.com/google/uuid"
-	pb "github.com/hwsc-org/hwsc-api-blocks/int/hwsc-document-svc/proto"
+	pbdoc "github.com/hwsc-org/hwsc-api-blocks/lib"
 	"github.com/hwsc-org/hwsc-document-svc/consts"
 	log "github.com/hwsc-org/hwsc-lib/logger"
 	"github.com/mongodb/mongo-go-driver/bson"
@@ -95,7 +95,7 @@ func (d *fuidLocker) NewFUID() string {
 
 // ValidateDocument validates the Document.
 // Returns an error if field fails validation.
-func ValidateDocument(meta *pb.Document) error {
+func ValidateDocument(meta *pbdoc.Document) error {
 	if err := ValidateDUID(meta.GetDuid()); err != nil {
 		return err
 	}
@@ -518,7 +518,7 @@ func isStateAvailable() bool {
 	return true
 }
 
-func buildAggregatePipeline(queryParams *pb.QueryTransaction) (bson.A, error) {
+func buildAggregatePipeline(queryParams *pbdoc.QueryTransaction) (bson.A, error) {
 	if queryParams == nil {
 		return nil, consts.ErrNilQueryTransaction
 	}
@@ -563,7 +563,7 @@ func buildArrayFromElements(elems []string) bson.A {
 	return result
 }
 
-func extractPublishersFields(publishers []*pb.Publisher) ([]string, []string) {
+func extractPublishersFields(publishers []*pbdoc.Publisher) ([]string, []string) {
 	if publishers == nil || len(publishers) == 0 {
 		return []string{}, []string{}
 	}
@@ -586,7 +586,7 @@ func extractPublishersFields(publishers []*pb.Publisher) ([]string, []string) {
 	return lastNames, firstNames
 }
 
-func extractStudySitesFields(studySites []*pb.StudySite) ([]string, []string, []string, []string) {
+func extractStudySitesFields(studySites []*pbdoc.StudySite) ([]string, []string, []string, []string) {
 	if studySites == nil || len(studySites) == 0 {
 		return []string{}, []string{}, []string{}, []string{}
 	}
@@ -621,7 +621,7 @@ func extractStudySitesFields(studySites []*pb.StudySite) ([]string, []string, []
 	return cities, states, provinces, countries
 }
 
-func extractDistinctResults(queryResult *pb.QueryTransaction, fieldName string, distinctResult []interface{}) error {
+func extractDistinctResults(queryResult *pbdoc.QueryTransaction, fieldName string, distinctResult []interface{}) error {
 	if queryResult == nil {
 		return consts.ErrNilQueryResult
 	}
@@ -651,13 +651,13 @@ func extractDistinctResults(queryResult *pb.QueryTransaction, fieldName string, 
 	return err
 }
 
-func extractDistinctPublishers(distinctResult []interface{}) ([]*pb.Publisher, error) {
+func extractDistinctPublishers(distinctResult []interface{}) ([]*pbdoc.Publisher, error) {
 	if distinctResult == nil || len(distinctResult) == 0 {
 		return nil, consts.ErrInvalidDistinctResult
 	}
-	publishers := make([]*pb.Publisher, 0)
+	publishers := make([]*pbdoc.Publisher, 0)
 	for _, v := range distinctResult {
-		publishers = append(publishers, &pb.Publisher{
+		publishers = append(publishers, &pbdoc.Publisher{
 			LastName:  v.(bson.D).Map()["lastName"].(string),
 			FirstName: v.(bson.D).Map()["firstName"].(string),
 		})
@@ -665,13 +665,13 @@ func extractDistinctPublishers(distinctResult []interface{}) ([]*pb.Publisher, e
 	return publishers, nil
 }
 
-func extractDistinctStudySites(distinctResult []interface{}) ([]*pb.StudySite, error) {
+func extractDistinctStudySites(distinctResult []interface{}) ([]*pbdoc.StudySite, error) {
 	if distinctResult == nil || len(distinctResult) == 0 {
 		return nil, consts.ErrInvalidDistinctResult
 	}
-	studySites := make([]*pb.StudySite, 0)
+	studySites := make([]*pbdoc.StudySite, 0)
 	for _, v := range distinctResult {
-		studySites = append(studySites, &pb.StudySite{
+		studySites = append(studySites, &pbdoc.StudySite{
 			City:     v.(bson.D).Map()["city"].(string),
 			State:    v.(bson.D).Map()["state"].(string),
 			Province: v.(bson.D).Map()["province"].(string),
