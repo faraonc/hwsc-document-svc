@@ -4,7 +4,8 @@ import (
 	"github.com/hwsc-org/hwsc-document-svc/conf"
 	"github.com/hwsc-org/hwsc-document-svc/consts"
 	log "github.com/hwsc-org/hwsc-lib/logger"
-	"github.com/mongodb/mongo-go-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"golang.org/x/net/context"
 	"os"
 	"os/signal"
@@ -41,7 +42,7 @@ func init() {
 // dialMongoDB connects a client to MongoDB server.
 // Returns a MongoDB Client or any dialing error.
 func dialMongoDB(uri *string) (*mongo.Client, error) {
-	client, err := mongo.Connect(context.TODO(), *uri)
+	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(*uri))
 	if err != nil {
 		return nil, err
 	}
