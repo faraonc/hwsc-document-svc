@@ -3,8 +3,8 @@ package service
 import (
 	pbdoc "github.com/hwsc-org/hwsc-api-blocks/lib"
 	"github.com/hwsc-org/hwsc-document-svc/consts"
-	"github.com/mongodb/mongo-go-driver/bson"
 	"github.com/stretchr/testify/assert"
+	"go.mongodb.org/mongo-driver/bson"
 	"sync"
 	"testing"
 	"time"

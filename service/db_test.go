@@ -14,7 +14,10 @@ func TestDialMongoDB(t *testing.T) {
 		errorStr string
 	}{
 		{conf.DocumentDB.Reader, false, ""},
-		{"", true, "error parsing uri (): scheme must be \"mongodb\" or \"mongodb+srv\""},
+		{"", true, "server selection error: server selection timeout\ncurrent topology: " +
+			"Type: Unknown\nServers:\nAddr: localhost:27017, Type: Unknown, State: Connected, Avergage RTT: 0, " +
+			"Last error: dial tcp [::1]:27017: connectex: No connection could be made because the target machine " +
+			"actively refused it.\n"},
 	}
 
 	for _, c := range cases {
