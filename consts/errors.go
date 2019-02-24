@@ -49,4 +49,5 @@ var (
 	ErrUnreachableURI                 = errors.New("unreachable URI")
 	ErrNoDocumentFound                = errors.New("no document found")
 	ErrMediaType                      = errors.New("invalid media type")
+	ErrEmptyMongoDBURI                = errors.New("empty MongoDB URI")
 )

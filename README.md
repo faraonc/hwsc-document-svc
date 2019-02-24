@@ -53,9 +53,12 @@ The proto file and compiled proto buffers are located in [hwsc-api-blocks](https
 5. `$ docker run --env-file ./env.list -it -p 50051:50051 <imagename>`
 
 ## How to Unit Test
-1. `$ docker run -it -p 27017:27017  mongo:4.0.6`
-2. 
-1. `$ cd service`
-2. For command-line summary, `$ go test -cover -v`
-3. For comprehensive summary, `$ bash unit_test.sh`
-
+1. `$ docker run -it -p 27017:27017 -e MONGO_INITDB_DATABASE=admin -e MONGO_INITDB_ROOT_USERNAME=mongoadmin -e MONGO_INITDB_ROOT_PASSWORD=secret hwsc/test-hwsc-document-svc:latest`
+2. This runs the following MongoDB database:
+    - `admin` at `mongodb://mongoadmin:secret@127.0.0.1:27017/admin`
+    - `test-document` at `mongodb://testDocumentWriter:testDocumentPwd@127.0.0.1:27017/test-document`
+3. Grab the config file from Slack channel #config-files-test
+4. `$ cd service`
+5. The unit test will programmatically run the DB migration as required
+6. For command-line summary, `$ go test -cover -v -failfast -race`
+7. For comprehensive summary, `$ bash unit_test.sh`

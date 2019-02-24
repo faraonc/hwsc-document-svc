@@ -35,6 +35,7 @@ const (
 	minLongitude    = -180
 	// Minimum timestamp in seconds (Jan 1, 1990)
 	minTimestamp = 631152000
+	// maxTimestamp = 32503680524 in MongoDB
 )
 
 // TODO regex to point to the proper storage in Azure

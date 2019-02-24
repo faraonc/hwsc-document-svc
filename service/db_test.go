@@ -9,45 +9,46 @@ import (
 
 func TestDialMongoDB(t *testing.T) {
 	cases := []struct {
+		desc     string
 		uri      string
 		isExpErr bool
 		errorStr string
 	}{
-		{conf.DocumentDB.Reader, false, ""},
-		{"", true, "server selection error: server selection timeout\ncurrent topology: " +
-			"Type: Unknown\nServers:\nAddr: localhost:27017, Type: Unknown, State: Connected, Avergage RTT: 0, " +
-			"Last error: dial tcp [::1]:27017: connectex: No connection could be made because the target machine " +
-			"actively refused it.\n"},
+		{"test for valid reader", conf.DocumentDB.Reader, false, ""},
+		{"test for valid writer", conf.DocumentDB.Writer, false, ""},
+		{"test for empty empty uri", "", true, consts.ErrEmptyMongoDBURI.Error()},
 	}
 
 	for _, c := range cases {
 		client, err := dialMongoDB(&c.uri)
 		if c.isExpErr {
-			assert.EqualError(t, err, c.errorStr)
+			assert.EqualError(t, err, c.errorStr, c.desc)
 		} else {
-			assert.Nil(t, err)
-			assert.NotNil(t, client)
+			assert.Nil(t, err, c.desc)
+			assert.NotNil(t, client, c.desc)
 		}
 	}
 }
 
 func TestDisconnectMongoDBClient(t *testing.T) {
 	cases := []struct {
+		desc     string
 		uri      string
 		isExpErr bool
 		errorStr string
 	}{
-		{conf.DocumentDB.Reader, false, ""},
-		{"", true, consts.ErrNilMongoDBClient.Error()},
+		{"test for valid reader", conf.DocumentDB.Reader, false, ""},
+		{"test for valid writer", conf.DocumentDB.Writer, false, ""},
+		{"test for empty nil", "", true, consts.ErrNilMongoDBClient.Error()},
 	}
 
 	for _, c := range cases {
 		client, _ := dialMongoDB(&c.uri)
 		err := disconnectMongoDBClient(client)
 		if c.isExpErr {
-			assert.EqualError(t, err, c.errorStr)
+			assert.EqualError(t, err, c.errorStr, c.desc)
 		} else {
-			assert.Nil(t, err)
+			assert.Nil(t, err, c.desc)
 		}
 	}
 }
