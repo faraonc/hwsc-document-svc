@@ -20,15 +20,6 @@ var (
 )
 
 func init() {
-	var err error
-	mongoDBReader, err = dialMongoDB(&conf.DocumentDB.Reader)
-	if err != nil {
-		log.Fatal(consts.MongoDBTag, err.Error())
-	}
-	mongoDBWriter, err = dialMongoDB(&conf.DocumentDB.Writer)
-	if err != nil {
-		log.Fatal(consts.MongoDBTag, err.Error())
-	}
 	// Handle Terminate Signal(Ctrl + C)
 	c := make(chan os.Signal)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)

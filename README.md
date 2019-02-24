@@ -41,25 +41,23 @@ The proto file and compiled proto buffers are located in [hwsc-api-blocks](https
 - [Optional] If a new proto file and compiled proto buffer exists in [hwsc-api-blocks](https://github.com/hwsc-org/hwsc-api-blocks/tree/master/int/hwsc-document-svc/document), update dependency `$ go get -u <package name>`
 
 ## How to Run without Docker Container
-1. Grab prod/dev/test config file from Slack
+1. Refer to [hwsc-dev-ops](https://github.com/hwsc-org/hwsc-dev-ops) to run DB locally
+2. Grab prod/dev/test config file from Slack
 3. Run main `$ go run main.go`
 
 ## How to Run with Docker Container
-TODO
-1. Install dependencies and generate vendor folder `$ dep ensure -v`
+1. Refer to [hwsc-dev-ops](https://github.com/hwsc-org/hwsc-dev-ops) to run DB locally
 2. `$ generate_container.sh`
 3. Find your image `$ docker images`
 4. Acquire `env.list` configuration
 5. `$ docker run --env-file ./env.list -it -p 50051:50051 <imagename>`
+6. Optional: run `$ docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' <container id>` to find the proper address, and update `env.list`
 
-## How to Unit Test
-1. `$ docker run -it -p 27017:27017 -e MONGO_INITDB_DATABASE=admin -e MONGO_INITDB_ROOT_USERNAME=mongoadmin -e MONGO_INITDB_ROOT_PASSWORD=secret hwsc/test-hwsc-document-svc:latest`
-2. This runs the following MongoDB database:
-    - `admin` at `mongodb://mongoadmin:secret@127.0.0.1:27017/admin`
-    - `test-document` at `mongodb://testDocumentWriter:testDocumentPwd@127.0.0.1:27017/test-document`
-3. Grab the config file from Slack channel #config-files-test
-4. `$ cd service`
-5. The unit test will programmatically run the DB migration as required
-6. For command-line summary, `$ go test -cover -v -failfast -race`
-7. For comprehensive summary, `$ bash unit_test.sh`
-8. Restart Docker MongoDB container as necessary
+## How to Run Unit Test
+1. `$ cd service`
+2. The unit test will programmatically run the test container and DB migration as required
+3. For command-line summary, `$ go test -cover -v -failfast -race`
+4. For comprehensive summary, `$ bash unit_test.sh`
+
+## How to Run Integration Test
+- Refer to [hwsc-dev-ops](https://github.com/hwsc-org/hwsc-dev-ops) to run integration test

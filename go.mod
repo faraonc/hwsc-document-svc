@@ -1,12 +1,16 @@
 module github.com/hwsc-org/hwsc-document-svc
 
 require (
+	github.com/cenkalti/backoff v2.1.1+incompatible // indirect
+	github.com/containerd/continuity v0.0.0-20181203112020-004b46473808 // indirect
 	github.com/golang-migrate/migrate/v4 v4.2.4
 	github.com/google/uuid v1.1.0
 	github.com/hwsc-org/hwsc-api-blocks v0.0.0-20190215203214-5fce68a4dfda
 	github.com/hwsc-org/hwsc-lib v0.0.0-20190214200222-3fd1105ad387
 	github.com/kylelemons/godebug v0.0.0-20170820004349-d65d576e9348
 	github.com/micro/go-config v0.14.0
+	github.com/opencontainers/runc v0.1.1 // indirect
+	github.com/ory/dockertest v3.3.4+incompatible
 	github.com/segmentio/ksuid v1.0.2
 	github.com/stretchr/testify v1.3.0
 	go.mongodb.org/mongo-driver v1.0.0-rc1

@@ -28,6 +28,7 @@ func TestDialMongoDB(t *testing.T) {
 			assert.NotNil(t, client, c.desc)
 		}
 	}
+
 }
 
 func TestDisconnectMongoDBClient(t *testing.T) {

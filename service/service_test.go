@@ -11,10 +11,12 @@ import (
 	"github.com/hwsc-org/hwsc-document-svc/conf"
 	"github.com/hwsc-org/hwsc-document-svc/consts"
 	"github.com/hwsc-org/hwsc-lib/logger"
+	"github.com/ory/dockertest"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/context"
 	"io/ioutil"
 	"math/rand"
+	"os"
 	"strconv"
 	"testing"
 	"time"
@@ -40,14 +42,42 @@ const (
 	letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 )
 
-func init() {
+func TestMain(t *testing.M) {
 	logger.Info(consts.TestTag, "Initializing Test, this should ONLY print during unit tests")
+	pool, err := dockertest.NewPool("")
+	if err != nil {
+		logger.Fatal(consts.TestTag, err.Error())
+	}
+
+	// pulls an image, creates a container based on it and runs it
+	resource, err := pool.Run("hwsc/test-hwsc-document-svc", "latest",
+		[]string{
+			"MONGO_INITDB_DATABASE=admin",
+			"MONGO_INITDB_ROOT_USERNAME=mongoadmin",
+			"MONGO_INITDB_ROOT_PASSWORD=secret",
+		},
+	)
+	if err != nil {
+		logger.Fatal(consts.TestTag, err.Error())
+	}
+	// exponential backoff-retry, because the application in the container might not be ready to accept connections yet
+	if err := pool.Retry(func() error {
+		conf.DocumentDB.Reader = fmt.Sprintf("mongodb://testDocumentReader:testDocumentPwd@localhost:%s/test-document",
+			resource.GetPort("27017/tcp"))
+		conf.DocumentDB.Writer = fmt.Sprintf("mongodb://testDocumentWriter:testDocumentPwd@localhost:%s/test-document",
+			resource.GetPort("27017/tcp"))
+		var err error
+		err = refreshMongoDBConnection(mongoDBWriter, &conf.DocumentDB.Writer)
+		return err
+	}); err != nil {
+		logger.Fatal(consts.TestTag, err.Error())
+	}
 	m, err := migrate.New(conf.DocumentDB.Migration, conf.DocumentDB.Writer)
 	if err != nil {
-		logger.Fatal(consts.TestTag, err.Error(), "maybe restart MongoDB container")
+		logger.Fatal(consts.TestTag, err.Error())
 	}
 	if err := m.Up(); err != nil {
-		logger.Fatal(consts.TestTag, err.Error(), "maybe restart MongoDB container")
+		logger.Fatal(consts.TestTag, err.Error())
 	}
 
 	// Open our jsonFile
@@ -79,6 +109,14 @@ func init() {
 	if count != numDocumentFixtures {
 		logger.Fatal(consts.TestTag, "failed setting up document fixture")
 	}
+	code := t.Run()
+
+	// You can't defer this because os.Exit doesn't care for defer
+	if err := pool.Purge(resource); err != nil {
+		logger.Fatal(consts.TestTag, err.Error())
+	}
+
+	os.Exit(code)
 }
 
 func randStringBytes(n int) string {
