@@ -13,4 +13,5 @@ const (
 	QueryDocumentTag              string = "QueryDocument -"
 	ServiceStateTag               string = "Service State -"
 	MongoDBTag                    string = "MongoDB -"
+	TestTag                       string = "Test -"
 )

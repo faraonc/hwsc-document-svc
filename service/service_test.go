@@ -1,13 +1,21 @@
 package service
 
 import (
+	"encoding/json"
 	"fmt"
+	"github.com/golang-migrate/migrate/v4"
+	_ "github.com/golang-migrate/migrate/v4/database/mongodb"
+	_ "github.com/golang-migrate/migrate/v4/source/github"
 	pbsvc "github.com/hwsc-org/hwsc-api-blocks/int/hwsc-document-svc/document"
 	pbdoc "github.com/hwsc-org/hwsc-api-blocks/lib"
+	"github.com/hwsc-org/hwsc-document-svc/conf"
 	"github.com/hwsc-org/hwsc-document-svc/consts"
+	"github.com/hwsc-org/hwsc-lib/logger"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/net/context"
+	"io/ioutil"
 	"math/rand"
+	"strconv"
 	"testing"
 	"time"
 )
@@ -19,12 +27,12 @@ var (
 	tempAudioFUID string
 	tempImageFUID string
 	tempVideoFUID string
-	imaginaryDUID string
-	imaginaryUUID string
-	randFirstName string
-	randLastName  string
-	randCity      string
-	randProvince  string
+	imaginaryDUID = randStringBytes(27)
+	imaginaryUUID = randStringBytes(26)
+	randFirstName = randStringBytes(10)
+	randLastName  = randStringBytes(12)
+	randCity      = randStringBytes(13)
+	randProvince  = randStringBytes(13)
 )
 
 const (
@@ -32,12 +40,51 @@ const (
 )
 
 func init() {
-	randFirstName = randStringBytes(10)
-	randLastName = randStringBytes(12)
-	randCity = randStringBytes(13)
-	randProvince = randStringBytes(13)
-	imaginaryDUID = randStringBytes(27)
-	imaginaryUUID = randStringBytes(26)
+	logger.Info(consts.TestTag, "Initializing Test, this should ONLY print during unit tests")
+	m, err := migrate.New(conf.DocumentDB.Migration, conf.DocumentDB.Writer)
+	if err != nil {
+		logger.Fatal(consts.TestTag, err.Error(), "maybe restart MongoDB container")
+	}
+	if err := m.Up(); err != nil {
+		logger.Fatal(consts.TestTag, err.Error(), "maybe restart MongoDB container")
+	}
+
+	// Open our jsonFile
+	jsonFile, err := ioutil.ReadFile("test_fixtures/test-document.json")
+	// if we os.Open returns an error then handle it
+	if err != nil {
+		logger.Fatal(consts.TestTag, err.Error())
+	}
+	logger.Info(consts.TestTag, "test_fixtures/test-document.json")
+	// defer the closing of our jsonFile so that we can parse it later on
+
+	var docFixtures []*pbdoc.Document
+	err = json.Unmarshal(jsonFile, &docFixtures)
+	if err != nil {
+		logger.Fatal(consts.TestTag, err.Error())
+	}
+	logger.Info(consts.TestTag, "Documents unmarshaled #:", strconv.Itoa(len(docFixtures)))
+
+	s := Service{}
+	var count int
+	for _, d := range docFixtures {
+		req := &pbsvc.DocumentRequest{
+			Data: d,
+		}
+		_, err := s.CreateDocument(context.TODO(), req)
+		if err != nil {
+			logger.Fatal(consts.TestTag, err.Error(), d.String())
+		}
+		count++
+
+		// TODO dockerfile
+		// TODO readme
+		// TODO dao insert document
+	}
+	logger.Info(consts.TestTag, "Documents inserted #:", strconv.Itoa(count))
+	if count != 32 {
+		logger.Fatal(consts.TestTag, "failed setting up document fixture")
+	}
 }
 
 func randStringBytes(n int) string {

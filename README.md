@@ -41,8 +41,7 @@ The proto file and compiled proto buffers are located in [hwsc-api-blocks](https
 - [Optional] If a new proto file and compiled proto buffer exists in [hwsc-api-blocks](https://github.com/hwsc-org/hwsc-api-blocks/tree/master/int/hwsc-document-svc/proto), update dependency ``$dep ensure -update``
 
 ## How to Run without Docker Container
-1. Install dependencies and generate vendor folder `$ dep ensure -v`
-2. Update ENV variables
+1. Update ENV variables
 3. Run main `$ go run main.go`
 
 ## How to Run with Docker Container
