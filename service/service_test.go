@@ -21,18 +21,19 @@ import (
 )
 
 var (
-	tempDUID      string
-	tempUUID      string
-	tempFileFUID  string
-	tempAudioFUID string
-	tempImageFUID string
-	tempVideoFUID string
-	imaginaryDUID = randStringBytes(27)
-	imaginaryUUID = randStringBytes(26)
-	randFirstName = randStringBytes(10)
-	randLastName  = randStringBytes(12)
-	randCity      = randStringBytes(13)
-	randProvince  = randStringBytes(13)
+	tempDUID            string
+	tempUUID            string
+	tempFileFUID        string
+	tempAudioFUID       string
+	tempImageFUID       string
+	tempVideoFUID       string
+	imaginaryDUID       = randStringBytes(27)
+	imaginaryUUID       = randStringBytes(26)
+	randFirstName       = randStringBytes(10)
+	randLastName        = randStringBytes(12)
+	randCity            = randStringBytes(13)
+	randProvince        = randStringBytes(13)
+	numDocumentFixtures = 32
 )
 
 const (
@@ -63,26 +64,19 @@ func init() {
 	if err != nil {
 		logger.Fatal(consts.TestTag, err.Error())
 	}
-	logger.Info(consts.TestTag, "Documents unmarshaled #:", strconv.Itoa(len(docFixtures)))
+	logger.Info(consts.TestTag, "Documents unmarshaled #", strconv.Itoa(len(docFixtures)))
 
-	s := Service{}
 	var count int
-	for _, d := range docFixtures {
-		req := &pbsvc.DocumentRequest{
-			Data: d,
-		}
-		_, err := s.CreateDocument(context.TODO(), req)
+	for _, doc := range docFixtures {
+		collection := mongoDBWriter.Database(conf.DocumentDB.Name).Collection(conf.DocumentDB.Collection)
+		_, err := collection.InsertOne(context.Background(), doc)
 		if err != nil {
-			logger.Fatal(consts.TestTag, err.Error(), d.String())
+			logger.Fatal(consts.TestTag, err.Error(), doc.String())
 		}
 		count++
-
-		// TODO dockerfile
-		// TODO readme
-		// TODO dao insert document
 	}
-	logger.Info(consts.TestTag, "Documents inserted #:", strconv.Itoa(count))
-	if count != 32 {
+	logger.Info(consts.TestTag, "Documents inserted #", strconv.Itoa(count))
+	if count != numDocumentFixtures {
 		logger.Fatal(consts.TestTag, "failed setting up document fixture")
 	}
 }
@@ -120,64 +114,66 @@ func TestCreateDocument(t *testing.T) {
 		expMsg      string
 		isExpErr    bool
 	}{
-		{&pbsvc.DocumentRequest{}, unavailable,
-			"rpc error: code = Unavailable desc = service unavailable", true},
-		{nil, available,
-			"rpc error: code = InvalidArgument desc = nil request", true},
-		{&pbsvc.DocumentRequest{}, available,
-			"rpc error: code = InvalidArgument desc = nil request data", true},
-		{&pbsvc.DocumentRequest{Data: &pbdoc.Document{
-			Uuid: "garbage",
-		}}, available,
-			fmt.Sprintf("rpc error: code = InvalidArgument desc = %s",
-				consts.ErrInvalidDocumentUUID.Error()),
-			true},
-		{&pbsvc.DocumentRequest{
-			Data: &pbdoc.Document{
-				Duid: "",
-				Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
-				PublisherName: &pbdoc.Publisher{
-					LastName:  "Test LastName",
-					FirstName: "Test FirstName",
+		{
+			&pbsvc.DocumentRequest{}, unavailable, "rpc error: code = Unavailable desc = service unavailable", true,
+		},
+		{
+			nil, available, "rpc error: code = InvalidArgument desc = nil request", true,
+		},
+		{
+			&pbsvc.DocumentRequest{}, available, "rpc error: code = InvalidArgument desc = nil request data", true,
+		},
+		{
+			&pbsvc.DocumentRequest{Data: &pbdoc.Document{Uuid: "garbage"}}, available,
+			fmt.Sprintf("rpc error: code = InvalidArgument desc = %s", consts.ErrInvalidDocumentUUID.Error()), true,
+		},
+		{
+			&pbsvc.DocumentRequest{
+				Data: &pbdoc.Document{
+					Duid: "",
+					Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
+					PublisherName: &pbdoc.Publisher{
+						LastName:  "Test LastName",
+						FirstName: "Test FirstName",
+					},
+					CallTypeName: "some call type name",
+					GroundType:   "some ground type",
+					StudySite: &pbdoc.StudySite{
+						City:    "Seattle",
+						State:   "Washington",
+						Country: "USA",
+					},
+					Ocean:           "Pacific Ocean",
+					SensorType:      "some sensor type",
+					SensorName:      "some sensor name",
+					SamplingRate:    100,
+					Latitude:        89.123,
+					Longitude:       -100.123,
+					ImageUrlsMap:    nil,
+					AudioUrlsMap:    nil,
+					VideoUrlsMap:    nil,
+					FileUrlsMap:     nil,
+					RecordTimestamp: 1514764800,
+					CreateTimestamp: 1539831496,
+					UpdateTimestamp: 0,
+					IsPublic:        true,
 				},
-				CallTypeName: "some call type name",
-				GroundType:   "some ground type",
-				StudySite: &pbdoc.StudySite{
-					City:    "Seattle",
-					State:   "Washington",
-					Country: "USA",
+				ImageUrls: []string{
+					"https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png",
+					"https://hwscdevstorage.blob.core.windows.net/images/Rotating_earth_(large).gif"},
+				AudioUrls: []string{
+					"https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
+					"https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3"},
+				VideoUrls: []string{
+					"https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+					"https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4",
 				},
-				Ocean:           "Pacific Ocean",
-				SensorType:      "some sensor type",
-				SensorName:      "some sensor name",
-				SamplingRate:    100,
-				Latitude:        89.123,
-				Longitude:       -100.123,
-				ImageUrlsMap:    nil,
-				AudioUrlsMap:    nil,
-				VideoUrlsMap:    nil,
-				FileUrlsMap:     nil,
-				RecordTimestamp: 1514764800,
-				CreateTimestamp: 1539831496,
-				UpdateTimestamp: 0,
-				IsPublic:        true,
-			},
-			ImageUrls: []string{
-				"https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png",
-				"https://hwscdevstorage.blob.core.windows.net/images/Rotating_earth_(large).gif"},
-			AudioUrls: []string{
-				"https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
-				"https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3"},
-			VideoUrls: []string{
-				"https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
-				"https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4",
-			},
-			FileUrls: []string{
-				"https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
-				"https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4",
-			},
-		}, available,
-			"OK", false},
+				FileUrls: []string{
+					"https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+					"https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4",
+				},
+			}, available, "OK", false,
+		},
 	}
 
 	for _, c := range cases {
@@ -204,36 +200,23 @@ func TestListUserDocumentCollection(t *testing.T) {
 		expMsg      string
 		isExpErr    bool
 	}{
-		{&pbsvc.DocumentRequest{}, unavailable, 0,
-			"rpc error: code = Unavailable desc = service unavailable", true},
-		{nil, available, 0,
-			"rpc error: code = InvalidArgument desc = nil request", true},
-		{&pbsvc.DocumentRequest{}, available, 0,
-			"rpc error: code = InvalidArgument desc = nil request data", true},
-		{&pbsvc.DocumentRequest{Data: &pbdoc.Document{
-			Uuid: "garbage",
-		}}, available, 0,
-			fmt.Sprintf("rpc error: code = InvalidArgument desc = %s",
-				consts.ErrInvalidDocumentUUID.Error()),
-			true},
-		{&pbsvc.DocumentRequest{Data: &pbdoc.Document{
-			Uuid: "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
-		}}, available, 7,
-			"OK", false},
-		{&pbsvc.DocumentRequest{Data: &pbdoc.Document{
-			Uuid: "123XXSNJG0MQASDF4QFFFFD6Y3",
-		}}, available, 8,
-			"OK", false},
-		{&pbsvc.DocumentRequest{Data: &pbdoc.Document{
-			Uuid: "4ee30333-8ec8-45a4-ba94-5e22c4a686de",
-		}}, available, 0,
-			fmt.Sprintf("rpc error: code = InvalidArgument desc = %s",
-				consts.ErrInvalidDocumentUUID.Error()),
-			true},
-		{&pbsvc.DocumentRequest{Data: &pbdoc.Document{
-			Uuid: "xxx0XSNJG0MQJHBF4QX1EFD6Y3",
-		}}, available, 0,
-			"rpc error: code = InvalidArgument desc = No document for uuid: xxx0XSNJG0MQJHBF4QX1EFD6Y3", true},
+		{&pbsvc.DocumentRequest{}, unavailable, 0, "rpc error: code = Unavailable desc = service unavailable", true},
+		{nil, available, 0, "rpc error: code = InvalidArgument desc = nil request", true},
+		{&pbsvc.DocumentRequest{}, available, 0, "rpc error: code = InvalidArgument desc = nil request data", true},
+		{
+			&pbsvc.DocumentRequest{Data: &pbdoc.Document{Uuid: "garbage"}}, available, 0,
+			fmt.Sprintf("rpc error: code = InvalidArgument desc = %s", consts.ErrInvalidDocumentUUID.Error()), true,
+		},
+		{&pbsvc.DocumentRequest{Data: &pbdoc.Document{Uuid: "0XXXXSNJG0MQJHBF4QX1EFD6Y3"}}, available, 7, "OK", false},
+		{&pbsvc.DocumentRequest{Data: &pbdoc.Document{Uuid: "123XXSNJG0MQASDF4QFFFFD6Y3"}}, available, 8, "OK", false},
+		{
+			&pbsvc.DocumentRequest{Data: &pbdoc.Document{Uuid: "4ee30333-8ec8-45a4-ba94-5e22c4a686de"}}, available, 0,
+			fmt.Sprintf("rpc error: code = InvalidArgument desc = %s", consts.ErrInvalidDocumentUUID.Error()), true,
+		},
+		{
+			&pbsvc.DocumentRequest{Data: &pbdoc.Document{Uuid: "xxx0XSNJG0MQJHBF4QX1EFD6Y3"}}, available, 0,
+			"rpc error: code = InvalidArgument desc = No document for uuid: xxx0XSNJG0MQJHBF4QX1EFD6Y3", true,
+		},
 	}
 
 	for _, c := range cases {
@@ -259,98 +242,96 @@ func TestUpdateDocument(t *testing.T) {
 		expMsg      string
 		isExpErr    bool
 	}{
-		{&pbsvc.DocumentRequest{}, unavailable,
-			"rpc error: code = Unavailable desc = service unavailable", true},
-		{nil, available,
-			"rpc error: code = InvalidArgument desc = nil request", true},
-		{&pbsvc.DocumentRequest{}, available,
-			"rpc error: code = InvalidArgument desc = nil request data", true},
-		{&pbsvc.DocumentRequest{Data: &pbdoc.Document{
-			Duid: "",
-		}}, available,
-			"rpc error: code = InvalidArgument desc = missing DUID", true},
-		{&pbsvc.DocumentRequest{
-			Data: &pbdoc.Document{
-				Duid: tempDUID,
-				Uuid: tempUUID,
-				PublisherName: &pbdoc.Publisher{
-					LastName:  randFirstName,
-					FirstName: randLastName,
+		{&pbsvc.DocumentRequest{}, unavailable, "rpc error: code = Unavailable desc = service unavailable", true},
+		{nil, available, "rpc error: code = InvalidArgument desc = nil request", true},
+		{&pbsvc.DocumentRequest{}, available, "rpc error: code = InvalidArgument desc = nil request data", true},
+		{
+			&pbsvc.DocumentRequest{Data: &pbdoc.Document{Duid: ""}}, available,
+			"rpc error: code = InvalidArgument desc = missing DUID", true,
+		},
+		{
+			&pbsvc.DocumentRequest{
+				Data: &pbdoc.Document{
+					Duid: tempDUID,
+					Uuid: tempUUID,
+					PublisherName: &pbdoc.Publisher{
+						LastName:  randFirstName,
+						FirstName: randLastName,
+					},
+					CallTypeName: "some call type name",
+					GroundType:   "some ground type",
+					StudySite: &pbdoc.StudySite{
+						City:     randCity,
+						Province: randProvince,
+						Country:  "Canada",
+					},
+					Ocean:        "Pacific Ocean",
+					SensorType:   "some sensor type",
+					SensorName:   "some sensor name",
+					SamplingRate: 100,
+					Latitude:     89.123,
+					Longitude:    -100.123,
+					ImageUrlsMap: map[string]string{
+						"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png",
+						"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/images/Rotating_earth_(large).gif"},
+					AudioUrlsMap: map[string]string{
+						"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
+						"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3"},
+					VideoUrlsMap: map[string]string{
+						"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+						"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
+					FileUrlsMap: map[string]string{
+						"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+						"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
+					RecordTimestamp: 1514764800,
+					CreateTimestamp: 1539831496,
+					UpdateTimestamp: 0,
+					IsPublic:        false,
 				},
-				CallTypeName: "some call type name",
-				GroundType:   "some ground type",
-				StudySite: &pbdoc.StudySite{
-					City:     randCity,
-					Province: randProvince,
-					Country:  "Canada",
+				ImageUrls: []string{"https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png"},
+				AudioUrls: []string{"https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav"},
+				VideoUrls: []string{"https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv"},
+				FileUrls:  []string{"https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv"},
+			}, available, "OK", false,
+		},
+		{
+			&pbsvc.DocumentRequest{
+				Data: &pbdoc.Document{
+					Duid: imaginaryDUID,
+					Uuid: imaginaryUUID,
+					PublisherName: &pbdoc.Publisher{
+						LastName:  randFirstName,
+						FirstName: randLastName,
+					},
+					CallTypeName: "some call type name",
+					GroundType:   "some ground type",
+					StudySite: &pbdoc.StudySite{
+						City:     randCity,
+						Province: randProvince,
+						Country:  "Canada",
+					},
+					Ocean:           "Pacific Ocean",
+					SensorType:      "some sensor type",
+					SensorName:      "some sensor name",
+					SamplingRate:    100,
+					Latitude:        89.123,
+					Longitude:       -100.123,
+					ImageUrlsMap:    nil,
+					AudioUrlsMap:    nil,
+					VideoUrlsMap:    nil,
+					FileUrlsMap:     nil,
+					RecordTimestamp: 1514764800,
+					CreateTimestamp: 1539831496,
+					UpdateTimestamp: 0,
+					IsPublic:        false,
 				},
-				Ocean:        "Pacific Ocean",
-				SensorType:   "some sensor type",
-				SensorName:   "some sensor name",
-				SamplingRate: 100,
-				Latitude:     89.123,
-				Longitude:    -100.123,
-				ImageUrlsMap: map[string]string{
-					"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png",
-					"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/images/Rotating_earth_(large).gif"},
-				AudioUrlsMap: map[string]string{
-					"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
-					"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3"},
-				VideoUrlsMap: map[string]string{
-					"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
-					"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
-				FileUrlsMap: map[string]string{
-					"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
-					"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
-				RecordTimestamp: 1514764800,
-				CreateTimestamp: 1539831496,
-				UpdateTimestamp: 0,
-				IsPublic:        false,
-			},
-			ImageUrls: []string{"https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png"},
-			AudioUrls: []string{"https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav"},
-			VideoUrls: []string{"https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv"},
-			FileUrls:  []string{"https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv"},
-		}, available,
-			"OK", false},
-		{&pbsvc.DocumentRequest{
-			Data: &pbdoc.Document{
-				Duid: imaginaryDUID,
-				Uuid: imaginaryUUID,
-				PublisherName: &pbdoc.Publisher{
-					LastName:  randFirstName,
-					FirstName: randLastName,
-				},
-				CallTypeName: "some call type name",
-				GroundType:   "some ground type",
-				StudySite: &pbdoc.StudySite{
-					City:     randCity,
-					Province: randProvince,
-					Country:  "Canada",
-				},
-				Ocean:           "Pacific Ocean",
-				SensorType:      "some sensor type",
-				SensorName:      "some sensor name",
-				SamplingRate:    100,
-				Latitude:        89.123,
-				Longitude:       -100.123,
-				ImageUrlsMap:    nil,
-				AudioUrlsMap:    nil,
-				VideoUrlsMap:    nil,
-				FileUrlsMap:     nil,
-				RecordTimestamp: 1514764800,
-				CreateTimestamp: 1539831496,
-				UpdateTimestamp: 0,
-				IsPublic:        false,
-			},
-			ImageUrls: []string{"https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png"},
-			AudioUrls: []string{"https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav"},
-			VideoUrls: []string{"https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv"},
-			FileUrls:  []string{"https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv"},
-		}, available,
-			fmt.Sprintf("rpc error: code = InvalidArgument desc = Document not found, duid: %s - uuid: %s",
-				imaginaryDUID, imaginaryUUID),
-			true},
+				ImageUrls: []string{"https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png"},
+				AudioUrls: []string{"https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav"},
+				VideoUrls: []string{"https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv"},
+				FileUrls:  []string{"https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv"},
+			}, available, fmt.Sprintf("rpc error: code = InvalidArgument desc = Document not found, duid: %s - uuid: %s",
+				imaginaryDUID, imaginaryUUID), true,
+		},
 	}
 
 	for _, c := range cases {
@@ -374,33 +355,20 @@ func TestDeleteDocument(t *testing.T) {
 		expMsg      string
 		isExpErr    bool
 	}{
-		{&pbsvc.DocumentRequest{}, unavailable,
-			"rpc error: code = Unavailable desc = service unavailable", true},
-		{nil, available,
-			"rpc error: code = InvalidArgument desc = nil request", true},
-		{&pbsvc.DocumentRequest{}, available,
-			"rpc error: code = InvalidArgument desc = nil request data", true},
-		{&pbsvc.DocumentRequest{Data: &pbdoc.Document{}}, available,
-			"rpc error: code = InvalidArgument desc = missing DUID", true},
-		{&pbsvc.DocumentRequest{Data: &pbdoc.Document{
-			Duid: imaginaryDUID,
-			Uuid: imaginaryUUID,
-		}}, available,
-			fmt.Sprintf("rpc error: code = InvalidArgument desc = Document not found, duid: %s",
-				imaginaryDUID),
-			true},
-		{&pbsvc.DocumentRequest{Data: &pbdoc.Document{
-			Duid: tempDUID,
-			Uuid: tempUUID,
-		}}, available,
-			"OK", false},
-		{&pbsvc.DocumentRequest{Data: &pbdoc.Document{
-			Duid: tempDUID,
-			Uuid: tempUUID,
-		}}, available,
-			fmt.Sprintf("rpc error: code = InvalidArgument desc = Document not found, duid: %s",
-				tempDUID),
-			true},
+		{&pbsvc.DocumentRequest{}, unavailable, "rpc error: code = Unavailable desc = service unavailable", true},
+		{nil, available, "rpc error: code = InvalidArgument desc = nil request", true},
+		{&pbsvc.DocumentRequest{}, available, "rpc error: code = InvalidArgument desc = nil request data", true},
+		{&pbsvc.DocumentRequest{Data: &pbdoc.Document{}}, available, "rpc error: code = InvalidArgument desc = missing DUID", true},
+		{
+			&pbsvc.DocumentRequest{Data: &pbdoc.Document{Duid: imaginaryDUID}}, available,
+			fmt.Sprintf("rpc error: code = InvalidArgument desc = Document not found, duid: %s", imaginaryDUID),
+			true,
+		},
+		{&pbsvc.DocumentRequest{Data: &pbdoc.Document{Duid: tempDUID}}, available, "OK", false},
+		{
+			&pbsvc.DocumentRequest{Data: &pbdoc.Document{Duid: tempDUID}}, available,
+			fmt.Sprintf("rpc error: code = InvalidArgument desc = Document not found, duid: %s", tempDUID), true,
+		},
 	}
 
 	for _, c := range cases {
@@ -425,15 +393,9 @@ func TestListDistinctFieldValues(t *testing.T) {
 		isExpErr    bool
 		expNumDocs  int
 	}{
-		{&pbsvc.DocumentRequest{}, unavailable,
-			"rpc error: code = Unavailable desc = service unavailable", true, 0,
-		},
-		{nil, available,
-			"rpc error: code = InvalidArgument desc = nil request", true, 0,
-		},
-		{&pbsvc.DocumentRequest{}, available,
-			"", false, 0,
-		},
+		{&pbsvc.DocumentRequest{}, unavailable, "rpc error: code = Unavailable desc = service unavailable", true, 0},
+		{nil, available, "rpc error: code = InvalidArgument desc = nil request", true, 0},
+		{&pbsvc.DocumentRequest{}, available, "", false, 0},
 	}
 
 	for _, c := range cases {
@@ -464,77 +426,77 @@ func TestQueryDocument(t *testing.T) {
 		isExpErr    bool
 		expNumDocs  int
 	}{
-		{&pbsvc.DocumentRequest{}, unavailable,
-			"rpc error: code = Unavailable desc = service unavailable", true, 0,
-		},
-		{nil, available,
-			"rpc error: code = InvalidArgument desc = nil request", true, 0,
-		},
-		{&pbsvc.DocumentRequest{}, available,
-			"rpc error: code = InvalidArgument desc = nil query arguments", true, 0,
-		},
+		{&pbsvc.DocumentRequest{}, unavailable, "rpc error: code = Unavailable desc = service unavailable", true, 0},
+		{nil, available, "rpc error: code = InvalidArgument desc = nil request", true, 0},
+		{&pbsvc.DocumentRequest{}, available, "rpc error: code = InvalidArgument desc = nil query arguments", true, 0},
 		{
-			&pbsvc.DocumentRequest{QueryParameters: &pbdoc.QueryTransaction{
-				MinRecordTimestamp: minTimestamp,
-				MaxRecordTimestamp: time.Now().UTC().Unix() - 1,
-			}}, available,
-			"OK", false, 32,
-		},
-		{
-			&pbsvc.DocumentRequest{QueryParameters: &pbdoc.QueryTransaction{
-				Publishers: []*pbdoc.Publisher{
-					{
-						LastName:  "Seger",
-						FirstName: "Kerri",
-					},
-					{
-						LastName:  "Abadi",
-						FirstName: "Shima",
-					},
+			&pbsvc.DocumentRequest{
+				QueryParameters: &pbdoc.QueryTransaction{
+					MinRecordTimestamp: minTimestamp,
+					MaxRecordTimestamp: time.Now().UTC().Unix() - 1,
 				},
-				MinRecordTimestamp: minTimestamp,
-				MaxRecordTimestamp: time.Now().UTC().Unix() - 1,
-			}}, available,
-			"OK", false, 11,
+			}, available, "OK", false, 32,
 		},
 		{
-			&pbsvc.DocumentRequest{QueryParameters: &pbdoc.QueryTransaction{
-				Publishers: []*pbdoc.Publisher{
-					{
-						LastName:  "Seger",
-						FirstName: "Kerri",
+			&pbsvc.DocumentRequest{
+				QueryParameters: &pbdoc.QueryTransaction{
+					Publishers: []*pbdoc.Publisher{
+						{
+							LastName:  "Seger",
+							FirstName: "Kerri",
+						},
+						{
+							LastName:  "Abadi",
+							FirstName: "Shima",
+						},
 					},
+					MinRecordTimestamp: minTimestamp,
+					MaxRecordTimestamp: time.Now().UTC().Unix() - 1,
 				},
-				CallTypeNames: []string{
-					"Wookie",
+			}, available, "OK", false, 11,
+		},
+		{
+			&pbsvc.DocumentRequest{
+				QueryParameters: &pbdoc.QueryTransaction{
+					Publishers: []*pbdoc.Publisher{
+						{
+							LastName:  "Seger",
+							FirstName: "Kerri",
+						},
+					},
+					CallTypeNames: []string{
+						"Wookie",
+					},
+					MinRecordTimestamp: minTimestamp,
+					MaxRecordTimestamp: time.Now().UTC().Unix() - 1,
 				},
-				MinRecordTimestamp: minTimestamp,
-				MaxRecordTimestamp: time.Now().UTC().Unix() - 1,
-			}}, available,
-			"OK", false, 1,
+			}, available, "OK", false, 1,
 		},
 		{
-			&pbsvc.DocumentRequest{QueryParameters: &pbdoc.QueryTransaction{
-				MinRecordTimestamp: 1446744336,
-				MaxRecordTimestamp: 1510287809,
-			}}, available,
-			"OK", false, 12,
+			&pbsvc.DocumentRequest{
+				QueryParameters: &pbdoc.QueryTransaction{
+					MinRecordTimestamp: 1446744336,
+					MaxRecordTimestamp: 1510287809,
+				},
+			}, available, "OK", false, 12,
 		},
 		{
-			&pbsvc.DocumentRequest{QueryParameters: &pbdoc.QueryTransaction{
-				MinRecordTimestamp: 0,
-				MaxRecordTimestamp: 1510287809,
-			}}, available,
-			"rpc error: code = InvalidArgument desc = invalid Document RecordTimestamp",
-			true, 0,
+			&pbsvc.DocumentRequest{
+				QueryParameters: &pbdoc.QueryTransaction{
+					MinRecordTimestamp: 0,
+					MaxRecordTimestamp: 1510287809,
+				},
+			}, available,
+			"rpc error: code = InvalidArgument desc = invalid Document RecordTimestamp", true, 0,
 		},
 		{
-			&pbsvc.DocumentRequest{QueryParameters: &pbdoc.QueryTransaction{
-				MinRecordTimestamp: 1446744336,
-				MaxRecordTimestamp: 0,
-			}}, available,
-			"rpc error: code = InvalidArgument desc = invalid Document RecordTimestamp",
-			true, 0,
+			&pbsvc.DocumentRequest{
+				QueryParameters: &pbdoc.QueryTransaction{
+					MinRecordTimestamp: 1446744336,
+					MaxRecordTimestamp: 0,
+				},
+			}, available,
+			"rpc error: code = InvalidArgument desc = invalid Document RecordTimestamp", true, 0,
 		},
 	}
 
@@ -561,146 +523,133 @@ func TestAddFileMetadata(t *testing.T) {
 		isExpErr    bool
 		expNumDocs  int
 	}{
-		{&pbsvc.DocumentRequest{}, unavailable,
-			"rpc error: code = Unavailable desc = service unavailable", true, 0,
+		{&pbsvc.DocumentRequest{}, unavailable, "rpc error: code = Unavailable desc = service unavailable", true, 0},
+		{nil, available, "rpc error: code = InvalidArgument desc = nil request", true, 0},
+		{
+			&pbsvc.DocumentRequest{}, available, "rpc error: code = InvalidArgument desc = invalid FileMetadataParameters",
+			true, 0,
 		},
-		{nil, available,
-			"rpc error: code = InvalidArgument desc = nil request", true, 0,
+		{
+			&pbsvc.DocumentRequest{
+				FileMetadataParameters: &pbdoc.FileMetadataTransaction{
+					Url: "",
+				},
+			}, available, "rpc error: code = InvalidArgument desc = invalid FileMetadataParameters", true, 0,
 		},
-		{&pbsvc.DocumentRequest{}, available,
-			"rpc error: code = InvalidArgument desc = invalid FileMetadataParameters", true, 0,
+		{
+			&pbsvc.DocumentRequest{
+				FileMetadataParameters: &pbdoc.FileMetadataTransaction{
+					Url:  "some url",
+					Duid: "",
+				},
+			}, available, "rpc error: code = InvalidArgument desc = invalid FileMetadataParameters", true, 0,
 		},
-		{&pbsvc.DocumentRequest{
-			FileMetadataParameters: &pbdoc.FileMetadataTransaction{
-				Url: "",
-			},
-		}, available,
-			"rpc error: code = InvalidArgument desc = invalid FileMetadataParameters", true, 0,
+		{
+			&pbsvc.DocumentRequest{
+				FileMetadataParameters: &pbdoc.FileMetadataTransaction{
+					Url:  "some url",
+					Duid: "some duid",
+				},
+			}, available, "rpc error: code = InvalidArgument desc = invalid Document duid", true, 0,
 		},
-		{&pbsvc.DocumentRequest{
-			FileMetadataParameters: &pbdoc.FileMetadataTransaction{
-				Url:  "some url",
-				Duid: "",
-			},
-		}, available,
-			"rpc error: code = InvalidArgument desc = invalid FileMetadataParameters", true, 0,
-		},
-		{&pbsvc.DocumentRequest{
-			FileMetadataParameters: &pbdoc.FileMetadataTransaction{
-				Url:  "some url",
-				Duid: "some duid",
-			},
-		}, available,
-			"rpc error: code = InvalidArgument desc = invalid Document duid", true, 0,
-		},
-		{&pbsvc.DocumentRequest{
-			FileMetadataParameters: &pbdoc.FileMetadataTransaction{
-				Url:  "some url",
-				Duid: "1ChHfmKs8GX7D1XVf61lwVdisWf",
-				Uuid: "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
-			},
-		}, available,
+		{
+			&pbsvc.DocumentRequest{
+				FileMetadataParameters: &pbdoc.FileMetadataTransaction{
+					Url:  "some url",
+					Duid: "1ChHfmKs8GX7D1XVf61lwVdisWf",
+				},
+			}, available,
 			"rpc error: code = InvalidArgument desc = unreachable URI", true, 0,
 		},
-		{&pbsvc.DocumentRequest{
-			FileMetadataParameters: &pbdoc.FileMetadataTransaction{
-				Url:   "some url",
-				Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
-				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
-				Media: pbdoc.FileType_AUDIO,
-			},
-		}, available,
-			"rpc error: code = InvalidArgument desc = invalid Document AudioURL", true, 0,
+		{
+			&pbsvc.DocumentRequest{
+				FileMetadataParameters: &pbdoc.FileMetadataTransaction{
+					Url:   "some url",
+					Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
+					Media: pbdoc.FileType_AUDIO,
+				},
+			}, available, "rpc error: code = InvalidArgument desc = invalid Document AudioURL", true, 0,
 		},
-		{&pbsvc.DocumentRequest{
-			FileMetadataParameters: &pbdoc.FileMetadataTransaction{
-				Url:   "some url",
-				Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
-				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
-				Media: pbdoc.FileType_IMAGE,
-			},
-		}, available,
-			"rpc error: code = InvalidArgument desc = invalid Document ImageURL", true, 0,
+		{
+			&pbsvc.DocumentRequest{
+				FileMetadataParameters: &pbdoc.FileMetadataTransaction{
+					Url:   "some url",
+					Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
+					Media: pbdoc.FileType_IMAGE,
+				},
+			}, available, "rpc error: code = InvalidArgument desc = invalid Document ImageURL", true, 0,
 		},
-		{&pbsvc.DocumentRequest{
-			FileMetadataParameters: &pbdoc.FileMetadataTransaction{
-				Url:   "some url",
-				Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
-				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
-				Media: pbdoc.FileType_VIDEO,
-			},
-		}, available,
-			"rpc error: code = InvalidArgument desc = invalid Document VideoURL", true, 0,
+		{
+			&pbsvc.DocumentRequest{
+				FileMetadataParameters: &pbdoc.FileMetadataTransaction{
+					Url:   "some url",
+					Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
+					Media: pbdoc.FileType_VIDEO,
+				},
+			}, available, "rpc error: code = InvalidArgument desc = invalid Document VideoURL", true, 0,
 		},
-		{&pbsvc.DocumentRequest{
-			FileMetadataParameters: &pbdoc.FileMetadataTransaction{
-				Url:   "some url",
-				Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
-				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
-				Media: 4,
-			},
-		}, available,
-			"rpc error: code = InvalidArgument desc = invalid media type", true, 0,
+		{
+			&pbsvc.DocumentRequest{
+				FileMetadataParameters: &pbdoc.FileMetadataTransaction{
+					Url:   "some url",
+					Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
+					Media: 4,
+				},
+			}, available, "rpc error: code = InvalidArgument desc = invalid media type", true, 0,
 		},
-		{&pbsvc.DocumentRequest{
-			FileMetadataParameters: &pbdoc.FileMetadataTransaction{
-				Url:   "https://hwscdevstorage.blob.core.windows.net/images/pusheen.mp3",
-				Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
-				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
-				Media: pbdoc.FileType_AUDIO,
-			},
-		}, available,
-			"rpc error: code = InvalidArgument desc = unreachable URI", true, 0,
+		{
+			&pbsvc.DocumentRequest{
+				FileMetadataParameters: &pbdoc.FileMetadataTransaction{
+					Url:   "https://hwscdevstorage.blob.core.windows.net/images/pusheen.mp3",
+					Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
+					Media: pbdoc.FileType_AUDIO,
+				},
+			}, available, "rpc error: code = InvalidArgument desc = unreachable URI", true, 0,
 		},
-		{&pbsvc.DocumentRequest{
-			FileMetadataParameters: &pbdoc.FileMetadataTransaction{
-				Url:   "https://hwscdevstorage.blob.core.windows.net/images/pusheen.jpg",
-				Duid:  "xxxHfmKs8GX7D1XVf61lwVdisWf",
-				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
-				Media: pbdoc.FileType_IMAGE,
-			},
-		}, available,
-			"rpc error: code = InvalidArgument desc = Document not found, duid: xxxHfmKs8GX7D1XVf61lwVdisWf", true, 0,
+		{
+			&pbsvc.DocumentRequest{
+				FileMetadataParameters: &pbdoc.FileMetadataTransaction{
+					Url:   "https://hwscdevstorage.blob.core.windows.net/images/pusheen.jpg",
+					Duid:  "xxxHfmKs8GX7D1XVf61lwVdisWf",
+					Media: pbdoc.FileType_IMAGE,
+				},
+			}, available, "rpc error: code = InvalidArgument desc = Document not found, duid: xxxHfmKs8GX7D1XVf61lwVdisWf", true, 0,
 		},
-		{&pbsvc.DocumentRequest{
-			FileMetadataParameters: &pbdoc.FileMetadataTransaction{
-				Url:   "https://hwscdevstorage.blob.core.windows.net/images/pusheen.jpg",
-				Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
-				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
-				Media: pbdoc.FileType_IMAGE,
-			},
-		}, available,
-			"OK", false, 3,
+		{
+			&pbsvc.DocumentRequest{
+				FileMetadataParameters: &pbdoc.FileMetadataTransaction{
+					Url:   "https://hwscdevstorage.blob.core.windows.net/images/pusheen.jpg",
+					Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
+					Media: pbdoc.FileType_IMAGE,
+				},
+			}, available, "OK", false, 3,
 		},
-		{&pbsvc.DocumentRequest{
-			FileMetadataParameters: &pbdoc.FileMetadataTransaction{
-				Url:   "https://hwscdevstorage.blob.core.windows.net/videos/pusheen.mp4",
-				Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
-				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
-				Media: pbdoc.FileType_VIDEO,
-			},
-		}, available,
-			"OK", false, 3,
+		{
+			&pbsvc.DocumentRequest{
+				FileMetadataParameters: &pbdoc.FileMetadataTransaction{
+					Url:   "https://hwscdevstorage.blob.core.windows.net/videos/pusheen.mp4",
+					Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
+					Media: pbdoc.FileType_VIDEO,
+				},
+			}, available, "OK", false, 3,
 		},
-		{&pbsvc.DocumentRequest{
-			FileMetadataParameters: &pbdoc.FileMetadataTransaction{
-				Url:   "https://hwscdevstorage.blob.core.windows.net/audios/pusheen.mp3",
-				Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
-				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
-				Media: pbdoc.FileType_AUDIO,
-			},
-		}, available,
-			"OK", false, 3,
+		{
+			&pbsvc.DocumentRequest{
+				FileMetadataParameters: &pbdoc.FileMetadataTransaction{
+					Url:   "https://hwscdevstorage.blob.core.windows.net/audios/pusheen.mp3",
+					Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
+					Media: pbdoc.FileType_AUDIO,
+				},
+			}, available, "OK", false, 3,
 		},
-		{&pbsvc.DocumentRequest{
-			FileMetadataParameters: &pbdoc.FileMetadataTransaction{
-				Url:   "https://hwscdevstorage.blob.core.windows.net/videos/pusheen.mp4",
-				Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
-				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
-				Media: pbdoc.FileType_FILE,
-			},
-		}, available,
-			"OK", false, 3,
+		{
+			&pbsvc.DocumentRequest{
+				FileMetadataParameters: &pbdoc.FileMetadataTransaction{
+					Url:   "https://hwscdevstorage.blob.core.windows.net/videos/pusheen.mp4",
+					Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
+					Media: pbdoc.FileType_FILE,
+				},
+			}, available, "OK", false, 3,
 		},
 	}
 
@@ -765,97 +714,90 @@ func TestDeleteFileMetadata(t *testing.T) {
 		isExpErr    bool
 		expNumDocs  int
 	}{
-		{&pbsvc.DocumentRequest{}, unavailable,
-			"rpc error: code = Unavailable desc = service unavailable", true, 0,
+		{
+			&pbsvc.DocumentRequest{}, unavailable, "rpc error: code = Unavailable desc = service unavailable",
+			true, 0,
 		},
-		{nil, available,
-			"rpc error: code = InvalidArgument desc = nil request", true, 0,
-		},
-		{&pbsvc.DocumentRequest{}, available,
+		{nil, available, "rpc error: code = InvalidArgument desc = nil request", true, 0},
+		{
+			&pbsvc.DocumentRequest{}, available,
 			"rpc error: code = InvalidArgument desc = invalid FileMetadataParameters", true, 0,
 		},
-		{&pbsvc.DocumentRequest{
-			FileMetadataParameters: &pbdoc.FileMetadataTransaction{
-				Duid: "",
-			},
-		}, available,
-			"rpc error: code = InvalidArgument desc = invalid FileMetadataParameters", true, 0,
+		{
+			&pbsvc.DocumentRequest{
+				FileMetadataParameters: &pbdoc.FileMetadataTransaction{
+					Duid: "",
+				},
+			}, available, "rpc error: code = InvalidArgument desc = invalid FileMetadataParameters", true, 0,
 		},
-		{&pbsvc.DocumentRequest{
-			FileMetadataParameters: &pbdoc.FileMetadataTransaction{
-				Duid: "some duid",
-			},
-		}, available,
-			"rpc error: code = InvalidArgument desc = invalid Document duid", true, 0,
+		{
+			&pbsvc.DocumentRequest{
+				FileMetadataParameters: &pbdoc.FileMetadataTransaction{
+					Duid: "some duid",
+				},
+			}, available, "rpc error: code = InvalidArgument desc = invalid Document duid", true, 0,
 		},
-		{&pbsvc.DocumentRequest{
-			FileMetadataParameters: &pbdoc.FileMetadataTransaction{
-				Duid: "1ChHfmKs8GX7D1XVf61lwVdisWf",
-				Uuid: "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
-				Fuid: "some fuid",
-			},
-		}, available,
-			"rpc error: code = InvalidArgument desc = invalid Document fuid", true, 0,
+		{
+			&pbsvc.DocumentRequest{
+				FileMetadataParameters: &pbdoc.FileMetadataTransaction{
+					Duid: "1ChHfmKs8GX7D1XVf61lwVdisWf",
+					Fuid: "some fuid",
+				},
+			}, available, "rpc error: code = InvalidArgument desc = invalid Document fuid", true, 0,
 		},
-		{&pbsvc.DocumentRequest{
-			FileMetadataParameters: &pbdoc.FileMetadataTransaction{
-				Fuid:  tempFileFUID,
-				Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
-				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
-				Media: 4,
-			},
-		}, available,
-			"rpc error: code = InvalidArgument desc = invalid media type", true, 0,
+		{
+			&pbsvc.DocumentRequest{
+				FileMetadataParameters: &pbdoc.FileMetadataTransaction{
+					Fuid:  tempFileFUID,
+					Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
+					Media: 4,
+				},
+			}, available, "rpc error: code = InvalidArgument desc = invalid media type", true, 0,
 		},
-		{&pbsvc.DocumentRequest{
-			FileMetadataParameters: &pbdoc.FileMetadataTransaction{
-				Fuid:  tempFileFUID,
-				Duid:  "xxxHfmKs8GX7D1XVf61lwVdisWf",
-				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
-				Media: pbdoc.FileType_FILE,
-			},
-		}, available,
-			"rpc error: code = InvalidArgument desc = Document not found, duid: xxxHfmKs8GX7D1XVf61lwVdisWf", true, 0,
+		{
+			&pbsvc.DocumentRequest{
+				FileMetadataParameters: &pbdoc.FileMetadataTransaction{
+					Fuid:  tempFileFUID,
+					Duid:  "xxxHfmKs8GX7D1XVf61lwVdisWf",
+					Media: pbdoc.FileType_FILE,
+				},
+			}, available, "rpc error: code = InvalidArgument desc = Document not found, duid: xxxHfmKs8GX7D1XVf61lwVdisWf", true, 0,
 		},
-		{&pbsvc.DocumentRequest{
-			FileMetadataParameters: &pbdoc.FileMetadataTransaction{
-				Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
-				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
-				Media: pbdoc.FileType_IMAGE,
-				Fuid:  tempImageFUID,
-			},
-		}, available,
-			"OK", false, 2,
+		{
+			&pbsvc.DocumentRequest{
+				FileMetadataParameters: &pbdoc.FileMetadataTransaction{
+					Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
+					Media: pbdoc.FileType_IMAGE,
+					Fuid:  tempImageFUID,
+				},
+			}, available, "OK", false, 2,
 		},
-		{&pbsvc.DocumentRequest{
-			FileMetadataParameters: &pbdoc.FileMetadataTransaction{
-				Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
-				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
-				Media: pbdoc.FileType_VIDEO,
-				Fuid:  tempVideoFUID,
-			},
-		}, available,
-			"OK", false, 2,
+		{
+			&pbsvc.DocumentRequest{
+				FileMetadataParameters: &pbdoc.FileMetadataTransaction{
+					Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
+					Media: pbdoc.FileType_VIDEO,
+					Fuid:  tempVideoFUID,
+				},
+			}, available, "OK", false, 2,
 		},
-		{&pbsvc.DocumentRequest{
-			FileMetadataParameters: &pbdoc.FileMetadataTransaction{
-				Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
-				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
-				Media: pbdoc.FileType_AUDIO,
-				Fuid:  tempAudioFUID,
-			},
-		}, available,
-			"OK", false, 2,
+		{
+			&pbsvc.DocumentRequest{
+				FileMetadataParameters: &pbdoc.FileMetadataTransaction{
+					Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
+					Media: pbdoc.FileType_AUDIO,
+					Fuid:  tempAudioFUID,
+				},
+			}, available, "OK", false, 2,
 		},
-		{&pbsvc.DocumentRequest{
-			FileMetadataParameters: &pbdoc.FileMetadataTransaction{
-				Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
-				Uuid:  "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
-				Media: pbdoc.FileType_FILE,
-				Fuid:  tempFileFUID,
-			},
-		}, available,
-			"OK", false, 2,
+		{
+			&pbsvc.DocumentRequest{
+				FileMetadataParameters: &pbdoc.FileMetadataTransaction{
+					Duid:  "1ChHfmKs8GX7D1XVf61lwVdisWf",
+					Media: pbdoc.FileType_FILE,
+					Fuid:  tempFileFUID,
+				},
+			}, available, "OK", false, 2,
 		},
 	}
 

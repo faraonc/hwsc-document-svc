@@ -300,7 +300,7 @@ func (s *Service) ListUserDocumentCollection(ctx context.Context, req *pbsvc.Doc
 
 }
 
-// UpdateDocument (completely) updates a MongoDB document with a given DUID.
+// UpdateDocument (completely) updates a MongoDB document with a given DUID, and UUID.
 // Returns the updated Document.
 func (s *Service) UpdateDocument(ctx context.Context, req *pbsvc.DocumentRequest) (*pbsvc.DocumentResponse, error) {
 	log.Info(consts.DocumentServiceTag, "Requesting UpdateDocument service")
@@ -491,9 +491,8 @@ func (s *Service) DeleteDocument(ctx context.Context, req *pbsvc.DocumentRequest
 	}
 
 	log.Info(consts.DeleteDocumentTag, fmt.Sprintf("Deleted document: \n%s\n", pretty.Sprint(document)))
-	// Log duid and uuid used for query
-	log.Info(consts.DeleteDocumentTag, fmt.Sprintf("Success deleting document, duid: %s - uuid: %s",
-		document.GetDuid(), document.GetUuid()))
+	// Log duid used for query
+	log.Info(consts.DeleteDocumentTag, fmt.Sprintf("Success deleting document, duid: %s", document.GetDuid()))
 
 	return &pbsvc.DocumentResponse{
 		Status:  &pbsvc.DocumentResponse_Code{Code: uint32(codes.OK)},
