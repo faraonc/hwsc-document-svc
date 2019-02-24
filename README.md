@@ -4,7 +4,7 @@
  Provides services to hwsc-app-gateway-svc for CRUD document, and file metadata in MongoDB
 
 ## Contract
-The proto file and compiled proto buffers are located in [hwsc-api-blocks](https://github.com/hwsc-org/hwsc-api-blocks/tree/master/int/hwsc-document-svc/proto).
+The proto file and compiled proto buffers are located in [hwsc-api-blocks](https://github.com/hwsc-org/hwsc-api-blocks/tree/master/int/hwsc-document-svc/document).
 ### GetStatus
 - Gets the current status of the service.
 ### CreateDocument
@@ -14,16 +14,16 @@ The proto file and compiled proto buffers are located in [hwsc-api-blocks](https
 - Retrieves all the MongoDB documents for a specific user with the given UUID.
 - Returns a collection of Documents.
 ### UpdateDocument
-- (completely) Updates a MongoDB document using DUID.
+- (completely) Updates a MongoDB document using DUID and UUID.
 - Returns the updated Document.
 ### DeleteDocument
-- Deletes a MongoDB document using UUID and DUID.
+- Deletes a MongoDB document using DUID.
 - Returns the deleted Document.
 ### AddFileMetadata
-- Adds a new FileMetadata in a MongoDB document using a given url, UUID and DUID.
+- Adds a new FileMetadata in a MongoDB document using a given url, DUID.
 - Returns the updated Document.
 ### DeleteFileMetadata
-- Deletes a FileMetadata in a MongoDB document using a given FUID, UUID and DUID.
+- Deletes a FileMetadata in a MongoDB document using a given FUID, DUID.
 - Returns the updated Document.
 ### ListDistinctFieldValues
 - Retrieves all the unique fields values required for the front-end drop-down filter.
@@ -34,18 +34,18 @@ The proto file and compiled proto buffers are located in [hwsc-api-blocks](https
 
 ## Prerequisites
 - GoLang version [go 1.11.5](https://golang.org/dl/)
-- GoLang Dependency Management [dep](https://github.com/golang/dep)
+- GoLang Modules [go mod](https://github.com/golang/go/wiki/Modules)
 - Go Source Code Linter [golint](https://github.com/golang/lint)
-- mongo-go-driver beta [1.0.0](https://github.com/mongodb/mongo-go-driver)
+- mongo-go-driver beta [1.0.0-rc1](https://github.com/mongodb/mongo-go-driver)
 - Docker
-- [Optional] If a new proto file and compiled proto buffer exists in [hwsc-api-blocks](https://github.com/hwsc-org/hwsc-api-blocks/tree/master/int/hwsc-document-svc/proto), update dependency ``$dep ensure -update``
+- [Optional] If a new proto file and compiled proto buffer exists in [hwsc-api-blocks](https://github.com/hwsc-org/hwsc-api-blocks/tree/master/int/hwsc-document-svc/document), update dependency `$ go get -u <package name>`
 
 ## How to Run without Docker Container
-1. Install dependencies and generate vendor folder `$ dep ensure -v`
-2. Update ENV variables
+1. Grab prod/dev/test config file from Slack
 3. Run main `$ go run main.go`
 
 ## How to Run with Docker Container
+TODO
 1. Install dependencies and generate vendor folder `$ dep ensure -v`
 2. `$ generate_container.sh`
 3. Find your image `$ docker images`
@@ -53,7 +53,13 @@ The proto file and compiled proto buffers are located in [hwsc-api-blocks](https
 5. `$ docker run --env-file ./env.list -it -p 50051:50051 <imagename>`
 
 ## How to Unit Test
-1. `$ cd service`
-2. For command-line summary, `$ go test -cover -v`
-3. For comprehensive summary, `$ bash unit_test.sh`
-
+1. `$ docker run -it -p 27017:27017 -e MONGO_INITDB_DATABASE=admin -e MONGO_INITDB_ROOT_USERNAME=mongoadmin -e MONGO_INITDB_ROOT_PASSWORD=secret hwsc/test-hwsc-document-svc:latest`
+2. This runs the following MongoDB database:
+    - `admin` at `mongodb://mongoadmin:secret@127.0.0.1:27017/admin`
+    - `test-document` at `mongodb://testDocumentWriter:testDocumentPwd@127.0.0.1:27017/test-document`
+3. Grab the config file from Slack channel #config-files-test
+4. `$ cd service`
+5. The unit test will programmatically run the DB migration as required
+6. For command-line summary, `$ go test -cover -v -failfast -race`
+7. For comprehensive summary, `$ bash unit_test.sh`
+8. Restart Docker MongoDB container as necessary

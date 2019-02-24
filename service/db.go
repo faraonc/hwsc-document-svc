@@ -11,6 +11,7 @@ import (
 	"os/signal"
 	"strings"
 	"syscall"
+	"time"
 )
 
 var (
@@ -42,7 +43,11 @@ func init() {
 // dialMongoDB connects a client to MongoDB server.
 // Returns a MongoDB Client or any dialing error.
 func dialMongoDB(uri *string) (*mongo.Client, error) {
-	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(*uri))
+	if strings.TrimSpace(*uri) == "" {
+		return nil, consts.ErrEmptyMongoDBURI
+	}
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(*uri))
 	if err != nil {
 		return nil, err
 	}

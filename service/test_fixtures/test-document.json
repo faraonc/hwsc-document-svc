@@ -1,0 +1,1105 @@
+[
+  {
+    "duid": "1ChHfqAsJRZOlTsg2majVXK7wxT",
+    "uuid": "123XXSNJG0MQASDF4QX1EFD6Y3",
+    "publisher_name": {
+      "last_name": "Abadi",
+      "first_name": "Shima"
+    },
+    "call_type_name": "Herd",
+    "ground_type": "Migrating Ground",
+    "study_site": {
+      "city": "Colombo",
+      "state": "",
+      "province": "Western Province",
+      "country": "Sri Lanka"
+    },
+    "ocean": "Indian Ocean",
+    "sensor_type": "Tag",
+    "sensor_name": "Acousonde",
+    "sampling_rate": 17000,
+    "latitude": -3.193761110305786,
+    "longitude": 57.662841796875,
+    "image_urls_map": {
+      "cbd911cc-6bc5-46fe-8108-5cdacbfb8402": "https://hwscdevstorage.blob.core.windows.net/images/Seger_Wookie_CaboMexico_Tag_Acousonde_20140210_113355_800_3_BreedingMigrating.jpg"
+    },
+    "audio_urls_map": {
+      "30d3f447-6d5a-4ce8-bb6f-7bdecd47cb5d": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Wookie_CaboMexico_Tag_Acousonde_20140210_113355_800_3_BreedingMigrating.wav"
+    },
+    "video_urls_map": {},
+    "file_urls_map": {},
+    "record_timestamp": 1437725706,
+    "create_timestamp": 1541665016,
+    "update_timestamp": 0,
+    "is_public": true
+  },
+  {
+    "duid": "1ChHfq8mm4oL4V48VqDbhAfJbpG",
+    "uuid": "123XXSNJG0MQASDF4QX1EFD6Y3",
+    "publisher_name": {
+      "last_name": "Abadi",
+      "first_name": "Shima"
+    },
+    "call_type_name": "Herd",
+    "ground_type": "Migrating Ground",
+    "study_site": {
+      "city": "Colombo",
+      "state": "",
+      "province": "Western Province",
+      "country": "Sri Lanka"
+    },
+    "ocean": "Indian Ocean",
+    "sensor_type": "Tag",
+    "sensor_name": "Core",
+    "sampling_rate": 2000,
+    "latitude": -6.346460819244385,
+    "longitude": 74.362060546875,
+    "image_urls_map": {
+      "7268869d-ec19-4014-9d48-861490fe4325": "https://hwscdevstorage.blob.core.windows.net/images/Seger_WhupAscendingShriek_CaboMexico_Tag_Acousonde_20140306_142331_8000_3_BreedingMigrating.jpg"
+    },
+    "audio_urls_map": {
+      "f76fb9a6-09a4-492f-ae29-1f96bc1af191": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_WhupAscendingShriek_CaboMexico_Tag_Acousonde_20140306_142331_8000_3_BreedingMigrating.wav"
+    },
+    "video_urls_map": {},
+    "file_urls_map": {},
+    "record_timestamp": 1330284806,
+    "create_timestamp": 1541665016,
+    "update_timestamp": 0,
+    "is_public": true
+  },
+  {
+    "duid": "1ChHfpOcuQfOdiDFj3d8joYxZtF",
+    "uuid": "0XXXXSNJG0MQASDF4QX1EFD6Y3",
+    "publisher_name": {
+      "last_name": "Kim",
+      "first_name": "Lisa"
+    },
+    "call_type_name": "Feed Point",
+    "ground_type": "Cold Ground",
+    "study_site": {
+      "city": "Hoffland",
+      "state": "",
+      "province": "",
+      "country": "Norway"
+    },
+    "ocean": "Arctic Ocean",
+    "sensor_type": "Wired",
+    "sensor_name": "Bahn",
+    "sampling_rate": 8000,
+    "latitude": 80.87162017822266,
+    "longitude": -132.5317840576172,
+    "image_urls_map": {
+      "b3bb11aa-21c9-4613-99f2-e6584b2f068e": "https://hwscdevstorage.blob.core.windows.net/images/Seger_Squelch_CaboMexico_Tag_Acousonde_20140210_ 105232_8000_4_BreedingMigrating.jpg"
+    },
+    "audio_urls_map": {
+      "5939a019-2f06-4ccd-849a-02c5905221a2": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Squelch_CaboMexico_Tag_Acousonde_20140210_ 105232_8000_4_BreedingMigrating.wav"
+    },
+    "video_urls_map": {},
+    "file_urls_map": {},
+    "record_timestamp": 1510287809,
+    "create_timestamp": 1541665016,
+    "update_timestamp": 0,
+    "is_public": true
+  },
+  {
+    "duid": "1ChHflUo83rzychXywlpg9fkrXd",
+    "uuid": "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
+    "publisher_name": {
+      "last_name": "Faraon",
+      "first_name": "Conard"
+    },
+    "call_type_name": "Part Migration",
+    "ground_type": "Breeding Migrating",
+    "study_site": {
+      "city": "Atlanta",
+      "state": "Georgia",
+      "province": "",
+      "country": "USA"
+    },
+    "ocean": "Atlantic Ocean",
+    "sensor_type": "Satellite",
+    "sensor_name": "Tsukino",
+    "sampling_rate": 4000,
+    "latitude": 31.18885612487793,
+    "longitude": -71.68215942382812,
+    "image_urls_map": {
+      "3ef96062-5ec0-4bf2-98fd-b93f70df1a8c": "https://hwscdevstorage.blob.core.windows.net/images/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.jpg",
+      "d0918e13-28ad-4019-8105-49bb6e9a7eb0": "https://hwscdevstorage.blob.core.windows.net/images/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.png"
+    },
+    "audio_urls_map": {
+      "3027ab35-9336-4141-b8b4-00957bbd6655": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav"
+    },
+    "video_urls_map": {},
+    "file_urls_map": {},
+    "record_timestamp": 1517509423,
+    "create_timestamp": 1541665016,
+    "update_timestamp": 0,
+    "is_public": true
+  },
+  {
+    "duid": "1ChHfq6n78qHJxSh3M9oNf1E3DQ",
+    "uuid": "0000XSNJG0MQJHBF4QX1EFD6Y3",
+    "publisher_name": {
+      "last_name": "Seger",
+      "first_name": "Kerri"
+    },
+    "call_type_name": "Squelch",
+    "ground_type": "Breeding Migrating",
+    "study_site": {
+      "city": "Cabo Mexico",
+      "state": "",
+      "province": "",
+      "country": "Mexico"
+    },
+    "ocean": "Pacific Ocean",
+    "sensor_type": "Tag",
+    "sensor_name": "Acousonde",
+    "sampling_rate": 8000,
+    "latitude": 21.593280792236328,
+    "longitude": -123.03730773925781,
+    "image_urls_map": {
+      "c83efff6-c87e-46dc-96f0-81d41c786025": "https://hwscdevstorage.blob.core.windows.net/images/Seger_Squelch_CaboMexico_Tag_Acousonde_20140210_ 105232_8000_4_BreedingMigrating.jpg"
+    },
+    "audio_urls_map": {
+      "9dbbf138-1e06-42f7-99c5-6ea28fbcb5c6": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Squelch_CaboMexico_Tag_Acousonde_20140210_ 105232_8000_4_BreedingMigrating.wav"
+    },
+    "video_urls_map": {},
+    "file_urls_map": {},
+    "record_timestamp": 1392026713,
+    "create_timestamp": 1541665016,
+    "update_timestamp": 0,
+    "is_public": true
+  },
+  {
+    "duid": "1ChHfnIknxMTb6gUBJ0FpYPpdPr",
+    "uuid": "0XXXXSNJG0MQASDF4QX1EFD6Y3",
+    "publisher_name": {
+      "last_name": "Kim",
+      "first_name": "Lisa"
+    },
+    "call_type_name": "Coreography",
+    "ground_type": "Atlas",
+    "study_site": {
+      "city": "McMurdo",
+      "state": "",
+      "province": "",
+      "country": "USA"
+    },
+    "ocean": "Southern Ocean",
+    "sensor_type": "Wired",
+    "sensor_name": "Bahn",
+    "sampling_rate": 600,
+    "latitude": -58.17967224121094,
+    "longitude": 51.71627426147461,
+    "image_urls_map": {
+      "b17ce5d0-bbf0-4de0-88ca-7adc695c00ac": "https://hwscdevstorage.blob.core.windows.net/images/Seger_WhupAscendingShriek_CaboMexico_Tag_Acousonde_20140306_142331_8000_3_BreedingMigrating.jpg"
+    },
+    "audio_urls_map": {
+      "24fda544-7223-4918-93de-5d6c64a92bf1": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_WhupAscendingShriek_CaboMexico_Tag_Acousonde_20140306_142331_8000_3_BreedingMigrating.wav"
+    },
+    "video_urls_map": {},
+    "file_urls_map": {},
+    "record_timestamp": 1453046626,
+    "create_timestamp": 1541665016,
+    "update_timestamp": 0,
+    "is_public": true
+  },
+  {
+    "duid": "1ChHfoo2uVKhK2Cu5W8g72RTvAD",
+    "uuid": "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
+    "publisher_name": {
+      "last_name": "Faraon",
+      "first_name": "Conard"
+    },
+    "call_type_name": "Dependency Migration",
+    "ground_type": "Breeding Migrating",
+    "study_site": {
+      "city": "Norfolk",
+      "state": "Virginia",
+      "province": "",
+      "country": "USA"
+    },
+    "ocean": "Atlantic Ocean",
+    "sensor_type": "Tag",
+    "sensor_name": "Acousonde",
+    "sampling_rate": 1000,
+    "latitude": 35.75516128540039,
+    "longitude": -64.30715942382812,
+    "image_urls_map": {
+      "c5e807aa-184c-4cf2-8e91-62c6a9a38e39": "https://hwscdevstorage.blob.core.windows.net/images/Seger_Wookie_CaboMexico_Tag_Acousonde_20140210_113355_800_3_BreedingMigrating.jpg"
+    },
+    "audio_urls_map": {
+      "a50093f1-b803-4fbc-8dc3-a756e65e1f88": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Wookie_CaboMexico_Tag_Acousonde_20140210_113355_800_3_BreedingMigrating.wav"
+    },
+    "video_urls_map": {},
+    "file_urls_map": {},
+    "record_timestamp": 1455146336,
+    "create_timestamp": 1541665016,
+    "update_timestamp": 0,
+    "is_public": true
+  },
+  {
+    "duid": "1ChHfoPvsdQVf61uI5tGvHQUrXd",
+    "uuid": "123XXSNJG0MQASDF4QFFFFD6Y3",
+    "publisher_name": {
+      "last_name": "Leesa",
+      "first_name": "Keem"
+    },
+    "call_type_name": "Fish Call",
+    "ground_type": "Baja Ground",
+    "study_site": {
+      "city": "San Diego",
+      "state": "California",
+      "province": "",
+      "country": "USA"
+    },
+    "ocean": "Pacific Ocean",
+    "sensor_type": "Tag",
+    "sensor_name": "Acousonde",
+    "sampling_rate": 8000,
+    "latitude": 37.99640655517578,
+    "longitude": -139.36505126953125,
+    "image_urls_map": {
+      "7666b873-9eaa-4538-83e4-f5b05c0222e5": "https://hwscdevstorage.blob.core.windows.net/images/Seger_SqueakAscendingShriek_CaboMexico_Tag_Acousonde_20140210_093123_8000_2_BreedingMigrating.jpg"
+    },
+    "audio_urls_map": {
+      "62b54616-bcd9-41be-9100-e64422db7beb": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_SqueakAscendingShriek_CaboMexico_Tag_Acousonde_20140210_093123_8000_2_BreedingMigrating.wav"
+    },
+    "video_urls_map": {},
+    "file_urls_map": {},
+    "record_timestamp": 1446843537,
+    "create_timestamp": 1541665016,
+    "update_timestamp": 0,
+    "is_public": true
+  },
+  {
+    "duid": "1ChHfpHSsGVzUppNru9EgtpN77O",
+    "uuid": "123XXSNJG0MQASDF4QFFFFD6Y3",
+    "publisher_name": {
+      "last_name": "Leesa",
+      "first_name": "Keem"
+    },
+    "call_type_name": "Friend",
+    "ground_type": "Social Ground",
+    "study_site": {
+      "city": "Seoul",
+      "state": "",
+      "province": "",
+      "country": "South Korea"
+    },
+    "ocean": "Pacific Ocean",
+    "sensor_type": "Tag",
+    "sensor_name": "Acousonde",
+    "sampling_rate": 2000,
+    "latitude": 48.83953857421875,
+    "longitude": 164.98306274414062,
+    "image_urls_map": {
+      "a03aa302-fca9-4e5e-a3b7-0bfc48c96930": "https://hwscdevstorage.blob.core.windows.net/images/Seger_GunshotMaybe_CaboMexico_Tag_Bprobe_20140307_130640_8000_3_BreedingMigrating.png"
+    },
+    "audio_urls_map": {
+      "5495bf86-404a-4c3d-b7b3-5e5502881028": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_GunshotMaybe_CaboMexico_Tag_Bprobe_20140307_130640_8000_3_BreedingMigrating.wav"
+    },
+    "video_urls_map": {},
+    "file_urls_map": {},
+    "record_timestamp": 1445344896,
+    "create_timestamp": 1541665016,
+    "update_timestamp": 0,
+    "is_public": true
+  },
+  {
+    "duid": "1ChHflVcm8xCEtq80I4j9htcsxJ",
+    "uuid": "123XXSNJG0MQASDF4QX1EFD6Y3",
+    "publisher_name": {
+      "last_name": "Abadi",
+      "first_name": "Shima"
+    },
+    "call_type_name": "Wookie",
+    "ground_type": "Migrating Ground",
+    "study_site": {
+      "city": "Antananarivo",
+      "state": "",
+      "province": "Antananarivo Province",
+      "country": "Madagascar"
+    },
+    "ocean": "Indian Ocean",
+    "sensor_type": "Tag",
+    "sensor_name": "Core",
+    "sampling_rate": 1800,
+    "latitude": 3.8195700645446777,
+    "longitude": 69.752685546875,
+    "image_urls_map": {
+      "9537b855-f83e-4ee7-95c9-dde69ebe0e47": "https://hwscdevstorage.blob.core.windows.net/images/Seger_Unknown13_CaboMexico_Tag_Bprobe_20150324_142637_8000_3_BreedingMigrating.png"
+    },
+    "audio_urls_map": {
+      "313b524e-71de-4054-bcb6-503ec7523f03": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Unknown13_CaboMexico_Tag_Bprobe_20150324_142637_8000_3_BreedingMigrating.wav"
+    },
+    "video_urls_map": {},
+    "file_urls_map": {},
+    "record_timestamp": 1420287802,
+    "create_timestamp": 1541665016,
+    "update_timestamp": 0,
+    "is_public": true
+  },
+  {
+    "duid": "1ChHfnNoS6KTivehi6FFgJCcORB",
+    "uuid": "123XXSNJG0MQASDF4QX1EFD6Y3",
+    "publisher_name": {
+      "last_name": "Abadi",
+      "first_name": "Shima"
+    },
+    "call_type_name": "Herd",
+    "ground_type": "Migrating Ground",
+    "study_site": {
+      "city": "Kerala",
+      "state": "",
+      "province": "",
+      "country": "India"
+    },
+    "ocean": "Indian Ocean",
+    "sensor_type": "Tag",
+    "sensor_name": "Core",
+    "sampling_rate": 3000,
+    "latitude": 1.3747639656066895,
+    "longitude": 66.188232421875,
+    "image_urls_map": {
+      "b6b12bd2-0a8b-4dd7-b320-d0bc74fa7536": "https://hwscdevstorage.blob.core.windows.net/images/Seger_Unknown13_CaboMexico_Tag_Bprobe_20150324_142637_8000_3_BreedingMigrating.png",
+      "57bd971b-f4d1-49f6-8bbf-40d2bad84f53": "https://hwscdevstorage.blob.core.windows.net/images/Seger_Unknown13_CaboMexico_Tag_Bprobe_20150324_142637_8000_3_BreedingMigrating.jpg"
+    },
+    "audio_urls_map": {
+      "49e862ec-e72c-4127-9c78-ccfbc29eb4ee": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Unknown13_CaboMexico_Tag_Bprobe_20150324_142637_8000_3_BreedingMigrating.wav"
+    },
+    "video_urls_map": {},
+    "file_urls_map": {},
+    "record_timestamp": 1220288806,
+    "create_timestamp": 1541665016,
+    "update_timestamp": 0,
+    "is_public": true
+  },
+  {
+    "duid": "1ChHfqUT8FzRepD1HdRw8uOyyyW",
+    "uuid": "0000XSNJG0MQJHBF4QX1EFD6Y3",
+    "publisher_name": {
+      "last_name": "Seger",
+      "first_name": "Kerri"
+    },
+    "call_type_name": "Unknown 13",
+    "ground_type": "Breeding Migrating",
+    "study_site": {
+      "city": "Cabo Mexico",
+      "state": "",
+      "province": "",
+      "country": "Mexico"
+    },
+    "ocean": "Pacific Ocean",
+    "sensor_type": "Tag",
+    "sensor_name": "Bprobe",
+    "sampling_rate": 8000,
+    "latitude": 30.269699096679688,
+    "longitude": -120.68623352050781,
+    "image_urls_map": {
+      "3f7499ab-bb11-4e51-ae58-3188b5c0b8d1": "https://hwscdevstorage.blob.core.windows.net/images/Seger_Unknown13_CaboMexico_Tag_Bprobe_20150324_142637_8000_3_BreedingMigrating.jpg",
+      "7ce05546-f7df-41e7-abbb-2ea14fbe2ab3": "https://hwscdevstorage.blob.core.windows.net/images/Seger_Unknown13_CaboMexico_Tag_Bprobe_20150324_142637_8000_3_BreedingMigrating.png"
+    },
+    "audio_urls_map": {
+      "f0fb08b0-0c57-42c0-9604-c6500cf27815": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Unknown13_CaboMexico_Tag_Bprobe_20150324_142637_8000_3_BreedingMigrating.wav"
+    },
+    "video_urls_map": {},
+    "file_urls_map": {},
+    "record_timestamp": 1427207773,
+    "create_timestamp": 1541665016,
+    "update_timestamp": 0,
+    "is_public": true
+  },
+  {
+    "duid": "1ChHfqI1KhinjFfiytD5KFhvD1w",
+    "uuid": "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
+    "publisher_name": {
+      "last_name": "Faraon",
+      "first_name": "Conard"
+    },
+    "call_type_name": "Dependency Migration",
+    "ground_type": "Breeding Migrating",
+    "study_site": {
+      "city": "Miara",
+      "state": "Florida",
+      "province": "",
+      "country": "USA"
+    },
+    "ocean": "Atlantic Ocean",
+    "sensor_type": "Stick",
+    "sensor_name": "Northrup",
+    "sampling_rate": 9000,
+    "latitude": 30.257095336914062,
+    "longitude": -72.44249725341797,
+    "image_urls_map": {
+      "56b66403-669f-4c7a-85e1-f439eab8b609": "https://hwscdevstorage.blob.core.windows.net/images/Seger_Squelch_CaboMexico_Tag_Acousonde_20140210_ 105232_8000_4_BreedingMigrating.jpg"
+    },
+    "audio_urls_map": {
+      "efcfea11-cb75-4249-b3f7-7a1fe222f0ae": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Squelch_CaboMexico_Tag_Acousonde_20140210_ 105232_8000_4_BreedingMigrating.wav"
+    },
+    "video_urls_map": {},
+    "file_urls_map": {},
+    "record_timestamp": 1386689006,
+    "create_timestamp": 1541665016,
+    "update_timestamp": 0,
+    "is_public": true
+  },
+  {
+    "duid": "1ChHfmG1Jt1H6miCBdYz4ActR0X",
+    "uuid": "0XXXXSNJG0MQASDF4QX1EFD6Y3",
+    "publisher_name": {
+      "last_name": "Kim",
+      "first_name": "Lisa"
+    },
+    "call_type_name": "Hibernate",
+    "ground_type": "Atlas",
+    "study_site": {
+      "city": "Alesund",
+      "state": "",
+      "province": "",
+      "country": "Norway"
+    },
+    "ocean": "Arctic Ocean",
+    "sensor_type": "Wired",
+    "sensor_name": "Bahn",
+    "sampling_rate": 10000,
+    "latitude": 71.17330932617188,
+    "longitude": -12.86450481414795,
+    "image_urls_map": {},
+    "audio_urls_map": {
+      "98563601-032f-4781-8945-f8bdaec4544f": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_WhupAscendingShriek_CaboMexico_Tag_Acousonde_20140306_142331_8000_3_BreedingMigrating.wav"
+    },
+    "video_urls_map": {},
+    "file_urls_map": {},
+    "record_timestamp": 1355146666,
+    "create_timestamp": 1541665016,
+    "update_timestamp": 0,
+    "is_public": true
+  },
+  {
+    "duid": "1ChHfoGhHfQx8RWvvsMRrIRh9JE",
+    "uuid": "123XXSNJG0MQASDF4QFFFFD6Y3",
+    "publisher_name": {
+      "last_name": "Leesa",
+      "first_name": "Keem"
+    },
+    "call_type_name": "Fish Call",
+    "ground_type": "Baja Ground",
+    "study_site": {
+      "city": "San Diego",
+      "state": "California",
+      "province": "",
+      "country": "USA"
+    },
+    "ocean": "Pacific Ocean",
+    "sensor_type": "Tag",
+    "sensor_name": "Acousonde",
+    "sampling_rate": 8000,
+    "latitude": 37.509971618652344,
+    "longitude": -152.19708251953125,
+    "image_urls_map": {
+      "f2619499-2d64-4f77-96b4-43c39355499a": "https://hwscdevstorage.blob.core.windows.net/images/Seger_Squelch_CaboMexico_Tag_Acousonde_20140210_ 105232_8000_4_BreedingMigrating.jpg"
+    },
+    "audio_urls_map": {
+      "28bb0320-b285-4cbb-9939-f3023e5dfdeb": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Squelch_CaboMexico_Tag_Acousonde_20140210_ 105232_8000_4_BreedingMigrating.wav"
+    },
+    "video_urls_map": {},
+    "file_urls_map": {},
+    "record_timestamp": 1516843537,
+    "create_timestamp": 1541665016,
+    "update_timestamp": 0,
+    "is_public": true
+  },
+  {
+    "duid": "1ChHfn19mhfR4epj8ckqvZtjzuP",
+    "uuid": "0000XSNJG0MQJHBF4QX1EFD6Y3",
+    "publisher_name": {
+      "last_name": "Seger",
+      "first_name": "Kerri"
+    },
+    "call_type_name": "Gunshot Maybe",
+    "ground_type": "Breeding Migrating",
+    "study_site": {
+      "city": "Cabo Mexico",
+      "state": "",
+      "province": "",
+      "country": "Mexico"
+    },
+    "ocean": "Pacific Ocean",
+    "sensor_type": "Tag",
+    "sensor_name": "Bprobe",
+    "sampling_rate": 8000,
+    "latitude": 19.45884132385254,
+    "longitude": -112.58262634277344,
+    "image_urls_map": {
+      "66f420f4-113a-407c-a85e-230db19a584d": "https://hwscdevstorage.blob.core.windows.net/images/Seger_GunshotMaybe_CaboMexico_Tag_Bprobe_20140307_130640_8000_3_BreedingMigrating.png"
+    },
+    "audio_urls_map": {
+      "e6bfcd62-115a-4482-8d21-16cf8adac997": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_GunshotMaybe_CaboMexico_Tag_Bprobe_20140307_130640_8000_3_BreedingMigrating.wav"
+    },
+    "video_urls_map": {},
+    "file_urls_map": {},
+    "record_timestamp": 1493816993,
+    "create_timestamp": 1541665016,
+    "update_timestamp": 0,
+    "is_public": true
+  },
+  {
+    "duid": "1ChHfoerBvVndhEOGeAxQBRL5pk",
+    "uuid": "123XXSNJG0MQASDF4QFFFFD6Y3",
+    "publisher_name": {
+      "last_name": "Leesa",
+      "first_name": "Keem"
+    },
+    "call_type_name": "Friend",
+    "ground_type": "Social Ground",
+    "study_site": {
+      "city": "Tokyo",
+      "state": "",
+      "province": "",
+      "country": "Japan"
+    },
+    "ocean": "Pacific Ocean",
+    "sensor_type": "Tag",
+    "sensor_name": "Acousonde",
+    "sampling_rate": 4000,
+    "latitude": 28.811155319213867,
+    "longitude": 162.17056274414062,
+    "image_urls_map": {
+      "9f1192fc-3765-4cbf-99d1-2c84d1ad5d38": "https://hwscdevstorage.blob.core.windows.net/images/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.jpg",
+      "5ed09b53-8ae6-49fb-b662-4f25861eee8d": "https://hwscdevstorage.blob.core.windows.net/images/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.png"
+    },
+    "audio_urls_map": {
+      "4728b1b6-e781-4a42-9959-16846f79fc99": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav"
+    },
+    "video_urls_map": {},
+    "file_urls_map": {},
+    "record_timestamp": 1440344996,
+    "create_timestamp": 1541665016,
+    "update_timestamp": 0,
+    "is_public": true
+  },
+  {
+    "duid": "1ChHfpXIp8WGajz3C7hxZZurrko",
+    "uuid": "0000XSNJG0MQJHBF4QX1EFD6Y3",
+    "publisher_name": {
+      "last_name": "Seger",
+      "first_name": "Kerri"
+    },
+    "call_type_name": "Conga",
+    "ground_type": "Breeding Migrating",
+    "study_site": {
+      "city": "Cabo Mexico",
+      "state": "",
+      "province": "",
+      "country": "Mexico"
+    },
+    "ocean": "Pacific Ocean",
+    "sensor_type": "Tag",
+    "sensor_name": "Acousonde",
+    "sampling_rate": 8000,
+    "latitude": 21.373821258544922,
+    "longitude": -109.92393493652344,
+    "image_urls_map": {
+      "66c7badd-5b59-4ccd-b212-8bc1cec38eed": "https://hwscdevstorage.blob.core.windows.net/images/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.jpg",
+      "8ec67dad-ef52-4dbd-8118-7a03dae84ce9": "https://hwscdevstorage.blob.core.windows.net/images/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.png"
+    },
+    "audio_urls_map": {
+      "2b341ad1-25fc-427c-bf96-6ac1e6e64b2f": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav"
+    },
+    "video_urls_map": {},
+    "file_urls_map": {},
+    "record_timestamp": 1394709793,
+    "create_timestamp": 1541665016,
+    "update_timestamp": 0,
+    "is_public": true
+  },
+  {
+    "duid": "1ChHfqZWss7xaX4I73aJRQuO0KE",
+    "uuid": "0XXXXSNJG0MQASDF4QX1EFD6Y3",
+    "publisher_name": {
+      "last_name": "Kim",
+      "first_name": "Lisa"
+    },
+    "call_type_name": "Coreography",
+    "ground_type": "Atlas",
+    "study_site": {
+      "city": "McMurdo",
+      "state": "",
+      "province": "",
+      "country": "USA"
+    },
+    "ocean": "Southern Ocean",
+    "sensor_type": "Wired",
+    "sensor_name": "Bahn",
+    "sampling_rate": 7000,
+    "latitude": -59.172672271728516,
+    "longitude": 141.01315307617188,
+    "image_urls_map": {
+      "f6727b07-4f15-4534-907d-10e38fff9c30": "https://hwscdevstorage.blob.core.windows.net/images/Seger_Wookie_CaboMexico_Tag_Acousonde_20140210_113355_800_3_BreedingMigrating.jpg"
+    },
+    "audio_urls_map": {
+      "da277fab-9e66-44ed-bd44-03ebdb9e7306": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Wookie_CaboMexico_Tag_Acousonde_20140210_113355_800_3_BreedingMigrating.wav"
+    },
+    "video_urls_map": {},
+    "file_urls_map": {},
+    "record_timestamp": 1454466236,
+    "create_timestamp": 1541665016,
+    "update_timestamp": 0,
+    "is_public": true
+  },
+  {
+    "duid": "1ChHfmKs8GX7D1XVf61lwVdisWf",
+    "uuid": "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
+    "publisher_name": {
+      "last_name": "XVlBzgbaiC",
+      "first_name": "MRAjWwhTHctc"
+    },
+    "call_type_name": "some call type name",
+    "ground_type": "some ground type",
+    "study_site": {
+      "city": "uAxhxKQFDaFpL",
+      "state": "",
+      "province": "SjFbcXoEFfRsW",
+      "country": "Canada"
+    },
+    "ocean": "Pacific Ocean",
+    "sensor_type": "some sensor type",
+    "sensor_name": "some sensor name",
+    "sampling_rate": 100,
+    "latitude": 89.12300109863281,
+    "longitude": -100.12300109863281,
+    "image_urls_map": {
+      "217706a5-2f88-4eb2-8a93-c1426c5ac944": "https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png",
+      "4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/images/Rotating_earth_(large).gif"
+    },
+    "audio_urls_map": {
+      "8fe5fea7-f683-4198-8c94-f27601a5e2d0": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
+      "4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3"
+    },
+    "video_urls_map": {
+      "4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+      "4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"
+    },
+    "file_urls_map": {
+      "4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4",
+      "13df1afa-4eee-470e-b9e2-60b2a7584994": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv"
+    },
+    "record_timestamp": 1514764800,
+    "create_timestamp": 1529831496,
+    "update_timestamp": 0,
+    "is_public": true
+  },
+  {
+    "duid": "1ChHfoHHiGxtCsKyWnoeiRWBSJd",
+    "uuid": "123XXSNJG0MQASDF4QFFFFD6Y3",
+    "publisher_name": {
+      "last_name": "Leesa",
+      "first_name": "Keem"
+    },
+    "call_type_name": "Separation Call",
+    "ground_type": "Volcanic Ground",
+    "study_site": {
+      "city": "Waikiki",
+      "state": "",
+      "province": "",
+      "country": "Hawaii"
+    },
+    "ocean": "Pacific Ocean",
+    "sensor_type": "Tag",
+    "sensor_name": "Acousonde",
+    "sampling_rate": 18000,
+    "latitude": 34.1367073059082,
+    "longitude": -156.15345764160156,
+    "image_urls_map": {
+      "6cc4c838-0e4e-4512-ad57-ca54a921997a": "https://hwscdevstorage.blob.core.windows.net/images/Seger_GunshotMaybe_CaboMexico_Tag_Bprobe_20140307_130640_8000_3_BreedingMigrating.png"
+    },
+    "audio_urls_map": {
+      "47fbd293-bdc5-4d7c-8d96-c18a231724ba": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_GunshotMaybe_CaboMexico_Tag_Bprobe_20140307_130640_8000_3_BreedingMigrating.wav"
+    },
+    "video_urls_map": {},
+    "file_urls_map": {},
+    "record_timestamp": 1446744336,
+    "create_timestamp": 1541665016,
+    "update_timestamp": 0,
+    "is_public": true
+  },
+  {
+    "duid": "1ChHfqB4fZeHCRwMwcqsZbbPsfE",
+    "uuid": "123XXSNJG0MQASDF4QFFFFD6Y3",
+    "publisher_name": {
+      "last_name": "Leesa",
+      "first_name": "Keem"
+    },
+    "call_type_name": "Fish Call",
+    "ground_type": "Baja Ground",
+    "study_site": {
+      "city": "Tijuana",
+      "state": "Baja California",
+      "province": "",
+      "country": "Mexico"
+    },
+    "ocean": "Pacific Ocean",
+    "sensor_type": "Tag",
+    "sensor_name": "Acousonde",
+    "sampling_rate": 8000,
+    "latitude": 28.46949577331543,
+    "longitude": -129.94741821289062,
+    "image_urls_map": {
+      "3faa318b-82db-4189-9bea-d3f7b06629b0": "https://hwscdevstorage.blob.core.windows.net/images/Seger_GunshotMaybe_CaboMexico_Tag_Bprobe_20140307_130640_8000_3_BreedingMigrating.png"
+    },
+    "audio_urls_map": {
+      "c516d457-ff88-4fef-99a1-070f63d11cc7": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_GunshotMaybe_CaboMexico_Tag_Bprobe_20140307_130640_8000_3_BreedingMigrating.wav"
+    },
+    "video_urls_map": {},
+    "file_urls_map": {},
+    "record_timestamp": 1446886347,
+    "create_timestamp": 1541665016,
+    "update_timestamp": 0,
+    "is_public": true
+  },
+  {
+    "duid": "1ChHfp6grFBAc159XSesjSCbo0Q",
+    "uuid": "123XXSNJG0MQASDF4QFFFFD6Y3",
+    "publisher_name": {
+      "last_name": "Leesa",
+      "first_name": "Keem"
+    },
+    "call_type_name": "Fish Call",
+    "ground_type": "Baja Ground",
+    "study_site": {
+      "city": "San Diego",
+      "state": "California",
+      "province": "",
+      "country": "USA"
+    },
+    "ocean": "Pacific Ocean",
+    "sensor_type": "Tag",
+    "sensor_name": "Acousonde",
+    "sampling_rate": 8000,
+    "latitude": 34.21649932861328,
+    "longitude": -133.30059814453125,
+    "image_urls_map": {
+      "ed104562-1fb3-4aaa-9d71-a64ff41be855": "https://hwscdevstorage.blob.core.windows.net/images/Seger_Unknown13_CaboMexico_Tag_Bprobe_20150324_142637_8000_3_BreedingMigrating.jpg",
+      "e771bbc0-fcb3-4868-8ac3-132985a3ccd9": "https://hwscdevstorage.blob.core.windows.net/images/Seger_Unknown13_CaboMexico_Tag_Bprobe_20150324_142637_8000_3_BreedingMigrating.png"
+    },
+    "audio_urls_map": {
+      "4ee03afe-f1f9-485b-b87f-7866a200c5be": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Unknown13_CaboMexico_Tag_Bprobe_20150324_142637_8000_3_BreedingMigrating.wav"
+    },
+    "video_urls_map": {},
+    "file_urls_map": {},
+    "record_timestamp": 1513243537,
+    "create_timestamp": 1541665016,
+    "update_timestamp": 0,
+    "is_public": true
+  },
+  {
+    "duid": "1ChHfnevaxU7ib8Sni4h7ed7o8d",
+    "uuid": "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
+    "publisher_name": {
+      "last_name": "Faraon",
+      "first_name": "Conard"
+    },
+    "call_type_name": "Part Migration",
+    "ground_type": "Breeding Migrating",
+    "study_site": {
+      "city": "Atlanta",
+      "state": "Georgia",
+      "province": "",
+      "country": "USA"
+    },
+    "ocean": "Atlantic Ocean",
+    "sensor_type": "Satellite",
+    "sensor_name": "Tsukino",
+    "sampling_rate": 21000,
+    "latitude": 32.136474609375,
+    "longitude": -72.26671600341797,
+    "image_urls_map": {
+      "bbbe5b53-e377-4e29-8cf5-1de93d8d7dcd": "https://hwscdevstorage.blob.core.windows.net/images/Seger_GunshotMaybe_CaboMexico_Tag_Bprobe_20140307_130640_8000_3_BreedingMigrating.png"
+    },
+    "audio_urls_map": {
+      "2f76ba46-5ead-4b43-8e1a-bc30ba84ab62": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_GunshotMaybe_CaboMexico_Tag_Bprobe_20140307_130640_8000_3_BreedingMigrating.wav"
+    },
+    "video_urls_map": {},
+    "file_urls_map": {},
+    "record_timestamp": 1517529106,
+    "create_timestamp": 1541665016,
+    "update_timestamp": 0,
+    "is_public": true
+  },
+  {
+    "duid": "1ChHfjf9qzOiPgvF3icB51m6Goz",
+    "uuid": "0000XSNJG0MQJHBF4QX1EFD6Y3",
+    "publisher_name": {
+      "last_name": "Seger",
+      "first_name": "Kerri"
+    },
+    "call_type_name": "Whup Ascending Shriek",
+    "ground_type": "Breeding Migrating",
+    "study_site": {
+      "city": "Cabo Mexico",
+      "state": "",
+      "province": "",
+      "country": "Mexico"
+    },
+    "ocean": "Pacific Ocean",
+    "sensor_type": "Tag",
+    "sensor_name": "Bprobe",
+    "sampling_rate": 8000,
+    "latitude": 15.743488311767578,
+    "longitude": -107.24676513671875,
+    "image_urls_map": {
+      "12dee119-83d5-4453-bdb5-80678fc3fb55": "https://hwscdevstorage.blob.core.windows.net/images/Seger_WhupAscendingShriek_CaboMexico_Tag_Acousonde_20140306_142331_8000_3_BreedingMigrating.jpg"
+    },
+    "audio_urls_map": {
+      "138c30e9-e31b-4b4f-850e-956b4e808179": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_WhupAscendingShriek_CaboMexico_Tag_Acousonde_20140306_142331_8000_3_BreedingMigrating.wav"
+    },
+    "video_urls_map": {},
+    "file_urls_map": {},
+    "record_timestamp": 1394115793,
+    "create_timestamp": 1541665016,
+    "update_timestamp": 0,
+    "is_public": true
+  },
+  {
+    "duid": "1ChHfkEEVmVqVuI2mEEVHRy7cOZ",
+    "uuid": "123XXSNJG0MQASDF4QFFFFD6Y3",
+    "publisher_name": {
+      "last_name": "Leesa",
+      "first_name": "Keem"
+    },
+    "call_type_name": "Fish Call",
+    "ground_type": "Baja Ground",
+    "study_site": {
+      "city": "Los Angeles",
+      "state": "California",
+      "province": "",
+      "country": "USA"
+    },
+    "ocean": "Pacific Ocean",
+    "sensor_type": "Tag",
+    "sensor_name": "Cprobe",
+    "sampling_rate": 8000,
+    "latitude": 38.01649856567383,
+    "longitude": -120.40059661865234,
+    "image_urls_map": {
+      "e75ee21e-cd8e-41c3-b302-00ffcb56db9a": "https://hwscdevstorage.blob.core.windows.net/images/Seger_Unknown13_CaboMexico_Tag_Bprobe_20150324_142637_8000_3_BreedingMigrating.jpg",
+      "27a9a943-8950-465e-85a3-ce78be943d93": "https://hwscdevstorage.blob.core.windows.net/images/Seger_Unknown13_CaboMexico_Tag_Bprobe_20150324_142637_8000_3_BreedingMigrating.png"
+    },
+    "audio_urls_map": {
+      "e006c3a6-0074-4297-b211-5a063d8b3568": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Unknown13_CaboMexico_Tag_Bprobe_20150324_142637_8000_3_BreedingMigrating.wav"
+    },
+    "video_urls_map": {},
+    "file_urls_map": {},
+    "record_timestamp": 1496542237,
+    "create_timestamp": 1541665016,
+    "update_timestamp": 0,
+    "is_public": true
+  },
+  {
+    "duid": "1ChHfqEqgb24YIVdRyg8EEPLZoc",
+    "uuid": "0000XSNJG0MQJHBF4QX1EFD6Y3",
+    "publisher_name": {
+      "last_name": "Seger",
+      "first_name": "Kerri"
+    },
+    "call_type_name": "Wookie",
+    "ground_type": "Breeding Migrating",
+    "study_site": {
+      "city": "Cabo Mexico",
+      "state": "",
+      "province": "",
+      "country": "Mexico"
+    },
+    "ocean": "Pacific Ocean",
+    "sensor_type": "Tag",
+    "sensor_name": "Acousonde",
+    "sampling_rate": 8000,
+    "latitude": 24.103832244873047,
+    "longitude": -92.6496353149414,
+    "image_urls_map": {
+      "8f8808fd-e985-4191-a51c-d1602c9d9c62": "https://hwscdevstorage.blob.core.windows.net/images/Seger_Wookie_CaboMexico_Tag_Acousonde_20140210_113355_800_3_BreedingMigrating.jpg"
+    },
+    "audio_urls_map": {
+      "a4fc8c49-cbc7-41bb-b75d-85fad2153988": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Wookie_CaboMexico_Tag_Acousonde_20140210_113355_800_3_BreedingMigrating.wav"
+    },
+    "video_urls_map": {},
+    "file_urls_map": {},
+    "record_timestamp": 1392031993,
+    "create_timestamp": 1541665016,
+    "update_timestamp": 0,
+    "is_public": true
+  },
+  {
+    "duid": "1ChHfn1nCdh6ZymUFZzGvt36LKg",
+    "uuid": "0XXXXSNJG0MQASDF4QX1EFD6Y3",
+    "publisher_name": {
+      "last_name": "Kim",
+      "first_name": "Lisa"
+    },
+    "call_type_name": "Coreography",
+    "ground_type": "Atlas",
+    "study_site": {
+      "city": "McMurdo",
+      "state": "",
+      "province": "",
+      "country": "USA"
+    },
+    "ocean": "Southern Ocean",
+    "sensor_type": "Wired",
+    "sensor_name": "Bahn",
+    "sampling_rate": 600,
+    "latitude": -60.46084213256836,
+    "longitude": -0.6021509766578674,
+    "image_urls_map": {
+      "3b1e5b2c-b68d-46c1-98bb-c8569fd76bd2": "https://hwscdevstorage.blob.core.windows.net/images/Seger_Wookie_CaboMexico_Tag_Acousonde_20140210_113355_800_3_BreedingMigrating.jpg"
+    },
+    "audio_urls_map": {
+      "eca252ee-faa0-448c-8ae4-eae267e860ba": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Wookie_CaboMexico_Tag_Acousonde_20140210_113355_800_3_BreedingMigrating.wav"
+    },
+    "video_urls_map": {},
+    "file_urls_map": {},
+    "record_timestamp": 1454146426,
+    "create_timestamp": 1541665016,
+    "update_timestamp": 0,
+    "is_public": true
+  },
+  {
+    "duid": "1ChHfmljgHSCiAdJuymUSoeYc91",
+    "uuid": "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
+    "publisher_name": {
+      "last_name": "Faraon",
+      "first_name": "Conard"
+    },
+    "call_type_name": "Feed",
+    "ground_type": "Breeding Migrating",
+    "study_site": {
+      "city": "Norfolk",
+      "state": "VA",
+      "province": "",
+      "country": "USA"
+    },
+    "ocean": "Atlantic Ocean",
+    "sensor_type": "Probe",
+    "sensor_name": "SonarTech",
+    "sampling_rate": 18000,
+    "latitude": 33.64508819580078,
+    "longitude": -64.2349624633789,
+    "image_urls_map": {
+      "43cd9c17-fd6e-4464-a069-71097efe3889": "https://hwscdevstorage.blob.core.windows.net/images/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.jpg",
+      "3e231c6a-424a-4066-a16d-b55e08df5526": "https://hwscdevstorage.blob.core.windows.net/images/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.png"
+    },
+    "audio_urls_map": {
+      "12a4d3c2-c8c7-47b7-8bc6-77db8970c16a": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav"
+    },
+    "video_urls_map": {},
+    "file_urls_map": {},
+    "record_timestamp": 1457868193,
+    "create_timestamp": 1541665016,
+    "update_timestamp": 0,
+    "is_public": true
+  },
+  {
+    "duid": "1ChHfjftJElFpXpwio6d6SURvYV",
+    "uuid": "0XXXXSNJG0MQJHBF4QX1EFD6Y3",
+    "publisher_name": {
+      "last_name": "Faraon",
+      "first_name": "Conard"
+    },
+    "call_type_name": "Part Migration",
+    "ground_type": "Breeding Migrating",
+    "study_site": {
+      "city": "Providence",
+      "state": "Maine",
+      "province": "",
+      "country": "USA"
+    },
+    "ocean": "Atlantic Ocean",
+    "sensor_type": "Probe",
+    "sensor_name": "SonarTech",
+    "sampling_rate": 18000,
+    "latitude": 39.836639404296875,
+    "longitude": -55.094337463378906,
+    "image_urls_map": {
+      "d46342e0-3c41-4745-b5b0-f8e85b91f734": "https://hwscdevstorage.blob.core.windows.net/images/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.png"
+    },
+    "audio_urls_map": {
+      "aa961fec-c04a-4c9d-97ea-49f50fdc4fbe": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav"
+    },
+    "video_urls_map": {},
+    "file_urls_map": {},
+    "record_timestamp": 1457004193,
+    "create_timestamp": 1541665016,
+    "update_timestamp": 0,
+    "is_public": true
+  },
+  {
+    "duid": "1ChHfqfi3kYysH02mJbB2GDMxWr",
+    "uuid": "0XXXXSNJG0MQASDF4QX1EFD6Y3",
+    "publisher_name": {
+      "last_name": "Kim",
+      "first_name": "Lisa"
+    },
+    "call_type_name": "Feed Point",
+    "ground_type": "Cold Ground",
+    "study_site": {
+      "city": "Copenhagen",
+      "state": "",
+      "province": "",
+      "country": "Denmark"
+    },
+    "ocean": "Arctic Ocean",
+    "sensor_type": "Tag",
+    "sensor_name": "Bprobe",
+    "sampling_rate": 12000,
+    "latitude": 82.85243225097656,
+    "longitude": 13.718218803405762,
+    "image_urls_map": {
+      "816e5012-3f41-4658-b5fd-dae86036ee98": "https://hwscdevstorage.blob.core.windows.net/images/Seger_Unknown13_CaboMexico_Tag_Bprobe_20150324_142637_8000_3_BreedingMigrating.jpg",
+      "d11f0974-0023-4f25-99f5-f41bf0b7ac81": "https://hwscdevstorage.blob.core.windows.net/images/Seger_Unknown13_CaboMexico_Tag_Bprobe_20150324_142637_8000_3_BreedingMigrating.png"
+    },
+    "audio_urls_map": {
+      "3918fc14-3c80-44c4-a9ca-4dcf42ab9155": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Unknown13_CaboMexico_Tag_Bprobe_20150324_142637_8000_3_BreedingMigrating.wav"
+    },
+    "video_urls_map": {},
+    "file_urls_map": {},
+    "record_timestamp": 1310287801,
+    "create_timestamp": 1541665016,
+    "update_timestamp": 0,
+    "is_public": true
+  },
+  {
+    "duid": "1ChHfjkNnRkHZFNWjzclToNpNrO",
+    "uuid": "0000XSNJG0MQJHBF4QX1EFD6Y3",
+    "publisher_name": {
+      "last_name": "Seger",
+      "first_name": "Kerri"
+    },
+    "call_type_name": "Squeak Ascending Shriek",
+    "ground_type": "Breeding Migrating",
+    "study_site": {
+      "city": "Cabo Mexico",
+      "state": "",
+      "province": "",
+      "country": "Mexico"
+    },
+    "ocean": "Pacific Ocean",
+    "sensor_type": "Tag",
+    "sensor_name": "Acousonde",
+    "sampling_rate": 8000,
+    "latitude": 27.240461349487305,
+    "longitude": -118.29551696777344,
+    "image_urls_map": {
+      "d69c4b25-c024-4d99-aa8a-0f63fb7725ff": "https://hwscdevstorage.blob.core.windows.net/images/Seger_SqueakAscendingShriek_CaboMexico_Tag_Acousonde_20140210_093123_8000_2_BreedingMigrating.jpg"
+    },
+    "audio_urls_map": {
+      "06153199-60b6-4d9d-9010-f92a4e23a185": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_SqueakAscendingShriek_CaboMexico_Tag_Acousonde_20140210_093123_8000_2_BreedingMigrating.wav"
+    },
+    "video_urls_map": {},
+    "file_urls_map": {},
+    "record_timestamp": 1393816993,
+    "create_timestamp": 1541665016,
+    "update_timestamp": 0,
+    "is_public": true
+  }
+]
