@@ -15,8 +15,9 @@ import (
 )
 
 var (
-	mongoDBReader *mongo.Client
-	mongoDBWriter *mongo.Client
+	mongoDBReader     *mongo.Client
+	mongoDBWriter     *mongo.Client
+	ctxWithTimeout, _ = context.WithTimeout(context.Background(), 5*time.Second)
 )
 
 func init() {
@@ -37,8 +38,7 @@ func dialMongoDB(uri *string) (*mongo.Client, error) {
 	if strings.TrimSpace(*uri) == "" {
 		return nil, consts.ErrEmptyMongoDBURI
 	}
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI(*uri))
+	client, err := mongo.Connect(ctxWithTimeout, options.Client().ApplyURI(*uri))
 	if err != nil {
 		return nil, err
 	}
@@ -54,7 +54,7 @@ func disconnectMongoDBClient(client *mongo.Client) error {
 	if client == nil {
 		return consts.ErrNilMongoDBClient
 	}
-	return client.Disconnect(context.TODO())
+	return client.Disconnect(ctxWithTimeout)
 }
 
 // refreshMongoDBConnection refreshes a client's connection with MongoDB server.
