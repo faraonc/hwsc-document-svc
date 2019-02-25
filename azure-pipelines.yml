@@ -13,10 +13,36 @@ pool:
   vmImage: 'Ubuntu 16.04'
 
 variables:
+  GOBIN:  '$(GOPATH)/bin' # Go binaries path
+  GOROOT: '/usr/local/go1.11' # Go installation path
+  GOPATH: '$(system.defaultWorkingDirectory)/gopath' # Go workspace path
+  modulePath: '$(GOPATH)/src/github.com/$(build.repository.name)'
 - group: hwsc-dev-container-vars
 
 steps:
 - script: printenv
+
+- script: |
+    mkdir -p '$(GOBIN)'
+    mkdir -p '$(GOPATH)/pkg'
+    mkdir -p '$(modulePath)'
+    shopt -s extglob
+    mv !(gopath) '$(modulePath)'
+    echo '##vso[task.prependpath]$(GOBIN)'
+    echo '##vso[task.prependpath]$(GOROOT)/bin'
+  displayName: 'Set Up the Go Workspace'
+
+- script: go get -v -t -d ./...
+  workingDirectory: '$(modulePath)'
+  displayName: 'Go Get Dependencies'
+
+- script: go test -v ./...
+  workingDirectory: '$(modulePath)'
+  displayName: 'Run Unit Test'
+
+- script: go build -v .
+  workingDirectory: '$(modulePath)'
+  displayName: 'Build Test'
 
 - task: DownloadSecureFile@1
   inputs:
