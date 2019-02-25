@@ -10,12 +10,14 @@ pr:
 - master
 
 pool:
-  vmImage: 'Ubuntu 16.04'
+  vmImage: 'Ubuntu 18.04'
 
 variables:
 - group: hwsc-dev-container-vars
 
 steps:
+- script: printenv
+
 - task: DownloadSecureFile@1
   inputs:
     secureFile: hwscdevcontainer_pw.txt
