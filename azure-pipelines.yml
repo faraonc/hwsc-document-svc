@@ -34,6 +34,7 @@ steps:
     mv !(gopath) '$(modulePath)'
     echo '##vso[task.prependpath]$(GOBIN)'
     echo '##vso[task.prependpath]$(GOROOT)/bin'
+    export GO111MODULE='on'
   displayName: 'Set Up the Go Workspace'
 
 - script: go get -v -t -d ./...
