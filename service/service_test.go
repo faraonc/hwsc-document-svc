@@ -66,8 +66,6 @@ func TestMain(t *testing.M) {
 			resource.GetPort("27017/tcp"))
 		conf.DocumentDB.Writer = fmt.Sprintf("mongodb://testDocumentWriter:testDocumentPwd@localhost:%s/test-document",
 			resource.GetPort("27017/tcp"))
-		conf.DocumentDB.Collection = "test-document"
-		conf.DocumentDB.Name = "test-document"
 		var err error
 		err = refreshMongoDBConnection(mongoDBWriter, &conf.DocumentDB.Writer)
 		return err
