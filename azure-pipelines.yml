@@ -41,7 +41,7 @@ steps:
   workingDirectory: '$(modulePath)'
   displayName: 'Go Get Dependencies'
 
-- script: go test -v ./...
+- script: go test -v -cover -failfast -race ./...
   workingDirectory: '$(modulePath)'
   displayName: 'Run Unit Test'
 
