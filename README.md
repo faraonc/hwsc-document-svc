@@ -54,10 +54,12 @@ The proto file and compiled proto buffers are located in [hwsc-api-blocks](https
 6. Optional: run `$ docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' <container id>` to find the proper address, and update `env.list`
 
 ## How to Run Unit Test
-1. `$ cd service`
-2. The unit test will programmatically run the test container and DB migration as required
-3. For command-line summary, `$ go test -cover -v -failfast -race`
-4. For comprehensive summary, `$ bash unit_test.sh`
+1. Place DB migration source codes to be tested in `test_fixtures/mongodb/`
+2. `$ cd service`
+3. The unit test will programmatically run the test container and DB migration as required
+4. For command-line summary, `$ go test -cover -v -failfast -race`
+5. For comprehensive summary, `$ bash unit_test.sh`
+6. If applicable, copy and push the new DB migration source codes in [hwsc-dev-ops](https://github.com/hwsc-org/hwsc-dev-ops) under `test` for integration testing
 
 ## How to Run Integration Test
 - Refer to [hwsc-dev-ops](https://github.com/hwsc-org/hwsc-dev-ops) to run integration test

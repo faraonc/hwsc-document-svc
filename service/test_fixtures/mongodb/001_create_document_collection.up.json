@@ -1,0 +1,207 @@
+[
+  {
+    "create": "test-document",
+    "capped": false,
+    "validator": {
+      "$jsonSchema": {
+        "bsonType": "object",
+        "required": [
+          "duid",
+          "uuid",
+          "publisherName.lastName",
+          "publisherName.firstName",
+          "callTypeName",
+          "groundType",
+          "studySite.city",
+          "studySite.country",
+          "ocean",
+          "sensorType",
+          "sensorName",
+          "samplingRate",
+          "latitude",
+          "longitude",
+          "imageUrlsMap",
+          "audioUrlsMap",
+          "videoUrlsMap",
+          "fileUrlsMap",
+          "recordTimestamp",
+          "createTimestamp",
+          "updateTimestamp",
+          "isPublic"
+        ],
+        "properties": {
+          "duid": {
+            "bsonType": "string",
+            "pattern": "^[[:digit:][:alpha:]]{27}$",
+            "description": "required, 27 alphanumeric characters",
+            "title": "the document unique identifier"
+          },
+          "uuid": {
+            "bsonType": "string",
+            "pattern": "^[[:digit:][:alpha:]]{26}$",
+            "description": "required, 26 alphanumeric characters",
+            "title": "the user unique identifier"
+          },
+          "publisherName.lastName": {
+            "bsonType": "string",
+            "minLength": 1,
+            "maxLength": 32,
+            "description": "required, 1-32 characters",
+            "title": "publisher's last name"
+          },
+          "publisherName.firstName": {
+            "bsonType": "string",
+            "minLength": 1,
+            "maxLength": 32,
+            "description": "required, 1-32 characters",
+            "title": "publisher's first name"
+          },
+          "callTypeName": {
+            "bsonType": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "description": "required, 1-64 characters",
+            "title": "call type name"
+          },
+          "groundType": {
+            "bsonType": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "description": "required, 1-64 characters",
+            "title": "ground type"
+          },
+          "studySite.city": {
+            "bsonType": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "description": "required, 1-64 characters",
+            "title": "city of study site"
+          },
+          "studySite.state": {
+            "bsonType": "string",
+            "minLength": 0,
+            "maxLength": 32,
+            "description": "not required, 1-32 characters",
+            "title": "state of study site"
+          },
+          "studySite.province": {
+            "bsonType": "string",
+            "minLength": 0,
+            "maxLength": 48,
+            "description": "not required, 1-48 characters",
+            "title": "province of study site"
+          },
+          "studySite.country": {
+            "bsonType": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "description": "required, 1-64 characters",
+            "title": "country of study site"
+          },
+          "ocean": {
+            "bsonType": "string",
+            "minLength": 1,
+            "maxLength": 32,
+            "description": "required, 1-32 characters",
+            "title": "data source"
+          },
+          "sensorType": {
+            "bsonType": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "description": "required, 1-64 characters",
+            "title": "sensor or instrument type"
+          },
+          "sensorName": {
+            "bsonType": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "description": "required, 1-64 characters",
+            "title": "sensor or instrument name"
+          },
+          "samplingRate": {
+            "bsonType": "long",
+            "minimum": 0,
+            "exclusiveMinimum": false,
+            "maximum": 4000000000,
+            "exclusiveMaximum": false,
+            "description": "required, long(MongoDB), uint32(GoLang), min=0, max=4000000000",
+            "title": "sensor or instrument's sampling rate"
+          },
+          "latitude": {
+            "bsonType": "double",
+            "minimum": -90,
+            "exclusiveMinimum": false,
+            "maximum": 90,
+            "exclusiveMaximum": false,
+            "description": "required, double(MongoDB), float32(GoLang), min=-90, max=90",
+            "title": "data source latitude"
+          },
+          "longitude": {
+            "bsonType": "double",
+            "minimum": -180,
+            "exclusiveMinimum": false,
+            "maximum": 180,
+            "exclusiveMaximum": false,
+            "description": "required, double(MongoDB), float32(GoLang), min=-180, max=180",
+            "title": "data source longitude"
+          },
+          "imageUrlsMap": {
+            "bsonType": "object",
+            "description": "required, object(MongoDB), map[string]string(GoLang), key=fuid, val=url",
+            "title": "image url map"
+          },
+          "audioUrlsMap": {
+            "bsonType": "object",
+            "description": "required, object(MongoDB), map[string]string(GoLang), key=fuid, val=url",
+            "title": "audio url map"
+          },
+          "videoUrlsMap": {
+            "bsonType": "object",
+            "description": "required, object(MongoDB), map[string]string(GoLang), key=fuid, val=url",
+            "title": "video url map"
+          },
+          "fileUrlsMap": {
+            "bsonType": "object",
+            "description": "required, object(MongoDB), map[string]string(GoLang), key=fuid, val=url",
+            "title": "file url map"
+          },
+          "recordTimestamp": {
+            "bsonType": "long",
+            "minimum": 631152000,
+            "exclusiveMinimum": false,
+            "maximum": 32503680524,
+            "exclusiveMaximum": false,
+            "description": "required, long(MongoDB), int64(GoLang), min=631152000, max=32503680524",
+            "title": "UNIX record timestamp in UTC"
+          },
+          "createTimestamp": {
+            "bsonType": "long",
+            "minimum": 631152000,
+            "exclusiveMinimum": false,
+            "maximum": 32503680524,
+            "exclusiveMaximum": false,
+            "description": "required, long(MongoDB), int64(GoLang), min=631152000, max=32503680524",
+            "title": "UNIX create timestamp in UTC"
+          },
+          "updateTimestamp": {
+            "bsonType": "long",
+            "minimum": 0,
+            "exclusiveMinimum": false,
+            "maximum": 32503680524,
+            "exclusiveMaximum": false,
+            "description": "required, long(MongoDB), int64(GoLang), min=631152000, max=32503680524",
+            "title": "UNIX update timestamp in UTC"
+          },
+          "isPublic": {
+            "bsonType": "bool",
+            "description": "required, boolean",
+            "title": "is document publicly available"
+          }
+        }
+      }
+    },
+    "validationLevel": "strict",
+    "validationAction": "error"
+  }
+]

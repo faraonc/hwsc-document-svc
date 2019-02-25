@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/mongodb"
-	_ "github.com/golang-migrate/migrate/v4/source/github"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 	pbsvc "github.com/hwsc-org/hwsc-api-blocks/int/hwsc-document-svc/document"
 	pbdoc "github.com/hwsc-org/hwsc-api-blocks/lib"
 	"github.com/hwsc-org/hwsc-document-svc/conf"
@@ -50,7 +50,7 @@ func TestMain(t *testing.M) {
 	}
 
 	// pulls an image, creates a container based on it and runs it
-	resource, err := pool.Run("hwsc/test-hwsc-document-svc", "latest",
+	resource, err := pool.Run("hwsc/test-hwsc-document-svc-mongodb", "latest",
 		[]string{
 			"MONGO_INITDB_DATABASE=admin",
 			"MONGO_INITDB_ROOT_USERNAME=mongoadmin",
@@ -72,7 +72,7 @@ func TestMain(t *testing.M) {
 	}); err != nil {
 		logger.Fatal(consts.TestTag, err.Error())
 	}
-	m, err := migrate.New(conf.DocumentDB.Migration, conf.DocumentDB.Writer)
+	m, err := migrate.New("file://test_fixtures/mongodb", conf.DocumentDB.Writer)
 	if err != nil {
 		logger.Fatal(consts.TestTag, err.Error())
 	}

@@ -59,7 +59,4 @@ type DocumentDBHost struct {
 
 	// Collection database collection name
 	Collection string `json:"collection"`
-
-	// Migration sources using golang-migrate
-	Migration string `json:"migration"`
 }
