@@ -20,7 +20,7 @@ variables:
 - name: GOPATH
   value: '$(system.defaultWorkingDirectory)/gopath' # Go workspace path
 - name: modulePath
-  value: '$(GOPATH)/src/github.com/$(build.repository.name)'
+  value: '$(GOPATH)/$(build.repository.name)'
 - group: hwsc-dev-container-vars
 
 steps:
