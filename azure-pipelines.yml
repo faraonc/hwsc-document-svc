@@ -40,7 +40,10 @@ steps:
   workingDirectory: '$(modulePath)'
   displayName: 'Go Get Dependencies'
 
-- script: go test -v -cover -failfast -race ./...
+- script: |
+    export hosts_mongodb_db="test-document"
+    export hosts_mongodb_collection="test-document"
+    go test -v -cover -failfast -race ./...
   workingDirectory: '$(modulePath)'
   displayName: 'Run Unit Test'
 
