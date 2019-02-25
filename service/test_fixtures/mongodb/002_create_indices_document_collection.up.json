@@ -1,0 +1,22 @@
+[
+  {
+    "createIndexes": "test-document",
+    "indexes": [
+      {
+        "key": {
+          "duid": -1
+        },
+        "name": "duid_-1",
+        "unique": true,
+        "background": true
+      },
+      {
+        "key": {
+          "uuid": 1
+        },
+        "name": "uuid_1",
+        "background": true
+      }
+    ]
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "dropIndexes": "test-document",
+    "index": "duid_-1"
+  },
+  {
+    "dropIndexes": "test-document",
+    "index": "uuid_1"
+  }
+]
