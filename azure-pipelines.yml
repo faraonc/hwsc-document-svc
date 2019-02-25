@@ -21,6 +21,14 @@ variables:
   value: '$(system.defaultWorkingDirectory)/gopath' # Go workspace path
 - name: modulePath
   value: '$(GOPATH)/$(build.repository.name)'
+- name: hosts_mongodb_writer
+  value: 'mongodb://testDocumentWriter:testDocumentPwd@127.0.0.1:27017/test-document'
+- name: hosts_mongodb_reader
+  value: 'mongodb://testDocumentReader:testDocumentPwd@127.0.0.1:27017/test-document'
+- name: hosts_mongodb_db
+  value: 'test-document'
+- name: hosts_mongodb_collection
+  value: 'test-document'
 - group: hwsc-dev-container-vars
 
 steps:
@@ -34,11 +42,6 @@ steps:
     mv !(gopath) '$(modulePath)'
     echo '##vso[task.prependpath]$(GOBIN)'
     echo '##vso[task.prependpath]$(GOROOT)/bin'
-    export GO111MODULE='on'
-    export hosts_mongodb_writer='mongodb://testDocumentWriter:testDocumentPwd@127.0.0.1:27017/test-document'
-    export hosts_mongodb_reader='mongodb://testDocumentReader:testDocumentPwd@127.0.0.1:27017/test-document'
-    export hosts_mongodb_db='test-document'
-    export hosts_mongodb_collection='test-document'
   displayName: 'Set Up the Go Workspace'
 
 - script: go get -v -t -d ./...
