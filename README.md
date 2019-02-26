@@ -63,3 +63,5 @@ The proto file and compiled proto buffers are located in [hwsc-api-blocks](https
 
 ## How to Run Integration Test
 - Refer to [hwsc-dev-ops](https://github.com/hwsc-org/hwsc-dev-ops) for running integration test
+- Ensure the service is tested using the built container in DockerHub
+
