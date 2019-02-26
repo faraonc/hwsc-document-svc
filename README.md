@@ -62,4 +62,4 @@ The proto file and compiled proto buffers are located in [hwsc-api-blocks](https
 6. If applicable, copy and push the new DB migration source codes in [hwsc-dev-ops](https://github.com/hwsc-org/hwsc-dev-ops) under `test` for integration testing
 
 ## How to Run Integration Test
-- Refer to [hwsc-dev-ops](https://github.com/hwsc-org/hwsc-dev-ops) to run integration test
+- Refer to [hwsc-dev-ops](https://github.com/hwsc-org/hwsc-dev-ops) for running integration test
