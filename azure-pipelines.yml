@@ -45,11 +45,10 @@ steps:
     go get github.com/jstemmer/go-junit-report
     go get github.com/axw/gocov/gocov
     go get github.com/AlekSi/gocov-xml
-    mkdir out
-    go test -coverprofile=./out/coverage.out -v -race -covermode count ./service
-    gocov convert ./out/coverage.out | gocov-xml > coverage.xml
+    go test -coverprofile=coverage.out -v -race -covermode count ./service
+    gocov convert coverage.out | gocov-xml > coverage.xml
     mkdir coverage
-    go tool cover -html=./out/coverage.out -o coverage/index.html
+    go tool cover -html=coverage.out -o coverage/index.html
   workingDirectory: '$(modulePath)'
   displayName: 'Run Unit Test'
   
