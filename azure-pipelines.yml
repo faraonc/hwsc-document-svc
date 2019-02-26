@@ -48,7 +48,6 @@ steps:
     go tool cover -html=coverage.out -o coverage/official-tool/coverage.html
     go get -u github.com/matm/gocov-html
     gocov convert coverage.out > coverage.json
-    gocov-xml < coverage.json > coverage.xml
     gocov-html < coverage.json > coverage/index.html
   workingDirectory: '$(modulePath)'
   displayName: 'Run Unit Test'
