@@ -46,7 +46,7 @@ steps:
     go get github.com/axw/gocov/gocov
     go get github.com/AlekSi/gocov-xml
     mkdir out
-    go test -coverprofile=./out/coverage.out -v -race -covermode count ./service 2>&1 | go-junit-report > report.xml
+    go test -coverprofile=./out/coverage.out -v -race -covermode count ./service
     gocov convert ./out/coverage.out | gocov-xml > coverage.xml
     mkdir coverage
     go tool cover -html=./out/coverage.out -o coverage/index.html
