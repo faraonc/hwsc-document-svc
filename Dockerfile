@@ -1,4 +1,4 @@
-FROM golang:1.11.5
+FROM golang:1.12.0
 WORKDIR $GOPATH/
 RUN git clone https://github.com/hwsc-org/hwsc-document-svc.git
 WORKDIR $GOPATH/hwsc-document-svc
