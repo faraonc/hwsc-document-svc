@@ -5,6 +5,7 @@ require (
 	github.com/containerd/continuity v0.0.0-20181203112020-004b46473808 // indirect
 	github.com/golang-migrate/migrate/v4 v4.2.4
 	github.com/google/uuid v1.1.0
+	github.com/gotestyourself/gotestyourself v2.2.0+incompatible // indirect
 	github.com/hwsc-org/hwsc-api-blocks v0.0.0-20190215203214-5fce68a4dfda
 	github.com/hwsc-org/hwsc-lib v0.0.0-20190214200222-3fd1105ad387
 	github.com/kylelemons/godebug v0.0.0-20170820004349-d65d576e9348
@@ -18,5 +19,5 @@ require (
 	golang.org/x/net v0.0.0-20190213061140-3a22650c66bd
 	golang.org/x/sys v0.0.0-20190215142949-d0b11bdaac8a // indirect
 	google.golang.org/genproto v0.0.0-20190215211957-bd968387e4aa // indirect
-	google.golang.org/grpc v1.18.0
+	google.golang.org/grpc v1.19.0
 )
