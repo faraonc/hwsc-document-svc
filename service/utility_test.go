@@ -1,7 +1,7 @@
 package service
 
 import (
-	pbdoc "github.com/hwsc-org/hwsc-api-blocks/lib"
+	pbdoc "github.com/hwsc-org/hwsc-api-blocks/int/lib"
 	"github.com/hwsc-org/hwsc-document-svc/consts"
 	"github.com/stretchr/testify/assert"
 	"go.mongodb.org/mongo-driver/bson"
