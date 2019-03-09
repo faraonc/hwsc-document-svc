@@ -7,7 +7,7 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/database/mongodb"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	pbsvc "github.com/hwsc-org/hwsc-api-blocks/int/hwsc-document-svc/document"
-	pbdoc "github.com/hwsc-org/hwsc-api-blocks/lib"
+	pbdoc "github.com/hwsc-org/hwsc-api-blocks/int/lib"
 	"github.com/hwsc-org/hwsc-document-svc/conf"
 	"github.com/hwsc-org/hwsc-document-svc/consts"
 	"github.com/hwsc-org/hwsc-lib/logger"
