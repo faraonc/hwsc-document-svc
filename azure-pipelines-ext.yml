@@ -80,7 +80,6 @@ steps:
     displayName: 'Build Docker Image External Release'
 
   - script: |
-      docker tag hwsc/hwsc-document-svc hwsc/hwsc-document-svc:ext
       docker push hwsc/hwsc-document-svc:ext
     workingDirectory: '$(modulePath)'
     displayName: 'Push Docker Image External Release'
