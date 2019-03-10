@@ -1,7 +1,7 @@
 trigger: none
 
 pr:
-  - release-0.0.0
+  - ext
 
 pool:
   vmImage: 'Ubuntu 16.04'
