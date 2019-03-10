@@ -23,8 +23,8 @@ require (
 	github.com/gregjones/httpcache v0.0.0-20190212212710-3befbb6ad0cc // indirect
 	github.com/grpc-ecosystem/grpc-gateway v1.8.2 // indirect
 	github.com/hashicorp/golang-lru v0.5.1 // indirect
-	github.com/hwsc-org/hwsc-api-blocks v0.0.0-20190309200705-8cb295a95360
-	github.com/hwsc-org/hwsc-lib v0.0.0-20190309204043-da9821f84284
+	github.com/hwsc-org/hwsc-api-blocks v0.0.0-20190310005949-b5f1015e6e2a
+	github.com/hwsc-org/hwsc-lib v0.0.0-20190310044244-87fe12bff58a
 	github.com/kisielk/errcheck v1.2.0 // indirect
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
 	github.com/kylelemons/godebug v0.0.0-20170820004349-d65d576e9348
@@ -61,7 +61,7 @@ require (
 	golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2 // indirect
 	golang.org/x/exp v0.0.0-20190306152737-a1d7652674e8 // indirect
 	golang.org/x/lint v0.0.0-20190301231843-5614ed5bae6f // indirect
-	golang.org/x/net v0.0.0-20190301231341-16b79f2e4e95
+	golang.org/x/net v0.0.0-20190310014029-b774fd8d5c0f
 	golang.org/x/oauth2 v0.0.0-20190226205417-e64efc72b421 // indirect
 	golang.org/x/perf v0.0.0-20190306144031-151b6387e3f2 // indirect
 	golang.org/x/sys v0.0.0-20190309122539-980fc434d28e // indirect

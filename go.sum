@@ -207,10 +207,13 @@ github.com/hashicorp/serf v0.8.2/go.mod h1:6hOLApaqBFA1NXqRQAsxw9QxuDEvNxSQRwA/J
 github.com/hpcloud/tail v1.0.0/go.mod h1:ab1qPbhIpdTxEkNHXyeSf5vhxWSCs/tWer42PpOxQnU=
 github.com/hwsc-org/hwsc-api-blocks v0.0.0-20190309200705-8cb295a95360 h1:7Ex4C0kEouJXtiZdycqoW+ZiSLB2vc7jI8dfym4mCyw=
 github.com/hwsc-org/hwsc-api-blocks v0.0.0-20190309200705-8cb295a95360/go.mod h1:/iVVgMsaXIOevC15fCsGWI0Dx2p6POFJQxeYbyjGst0=
+github.com/hwsc-org/hwsc-api-blocks v0.0.0-20190310005949-b5f1015e6e2a/go.mod h1:/iVVgMsaXIOevC15fCsGWI0Dx2p6POFJQxeYbyjGst0=
 github.com/hwsc-org/hwsc-lib v0.0.0-20190214200222-3fd1105ad387 h1:Vc8Eul3PSYDCLXJI3xcYmOxmgjrca+CpNKbRvLd8NuU=
 github.com/hwsc-org/hwsc-lib v0.0.0-20190214200222-3fd1105ad387/go.mod h1:fQ/Zng9ELAgK94HjMbfUU5+A4TOSHOHni3i2GV7IIN4=
 github.com/hwsc-org/hwsc-lib v0.0.0-20190309204043-da9821f84284 h1:R6Acx6KbdqbEkOxK/QxXZXiuyPJevN4qdY0MGuvUwEc=
 github.com/hwsc-org/hwsc-lib v0.0.0-20190309204043-da9821f84284/go.mod h1:R0y+IJfk0ypNNnIVymNDWYEfkgnDb+Iyg5jlPK8QITQ=
+github.com/hwsc-org/hwsc-lib v0.0.0-20190310044244-87fe12bff58a h1:SepXQ1iunW1hafyeEIK77u8SjzJnH2Fqn+JaH16ae5U=
+github.com/hwsc-org/hwsc-lib v0.0.0-20190310044244-87fe12bff58a/go.mod h1:R0y+IJfk0ypNNnIVymNDWYEfkgnDb+Iyg5jlPK8QITQ=
 github.com/imdario/mergo v0.3.7 h1:Y+UAYTZ7gDEuOfhxKWy+dvb5dRQ6rJjFSdX2HZY1/gI=
 github.com/imdario/mergo v0.3.7/go.mod h1:2EnlNZ0deacrJVfApfmtdGgDfMuh/nq6Ok1EcJh5FfA=
 github.com/inconshreveable/mousetrap v1.0.0/go.mod h1:PxqpIevigyE2G7u3NXJIT2ANytuPF1OarO4DADm73n8=
@@ -461,6 +464,7 @@ golang.org/x/net v0.0.0-20190213061140-3a22650c66bd h1:HuTn7WObtcDo9uEEU7rEqL0jY
 golang.org/x/net v0.0.0-20190213061140-3a22650c66bd/go.mod h1:mL1N/T3taQHkDXs73rZJwtUhF3w3ftmwwsq0BUmARs4=
 golang.org/x/net v0.0.0-20190301231341-16b79f2e4e95 h1:fY7Dsw114eJN4boqzVSbpVHO6rTdhq6/GnXeu+PKnzU=
 golang.org/x/net v0.0.0-20190301231341-16b79f2e4e95/go.mod h1:mL1N/T3taQHkDXs73rZJwtUhF3w3ftmwwsq0BUmARs4=
+golang.org/x/net v0.0.0-20190310014029-b774fd8d5c0f/go.mod h1:mL1N/T3taQHkDXs73rZJwtUhF3w3ftmwwsq0BUmARs4=
 golang.org/x/oauth2 v0.0.0-20180821212333-d2e6202438be/go.mod h1:N/0e6XlmueqKjAGxoOufVs8QHGRruUQn6yWY3a++T0U=
 golang.org/x/oauth2 v0.0.0-20181017192945-9dcd33a902f4/go.mod h1:N/0e6XlmueqKjAGxoOufVs8QHGRruUQn6yWY3a++T0U=
 golang.org/x/oauth2 v0.0.0-20181120190819-8f65e3013eba/go.mod h1:N/0e6XlmueqKjAGxoOufVs8QHGRruUQn6yWY3a++T0U=
