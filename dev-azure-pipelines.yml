@@ -1,5 +1,5 @@
 trigger:
-  - master
+  - dev
 
 pr: none
 
@@ -75,13 +75,13 @@ steps:
       secureFile: hwscdevcontainer_pw.txt
   - script: |
       cat $(Agent.TempDirectory)/hwscdevcontainer_pw.txt | docker login -u "$(hwscDevContainerUser)" --password-stdin
-      docker build --no-cache -f Dockerfile -t hwsc/hwsc-document-svc:ext .
+      docker build --no-cache -f Dockerfile -t hwsc/hwsc-document-svc:int .
     workingDirectory: '$(modulePath)'
-    displayName: 'Build Docker Image External Release'
+    displayName: 'Build Docker Image Internal Release'
 
   - script: |
-      docker tag hwsc/hwsc-document-svc hwsc/hwsc-document-svc:ext
-      docker push hwsc/hwsc/hwsc-document-svc:ext
+      docker tag hwsc/hwsc-document-svc hwsc/hwsc-document-svc:int
+      docker push hwsc/hwsc/hwsc-document-svc:int
     workingDirectory: '$(modulePath)'
-    displayName: 'Push Docker Image External Release'
-  
+    displayName: 'Push Docker Image Internal Release'
+
