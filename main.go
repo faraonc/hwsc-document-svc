@@ -6,7 +6,7 @@ import (
 	"google.golang.org/grpc"
 	"net"
 
-	pbsvc "github.com/hwsc-org/hwsc-api-blocks/int/hwsc-document-svc/document"
+	pbsvc "github.com/hwsc-org/hwsc-api-blocks/protobuf/hwsc-document-svc/document"
 	svc "github.com/hwsc-org/hwsc-document-svc/service"
 	log "github.com/hwsc-org/hwsc-lib/logger"
 )

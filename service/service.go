@@ -3,8 +3,8 @@ package service
 import (
 	"fmt"
 	"github.com/google/uuid"
-	pbsvc "github.com/hwsc-org/hwsc-api-blocks/int/hwsc-document-svc/document"
-	pbdoc "github.com/hwsc-org/hwsc-api-blocks/int/lib"
+	pbsvc "github.com/hwsc-org/hwsc-api-blocks/protobuf/hwsc-document-svc/document"
+	pbdoc "github.com/hwsc-org/hwsc-api-blocks/protobuf/lib"
 	"github.com/hwsc-org/hwsc-document-svc/conf"
 	"github.com/hwsc-org/hwsc-document-svc/consts"
 	log "github.com/hwsc-org/hwsc-lib/logger"
