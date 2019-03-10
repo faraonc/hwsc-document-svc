@@ -81,7 +81,7 @@ steps:
 
   - script: |
       docker tag hwsc/hwsc-document-svc hwsc/hwsc-document-svc:int
-      docker push hwsc/hwsc/hwsc-document-svc:int
+      docker push hwsc/hwsc-document-svc:int
     workingDirectory: '$(modulePath)'
     displayName: 'Push Docker Image Internal Release'
 
