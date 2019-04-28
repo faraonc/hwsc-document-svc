@@ -9,7 +9,7 @@ require (
 	github.com/google/uuid v1.1.0
 	github.com/gorilla/mux v1.7.0 // indirect
 	github.com/gotestyourself/gotestyourself v2.2.0+incompatible // indirect
-	github.com/hwsc-org/hwsc-api-blocks v0.0.0-20190310103314-d5245c3ac7ad
+	github.com/hwsc-org/hwsc-api-blocks v0.0.0-20190428061704-723966bc3d3c
 	github.com/hwsc-org/hwsc-lib v0.0.0-20190310104150-51f502b2e5cc
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
 	github.com/kylelemons/godebug v0.0.0-20170820004349-d65d576e9348
