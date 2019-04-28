@@ -106,6 +106,7 @@ func TestValidateDocument(t *testing.T) {
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
+			Description:  "Some random desc",
 			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				Country: "USA",
@@ -143,6 +144,7 @@ func TestValidateDocument(t *testing.T) {
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
+			Description:  "Some random desc",
 			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				Country: "USA",
@@ -176,6 +178,7 @@ func TestValidateDocument(t *testing.T) {
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
+			Description:  "Some random desc",
 			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				Country: "USA",
@@ -213,6 +216,7 @@ func TestValidateDocument(t *testing.T) {
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
+			Description:  "Some random desc",
 			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				Country: "USA",
@@ -250,6 +254,7 @@ func TestValidateDocument(t *testing.T) {
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
+			Description:  "Some random desc",
 			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				Country: "USA",
@@ -287,6 +292,7 @@ func TestValidateDocument(t *testing.T) {
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
+			Description:  "Some random desc",
 			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				Country: "USA",
@@ -324,6 +330,7 @@ func TestValidateDocument(t *testing.T) {
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
+			Description:  "Some random desc",
 			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				Country: "USA",
@@ -361,6 +368,7 @@ func TestValidateDocument(t *testing.T) {
 			},
 			CallTypeName: "",
 			GroundType:   "some ground type",
+			Description:  "Some random desc",
 			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				Country: "USA",
@@ -397,7 +405,46 @@ func TestValidateDocument(t *testing.T) {
 				FirstName: "Lisa",
 			},
 			CallTypeName: "some call type name",
+			GroundType:   "some ground type",
+			Description:  string(invalidDesc),
+			StudySite: &pbdoc.StudySite{
+				City:    "Seattle",
+				Country: "USA",
+			},
+			Ocean:        "Pacific Ocean",
+			SensorType:   "some sensor type",
+			SensorName:   "some sensor name",
+			SamplingRate: 100,
+			Latitude:     89.123,
+			Longitude:    -100.123,
+			ImageUrlsMap: map[string]string{
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/images/hulkgif.png",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/images/Rotating_earth_(large).gif"},
+			AudioUrlsMap: map[string]string{
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/audios/Seger_Conga_CaboMexico_Tag_Acousonde_20140313_112313_8000_3_BreedingMigrating.wav",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/audios/Milad Hosseini - Deli Asheghetam [128].mp3"},
+			VideoUrlsMap: map[string]string{
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
+			FileUrlsMap: map[string]string{
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686de": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.wmv",
+				"4ff30392-8ec8-45a4-ba94-5e22c4a686df": "https://hwscdevstorage.blob.core.windows.net/videos/videoplayback.mp4"},
+			RecordTimestamp: 1514764800,
+			CreateTimestamp: 1539831496,
+			UpdateTimestamp: 0,
+			IsPublic:        true,
+		},
+			true, consts.ErrInvalidDescription.Error()},
+		{&pbdoc.Document{
+			Duid: "0ujsszwN8NRY24YaXiTIE2VWDTS",
+			Uuid: "0000XSNJG0MQJHBF4QX1EFD6Y3",
+			PublisherName: &pbdoc.Publisher{
+				LastName:  "Kim",
+				FirstName: "Lisa",
+			},
+			CallTypeName: "some call type name",
 			GroundType:   "",
+			Description:  "Some random desc",
 			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				Country: "USA",
@@ -435,6 +482,7 @@ func TestValidateDocument(t *testing.T) {
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
+			Description:  "Some random desc",
 			StudySite: &pbdoc.StudySite{
 				City:    "",
 				Country: "USA",
@@ -472,6 +520,7 @@ func TestValidateDocument(t *testing.T) {
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
+			Description:  "Some random desc",
 			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				State:   "123456789012345678901234567890123",
@@ -510,6 +559,7 @@ func TestValidateDocument(t *testing.T) {
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
+			Description:  "Some random desc",
 			StudySite: &pbdoc.StudySite{
 				City:     "Vancouver",
 				Province: "1234567890123456789012345678901234567890123456789",
@@ -548,6 +598,7 @@ func TestValidateDocument(t *testing.T) {
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
+			Description:  "Some random desc",
 			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				Country: "",
@@ -585,6 +636,7 @@ func TestValidateDocument(t *testing.T) {
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
+			Description:  "Some random desc",
 			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				Country: "USA",
@@ -622,6 +674,7 @@ func TestValidateDocument(t *testing.T) {
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
+			Description:  "Some random desc",
 			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				Country: "USA",
@@ -659,6 +712,7 @@ func TestValidateDocument(t *testing.T) {
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
+			Description:  "Some random desc",
 			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				Country: "USA",
@@ -696,6 +750,7 @@ func TestValidateDocument(t *testing.T) {
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
+			Description:  "Some random desc",
 			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				Country: "USA",
@@ -733,6 +788,7 @@ func TestValidateDocument(t *testing.T) {
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
+			Description:  "Some random desc",
 			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				Country: "USA",
@@ -770,6 +826,7 @@ func TestValidateDocument(t *testing.T) {
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
+			Description:  "Some random desc",
 			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				Country: "USA",
@@ -807,6 +864,7 @@ func TestValidateDocument(t *testing.T) {
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
+			Description:  "Some random desc",
 			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				Country: "USA",
@@ -844,6 +902,7 @@ func TestValidateDocument(t *testing.T) {
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
+			Description:  "Some random desc",
 			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				Country: "USA",
@@ -881,6 +940,7 @@ func TestValidateDocument(t *testing.T) {
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
+			Description:  "Some random desc",
 			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				Country: "USA",
@@ -918,6 +978,7 @@ func TestValidateDocument(t *testing.T) {
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
+			Description:  "Some random desc",
 			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				Country: "USA",
@@ -955,6 +1016,7 @@ func TestValidateDocument(t *testing.T) {
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
+			Description:  "Some random desc",
 			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				Country: "USA",
@@ -992,6 +1054,7 @@ func TestValidateDocument(t *testing.T) {
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
+			Description:  "Some random desc",
 			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				Country: "USA",
@@ -1029,6 +1092,7 @@ func TestValidateDocument(t *testing.T) {
 			},
 			CallTypeName: "some call type name",
 			GroundType:   "some ground type",
+			Description:  "Some random desc",
 			StudySite: &pbdoc.StudySite{
 				City:    "Seattle",
 				Country: "USA",
@@ -1272,6 +1336,30 @@ func TestValidateGroundType(t *testing.T) {
 
 	for _, c := range cases {
 		err := ValidateGroundType(c.input)
+		if c.isExpErr {
+			assert.EqualError(t, err, c.errorStr)
+		} else {
+			assert.Nil(t, err)
+		}
+
+	}
+
+}
+
+func TestValidateDescription(t *testing.T) {
+	cases := []struct {
+		input    string
+		isExpErr bool
+		errorStr string
+	}{
+		{"Hello", false, ""},
+		{"", false, ""},
+		{string(validDesc), false, ""},
+		{string(invalidDesc), true, consts.ErrInvalidDescription.Error()},
+	}
+
+	for _, c := range cases {
+		err := ValidateDescription(c.input)
 		if c.isExpErr {
 			assert.EqualError(t, err, c.errorStr)
 		} else {

@@ -29,6 +29,8 @@ var (
 	tempAudioFUID       string
 	tempImageFUID       string
 	tempVideoFUID       string
+	validDesc           []byte
+	invalidDesc         []byte
 	imaginaryDUID       = randStringBytes(27)
 	imaginaryUUID       = randStringBytes(26)
 	randFirstName       = randStringBytes(10)
@@ -109,6 +111,14 @@ func TestMain(t *testing.M) {
 	if count != numDocumentFixtures {
 		logger.Fatal(consts.TestTag, "failed setting up document fixture")
 	}
+	validDesc, err = ioutil.ReadFile("test_fixtures/valid_description.txt")
+	if err != nil {
+		logger.Fatal(consts.TestTag, err.Error())
+	}
+	invalidDesc, err = ioutil.ReadFile("test_fixtures/invalid_description.txt")
+	if err != nil {
+		logger.Fatal(consts.TestTag, err.Error())
+	}
 	code := t.Run()
 
 	// You can't defer this because os.Exit doesn't care for defer
@@ -176,6 +186,7 @@ func TestCreateDocument(t *testing.T) {
 					},
 					CallTypeName: "some call type name",
 					GroundType:   "some ground type",
+					Description:  string(validDesc),
 					StudySite: &pbdoc.StudySite{
 						City:    "Seattle",
 						State:   "Washington",
@@ -298,6 +309,7 @@ func TestUpdateDocument(t *testing.T) {
 					},
 					CallTypeName: "some call type name",
 					GroundType:   "some ground type",
+					Description:  string(validDesc),
 					StudySite: &pbdoc.StudySite{
 						City:     randCity,
 						Province: randProvince,
@@ -343,6 +355,7 @@ func TestUpdateDocument(t *testing.T) {
 					},
 					CallTypeName: "some call type name",
 					GroundType:   "some ground type",
+					Description:  "",
 					StudySite: &pbdoc.StudySite{
 						City:     randCity,
 						Province: randProvince,

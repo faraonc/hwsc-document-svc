@@ -8,6 +8,7 @@
     },
     "call_type_name": "Herd",
     "ground_type": "Migrating Ground",
+    "description": "",
     "study_site": {
       "city": "Colombo",
       "state": "",
@@ -42,6 +43,7 @@
     },
     "call_type_name": "Herd",
     "ground_type": "Migrating Ground",
+    "description": "",
     "study_site": {
       "city": "Colombo",
       "state": "",
@@ -76,6 +78,7 @@
     },
     "call_type_name": "Feed Point",
     "ground_type": "Cold Ground",
+    "description": "",
     "study_site": {
       "city": "Hoffland",
       "state": "",
@@ -110,6 +113,7 @@
     },
     "call_type_name": "Part Migration",
     "ground_type": "Breeding Migrating",
+    "description": "",
     "study_site": {
       "city": "Atlanta",
       "state": "Georgia",
@@ -145,6 +149,7 @@
     },
     "call_type_name": "Squelch",
     "ground_type": "Breeding Migrating",
+    "description": "",
     "study_site": {
       "city": "Cabo Mexico",
       "state": "",
@@ -179,6 +184,7 @@
     },
     "call_type_name": "Coreography",
     "ground_type": "Atlas",
+    "description": "",
     "study_site": {
       "city": "McMurdo",
       "state": "",
@@ -213,6 +219,7 @@
     },
     "call_type_name": "Dependency Migration",
     "ground_type": "Breeding Migrating",
+    "description": "",
     "study_site": {
       "city": "Norfolk",
       "state": "Virginia",
@@ -247,6 +254,7 @@
     },
     "call_type_name": "Fish Call",
     "ground_type": "Baja Ground",
+    "description": "",
     "study_site": {
       "city": "San Diego",
       "state": "California",
@@ -281,6 +289,7 @@
     },
     "call_type_name": "Friend",
     "ground_type": "Social Ground",
+    "description": "",
     "study_site": {
       "city": "Seoul",
       "state": "",
@@ -315,6 +324,7 @@
     },
     "call_type_name": "Wookie",
     "ground_type": "Migrating Ground",
+    "description": "",
     "study_site": {
       "city": "Antananarivo",
       "state": "",
@@ -349,6 +359,7 @@
     },
     "call_type_name": "Herd",
     "ground_type": "Migrating Ground",
+    "description": "",
     "study_site": {
       "city": "Kerala",
       "state": "",
@@ -384,6 +395,7 @@
     },
     "call_type_name": "Unknown 13",
     "ground_type": "Breeding Migrating",
+    "description": "",
     "study_site": {
       "city": "Cabo Mexico",
       "state": "",
@@ -419,6 +431,7 @@
     },
     "call_type_name": "Dependency Migration",
     "ground_type": "Breeding Migrating",
+    "description": "",
     "study_site": {
       "city": "Miara",
       "state": "Florida",
@@ -453,6 +466,7 @@
     },
     "call_type_name": "Hibernate",
     "ground_type": "Atlas",
+    "description": "",
     "study_site": {
       "city": "Alesund",
       "state": "",
@@ -485,6 +499,7 @@
     },
     "call_type_name": "Fish Call",
     "ground_type": "Baja Ground",
+    "description": "",
     "study_site": {
       "city": "San Diego",
       "state": "California",
@@ -519,6 +534,7 @@
     },
     "call_type_name": "Gunshot Maybe",
     "ground_type": "Breeding Migrating",
+    "description": "",
     "study_site": {
       "city": "Cabo Mexico",
       "state": "",
@@ -553,6 +569,7 @@
     },
     "call_type_name": "Friend",
     "ground_type": "Social Ground",
+    "description": "",
     "study_site": {
       "city": "Tokyo",
       "state": "",
@@ -588,6 +605,7 @@
     },
     "call_type_name": "Conga",
     "ground_type": "Breeding Migrating",
+    "description": "",
     "study_site": {
       "city": "Cabo Mexico",
       "state": "",
@@ -623,6 +641,7 @@
     },
     "call_type_name": "Coreography",
     "ground_type": "Atlas",
+    "description": "",
     "study_site": {
       "city": "McMurdo",
       "state": "",
@@ -657,6 +676,7 @@
     },
     "call_type_name": "some call type name",
     "ground_type": "some ground type",
+    "description": "",
     "study_site": {
       "city": "uAxhxKQFDaFpL",
       "state": "",
@@ -699,6 +719,7 @@
     },
     "call_type_name": "Separation Call",
     "ground_type": "Volcanic Ground",
+    "description": "",
     "study_site": {
       "city": "Waikiki",
       "state": "",
@@ -733,6 +754,7 @@
     },
     "call_type_name": "Fish Call",
     "ground_type": "Baja Ground",
+    "description": "",
     "study_site": {
       "city": "Tijuana",
       "state": "Baja California",
@@ -767,6 +789,7 @@
     },
     "call_type_name": "Fish Call",
     "ground_type": "Baja Ground",
+    "description": "",
     "study_site": {
       "city": "San Diego",
       "state": "California",
@@ -802,6 +825,7 @@
     },
     "call_type_name": "Part Migration",
     "ground_type": "Breeding Migrating",
+    "description": "",
     "study_site": {
       "city": "Atlanta",
       "state": "Georgia",
@@ -836,6 +860,7 @@
     },
     "call_type_name": "Whup Ascending Shriek",
     "ground_type": "Breeding Migrating",
+    "description": "",
     "study_site": {
       "city": "Cabo Mexico",
       "state": "",
@@ -870,6 +895,7 @@
     },
     "call_type_name": "Fish Call",
     "ground_type": "Baja Ground",
+    "description": "",
     "study_site": {
       "city": "Los Angeles",
       "state": "California",
@@ -905,6 +931,7 @@
     },
     "call_type_name": "Wookie",
     "ground_type": "Breeding Migrating",
+    "description": "",
     "study_site": {
       "city": "Cabo Mexico",
       "state": "",
@@ -939,6 +966,7 @@
     },
     "call_type_name": "Coreography",
     "ground_type": "Atlas",
+    "description": "",
     "study_site": {
       "city": "McMurdo",
       "state": "",
@@ -973,6 +1001,7 @@
     },
     "call_type_name": "Feed",
     "ground_type": "Breeding Migrating",
+    "description": "",
     "study_site": {
       "city": "Norfolk",
       "state": "VA",
@@ -1008,6 +1037,7 @@
     },
     "call_type_name": "Part Migration",
     "ground_type": "Breeding Migrating",
+    "description": "",
     "study_site": {
       "city": "Providence",
       "state": "Maine",
@@ -1042,6 +1072,7 @@
     },
     "call_type_name": "Feed Point",
     "ground_type": "Cold Ground",
+    "description": "",
     "study_site": {
       "city": "Copenhagen",
       "state": "",
@@ -1077,6 +1108,7 @@
     },
     "call_type_name": "Squeak Ascending Shriek",
     "ground_type": "Breeding Migrating",
+    "description": "",
     "study_site": {
       "city": "Cabo Mexico",
       "state": "",

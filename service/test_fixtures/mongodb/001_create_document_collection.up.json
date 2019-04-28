@@ -12,6 +12,7 @@
           "publisherName.firstName",
           "callTypeName",
           "groundType",
+          "description",
           "studySite.city",
           "studySite.country",
           "ocean",
@@ -69,6 +70,13 @@
             "maxLength": 64,
             "description": "required, 1-64 characters",
             "title": "ground type"
+          },
+          "description": {
+            "bsonType": "string",
+            "minLength": 0,
+            "maxLength": 15000,
+            "description": "required, 0-15000 characters",
+            "title": "description"
           },
           "studySite.city": {
             "bsonType": "string",
