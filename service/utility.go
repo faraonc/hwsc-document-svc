@@ -21,6 +21,7 @@ const (
 	maxFirstNameLength    = 32
 	maxCallTypeNameLength = 64
 	maxGroundTypeLength   = 64
+	maxDescriptionLength  = 15000
 	maxCityLength         = 64
 	maxStateLength        = 32
 	maxProvinceLength     = 48
@@ -111,6 +112,9 @@ func ValidateDocument(meta *pbdoc.Document) error {
 		return err
 	}
 	if err := ValidateGroundType(meta.GetGroundType()); err != nil {
+		return err
+	}
+	if err := ValidateDescription(meta.GetDescription()); err != nil {
 		return err
 	}
 	if err := ValidateStudySite(meta.GetStudySite().GetCity(), meta.GetStudySite().GetState(),
@@ -235,6 +239,15 @@ func ValidateCallTypeName(callTypeName string) error {
 func ValidateGroundType(groundType string) error {
 	if strings.TrimSpace(groundType) == "" || len(groundType) > maxGroundTypeLength {
 		return consts.ErrInvalidDocumentGroundType
+	}
+	return nil
+}
+
+// ValidateDescription validates length of description.
+// Returns an error if description exceeds 15000 chars.
+func ValidateDescription(desc string) error {
+	if len(desc) > maxDescriptionLength {
+		return consts.ErrInvalidDescription
 	}
 	return nil
 }

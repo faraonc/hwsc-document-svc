@@ -23,6 +23,7 @@ var (
 	ErrInvalidDocumentFirstName       = errors.New("invalid Document FirstName")
 	ErrInvalidDocumentCallTypeName    = errors.New("invalid Document CallTypeName")
 	ErrInvalidDocumentGroundType      = errors.New("invalid Document GroundType")
+	ErrInvalidDescription             = errors.New("invalid Document Description")
 	ErrInvalidDocumentCity            = errors.New("invalid Document City")
 	ErrInvalidDocumentState           = errors.New("invalid Document State")
 	ErrInvalidDocumentProvince        = errors.New("invalid Document Province")
