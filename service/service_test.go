@@ -52,7 +52,7 @@ func TestMain(t *testing.M) {
 	}
 
 	// pulls an image, creates a container based on it and runs it
-	resource, err := pool.Run("hwsc/test-hwsc-document-svc-mongodb", "latest",
+	resource, err := pool.Run("hwsc/hwsc-document-svc-mongodb", "test-int",
 		[]string{
 			"MONGO_INITDB_DATABASE=admin",
 			"MONGO_INITDB_ROOT_USERNAME=mongoadmin",
